@@ -1,26 +1,3 @@
-'''
-Jogo feito por Abel Cavalcante, Rodrigo de Jesus e André Cury
-
-2018
-
-Aproveite!!!
-'''
-# Importações
-import pygame
-import sys
-from pygame.locals import*
-import random
-from constantes_pygame.py import *
-
-# Inicialização do básico do sistema
-pygame.init()
-pygame.mixer.init()
-tela = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Mario só que é o Yoshi")
-clock = pygame.time.Clock()
-
-# Sprites
-todos_sprites = pygame.sprite.Group()
 
 # Objetos
 class Objeto(pygame.sprite.Sprite):
@@ -64,10 +41,7 @@ class Colision(Character):
 
 # Desenho
 def desenhar():
-	todos_sprites.update()
-	tela.blit(fundo,(0,0))
-	todos_sprites.draw(tela)
-	pygame.display.flip()
+
 
 # Chão
 chao = Objeto("img/chao.png",0,530)
@@ -85,15 +59,11 @@ todos_sprites.add(personagem)
 # Background
 fundo = pygame.image.load("img/fundo.png").convert()
 
-# Looping principal
-rodando=True
+
 while rodando:
-	clock.tick(fps)
+	
 	keys = pygame.key.get_pressed()
 
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			rodando = False
 
 	if keys[pygame.K_a]:
 		personagem.moveleft()
