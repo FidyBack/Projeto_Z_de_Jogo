@@ -10,17 +10,7 @@ import pygame
 import sys
 from pygame.locals import*
 import random
-
-# Variáveis
-fps = 90
-width = 1000
-height = 600
-
-# Cores
-white = (255, 255, 255)
-black = (0, 0, 0)
-dark_yellow = (25, 100, 37)
-red = (255, 0, 0)
+from constantes_pygame.py import *
 
 # Inicialização do básico do sistema
 pygame.init()
@@ -28,6 +18,9 @@ pygame.mixer.init()
 tela = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Mario só que é o Yoshi")
 clock = pygame.time.Clock()
+
+# Sprites
+todos_sprites = pygame.sprite.Group()
 
 # Objetos
 class Objeto(pygame.sprite.Sprite):
@@ -69,23 +62,28 @@ class Colision(Character):
 		self.rect1 = ob1.rect
 		self.rect2 = ob2.rect
 
-# Sprites
-todos_sprites = pygame.sprite.Group()
+# Desenho
+def desenhar():
+	todos_sprites.update()
+	tela.blit(fundo,(0,0))
+	todos_sprites.draw(tela)
+	pygame.display.flip()
 
 # Chão
-chao = Objeto("chao.png",0,530)
+chao = Objeto("img/chao.png",0,530)
 object_group = pygame.sprite.Group()
 object_group.add(chao)
 todos_sprites.add(chao)
 
 
 # Personagem
-personagem = Character("yoshi.png",40,480,2,5)
+personagem = Character("img/yoshi.png",40,480,2,5)
 charac_group = pygame.sprite.Group()
 charac_group.add(personagem)
 todos_sprites.add(personagem)
 
-fundo = pygame.image.load("fundo.png").convert()
+# Background
+fundo = pygame.image.load("img/fundo.png").convert()
 
 # Looping principal
 rodando=True
@@ -104,9 +102,6 @@ while rodando:
 	elif keys[pygame.K_w]:
 		personagem.jump()
 	
-	todos_sprites.update()
-	tela.blit(fundo,(0,0))
-	todos_sprites.draw(tela)
-	pygame.display.flip()
+	desenhar()
 
 pygame.quit()
