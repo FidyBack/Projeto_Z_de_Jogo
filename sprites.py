@@ -23,7 +23,7 @@ class Jogador(pg.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = (largura / 2, altura / 2)
 		self.posi = vec(largura / 2, altura / 2)
-		self.velo = vec(0, 0)
+		self.velo = vec(10, 0)
 		self.acele = vec(0, 0)
 
 	# Movimento do personagem

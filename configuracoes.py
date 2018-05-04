@@ -19,9 +19,9 @@ largura = 1000
 altura = 600
 
 # Propriedades do jogador
-acele_jogador = 1.7
-atrito_jogador = -0.5
-grav_jogador = 0.2
+acele_jogador = 4
+atrito_jogador = -1
+grav_jogador = 1
 pulo_jogador = 10
 
 # Plataformas

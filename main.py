@@ -36,7 +36,7 @@ class Jogo:
 		# Plataformas adicionadas
 		self.plataforma = pg.sprite.Group()
 		for plat in lista_plataformas:
-			p = Plataforma(plat[0], plat[1], plat[2], plat[3])
+			p = Plataforma(*plat)
 			self.todos_sprites.add(p)
 			self.plataforma.add(p)
 		# Rodar
@@ -65,13 +65,15 @@ class Jogo:
 		if self.jogador.rect.right >= largura * 3 / 4:
 			self.jogador.posi.x -= abs(self.jogador.velo.x)
 			for plat in self.plataforma:
-				plat.rect.x -= abs(self.jogador.velo.x)
+				plat.rect.x -= abs(self.jogador.velo.x)-1
+		print(self.jogador.velo.x)
+
 
 		# Se ele for para trás
 		if self.jogador.rect.right <= largura * 1 / 4:
-			self.jogador.posi.x += abs(self.jogador.velo.x)
+			self.jogador.posi.x -= self.jogador.velo.x
 			for plat in self.plataforma:
-				plat.rect.x += abs(self.jogador.velo.x)
+				plat.rect.x -= self.jogador.velo.x
 
 	# Eventos do looping
 	def eventos(self):
@@ -93,12 +95,26 @@ class Jogo:
 		self.todos_sprites.draw(self.tela)
 		pg.display.flip()
 
+	def aperte_uma_tecla(self):
+		espera=True
+		while espera:
+			self.clock.tick(FPS)
+			for event in pg.event.get():
+				if event.type==pg.QUIT:
+					espera = False
+				if event.type == pg.KEYUP:
+					espera=False
+
+
 	# Mostra a tela de começo
 	def mostrar_tela_comeco(self):
 		pass
+		
 
 	# Mostra a tela de adeus :(
 	def mostrar_tela_adeus(self):
+		pass
+	def desenhar_texto(self,texto,tamanho,cor,x,y):
 		pass
 
 g = Jogo()
