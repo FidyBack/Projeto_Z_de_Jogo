@@ -1,12 +1,24 @@
+'''
+Jogo feito por Abel Cavalcante, Rodrigo de Jesus e André Cury
+
+Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
+	Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
+	Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
+
+Jogo feito em 2018
+
+Aproveite!!!
+'''
+
 # Sprites pro joguinho
 import pygame as pg
 from configuracoes import *
 vec = pg.math.Vector2
 
 class Jogador(pg.sprite.Sprite):
-	def __init__(self, game):
+	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
-		self.game = game
+		self.jogo = jogo
 		self.image = pg.image.load("img/FatYoshi.png")
 		self.rect = self.image.get_rect()
 		self.rect.center = (largura / 2, altura / 2)
@@ -34,7 +46,7 @@ class Jogador(pg.sprite.Sprite):
 			self.posi.x = 0
 		if self.posi.x < 0 :
 			self.posi.x = largura
-
+ 
 		# Define a posição do centro
 		self.rect.midbottom = self.posi
 
@@ -42,11 +54,10 @@ class Jogador(pg.sprite.Sprite):
 	def pulo(self):
 		# Pular apenas com plataforma
 		self.rect.x += 1
-		colisao = pg.sprite.spritecollide(self, self.game.plataforma, False)
+		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
 		self.rect.x -= 1
 		if colisao:
-			self.velo.y = -15
-
+			self.velo.y = -pulo_jogador
 
 
 class Plataforma(pg.sprite.Sprite):

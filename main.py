@@ -1,7 +1,11 @@
 '''
 Jogo feito por Abel Cavalcante, Rodrigo de Jesus e André Cury
 
-2018
+Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
+	Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
+	Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
+
+Jogo feito em 2018
 
 Aproveite!!!
 '''
@@ -32,7 +36,7 @@ class Jogo:
 		# Plataformas adicionadas
 		self.plataforma = pg.sprite.Group()
 		for plat in lista_plataformas:
-			p = Plataforma(*plat)
+			p = Plataforma(plat[0], plat[1], plat[2], plat[3])
 			self.todos_sprites.add(p)
 			self.plataforma.add(p)
 		# Rodar
@@ -54,7 +58,7 @@ class Jogo:
 		if self.jogador.velo.y > 0:
 			impacto = pg.sprite.spritecollide(self.jogador, self.plataforma, False)
 			if impacto:
-				self.jogador.posi.y = impacto[0].rect.top + 0.5
+				self.jogador.posi.y = impacto[0].rect.top + 1
 				self.jogador.velo.y = 0
 
 		# Se ele ele for para frente
