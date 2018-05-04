@@ -53,9 +53,9 @@ class Jogador(pg.sprite.Sprite):
 	# Pulo do personagem
 	def pulo(self):
 		# Pular apenas com plataforma
-		self.rect.x += 1
+		self.rect.y += 1
 		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
-		self.rect.x -= 1
+		self.rect.y -= 1
 		if colisao:
 			self.velo.y = -pulo_jogador
 

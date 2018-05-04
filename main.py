@@ -36,7 +36,7 @@ class Jogo:
 		# Plataformas adicionadas
 		self.plataforma = pg.sprite.Group()
 		for plat in lista_plataformas:
-			p = Plataforma(plat[0], plat[1], plat[2], plat[3])
+			p = Plataforma(*plat)
 			self.todos_sprites.add(p)
 			self.plataforma.add(p)
 		# Rodar
@@ -61,14 +61,14 @@ class Jogo:
 				self.jogador.posi.y = impacto[0].rect.top + 1
 				self.jogador.velo.y = 0
 
-		# Se ele ele for para frente
-		if self.jogador.rect.right >= largura * 3 / 4:
+		# Se ele for para frente
+		if self.jogador.rect.right >= largura * 1 / 2:
 			self.jogador.posi.x -= abs(self.jogador.velo.x)
 			for plat in self.plataforma:
 				plat.rect.x -= abs(self.jogador.velo.x)
 
 		# Se ele for para trás
-		if self.jogador.rect.right <= largura * 1 / 4:
+		if self.jogador.rect.left <= largura * 1 / 2:
 			self.jogador.posi.x += abs(self.jogador.velo.x)
 			for plat in self.plataforma:
 				plat.rect.x += abs(self.jogador.velo.x)
@@ -88,23 +88,22 @@ class Jogo:
 
 	# Desenho do looping
 	def desenho(self):
-		self.tela.fill(preto)
-		# self.tela.blit(fundo,(0,0))
 		self.todos_sprites.draw(self.tela)
 		pg.display.flip()
+		self.tela.blit(background, (0, 0))
 
 	# Mostra a tela de começo
 	def mostrar_tela_comeco(self):
 		pass
 
 	# Mostra a tela de adeus :(
-	def mostrar_tela_adeus(self):
+	def mostrar_game_over(self):
 		pass
 
 g = Jogo()
 g.mostrar_tela_comeco()
 while g.rodando:
 	g.novo()
-	g.mostrar_tela_adeus()
+	g.mostrar_game_over()
 
 pg.quit()
