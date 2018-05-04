@@ -31,12 +31,10 @@ class Jogo:
 		self.todos_sprites.add(self.jogador)
 		# Plataformas adicionadas
 		self.plataforma = pg.sprite.Group()
-		p1 = Plataforma(0, altura - 40, largura, 400)
-		self.plataforma.add(p1)
-		self.todos_sprites.add(p1)
-		p2 = Plataforma(largura / 2 - 50, altura * 3 / 4, 100, 20)
-		self.plataforma.add(p2)
-		self.todos_sprites.add(p2)
+		for plat in lista_plataformas:
+			p = Plataforma(*plat)
+			self.todos_sprites.add(p)
+			self.plataforma.add(p)
 		# Rodar
 		self.rodar()
 
@@ -52,10 +50,24 @@ class Jogo:
 	#  Atualiza o looping
 	def update(self):
 		self.todos_sprites.update()
-		impacto = pg.sprite.spritecollide(self.jogador, self.plataforma, False)
-		if impacto:
-			self.jogador.posi.y = impacto[0].rect.top +1
-			self.jogador.velo.y = 0
+		# Colisão com o plataforma (QUeda apenas)
+		if self.jogador.velo.y > 0:
+			impacto = pg.sprite.spritecollide(self.jogador, self.plataforma, False)
+			if impacto:
+				self.jogador.posi.y = impacto[0].rect.top + 0.5
+				self.jogador.velo.y = 0
+
+		# Se ele ele for para frente
+		if self.jogador.rect.right >= largura * 3 / 4:
+			self.jogador.posi.x -= abs(self.jogador.velo.x)
+			for plat in self.plataforma:
+				plat.rect.x -= abs(self.jogador.velo.x)
+
+		# Se ele for para trás
+		if self.jogador.rect.right <= largura * 1 / 4:
+			self.jogador.posi.x += abs(self.jogador.velo.x)
+			for plat in self.plataforma:
+				plat.rect.x += abs(self.jogador.velo.x)
 
 	# Eventos do looping
 	def eventos(self):
