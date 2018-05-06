@@ -4,6 +4,7 @@ Jogo feito por Abel Cavalcante, Rodrigo de Jesus e André Cury
 Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
 	Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
 	Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
+	Fontes feitas por Brian Kent (Ænigma) 
 
 Jogo feito em 2018
 
