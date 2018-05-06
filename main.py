@@ -25,6 +25,7 @@ class Jogo:
 		self.tela = pg.display.set_mode((largura, altura))
 		self.relogio = pg.time.Clock()
 		self.rodando = True
+		self.nome_fonte = pg.font.match_font(nome_fonte)
 
 	# Novo Jogo
 	def novo(self):
@@ -62,16 +63,20 @@ class Jogo:
 				self.jogador.velo.y = 0
 
 		# Se ele for para frente
-		if self.jogador.rect.right >= largura * 1 / 2:
+		if self.jogador.rect.right >= largura * 3 / 4:
 			self.jogador.posi.x -= abs(self.jogador.velo.x)
 			for plat in self.plataforma:
 				plat.rect.x -= abs(self.jogador.velo.x)
 
 		# Se ele for para trás
-		if self.jogador.rect.left <= largura * 1 / 2:
+		if self.jogador.rect.left <= largura * 1 / 4:
 			self.jogador.posi.x += abs(self.jogador.velo.x)
 			for plat in self.plataforma:
 				plat.rect.x += abs(self.jogador.velo.x)
+
+		# Game Over
+		if self.jogador.rect.bottom > altura:
+			self.jogando = False
 
 	# Eventos do looping
 	def eventos(self):
@@ -90,15 +95,24 @@ class Jogo:
 	def desenho(self):
 		self.todos_sprites.draw(self.tela)
 		pg.display.flip()
-		self.tela.blit(background, (0, 0))
+		self.tela.fill(preto)
+		# self.tela.blit(background, (0, 0))
 
 	# Mostra a tela de começo
 	def mostrar_tela_comeco(self):
 		pass
 
-	# Mostra a tela de adeus :(
+	# Mostra a tela de perda :(
 	def mostrar_game_over(self):
 		pass
+
+	def draw_texto(self, text, size, color, x, y):
+		fonte = pg.font.Font(self.nome_fonte, size)
+		superficie_texto = font.render(text, True, color)
+		texto_rect = text_surface.get_rect()
+		texto_rect.center = (x, y)
+		self.screen.blit(superficie_texto, texto_rect)
+
 
 g = Jogo()
 g.mostrar_tela_comeco()
