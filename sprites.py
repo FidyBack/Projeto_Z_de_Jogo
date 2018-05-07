@@ -23,7 +23,7 @@ class Jogador(pg.sprite.Sprite):
 		self.image = pg.image.load("img/FatYoshi.png")
 		self.rect = self.image.get_rect()
 		self.rect.center = (0, 0)
-		self.posi = vec(largura / 2, altura / 2)
+		self.posi = vec(100, 0)
 		self.velo = vec(10, 0)
 		self.acele = vec(0, 0)
 
