@@ -27,20 +27,21 @@ class Jogo:
 		self.relogio = pg.time.Clock()
 		self.rodando = True
 		self.nome_fonte = pg.font.match_font(nome_fonte)
+		self.pulador = 0
 
 	# Novo Jogo
 	def novo(self):
 		# Sprites
 		self.todos_sprites = pg.sprite.Group()
-		# Jogador adicionado
-		self.jogador = Jogador(self)
-		self.todos_sprites.add(self.jogador)
 		# Plataformas adicionadas
 		self.plataforma = pg.sprite.Group()
 		for plat in lista_plataformas:
 			p = Plataforma(*plat)
 			self.todos_sprites.add(p)
 			self.plataforma.add(p)
+		# Jogador adicionado
+		self.jogador = Jogador(self)
+		self.todos_sprites.add(self.jogador)
 		# Rodar
 		self.rodar()
 
@@ -56,12 +57,13 @@ class Jogo:
 	#  Atualiza o looping
 	def update(self):
 		self.todos_sprites.update()
-		# Colisão com o plataforma (QUeda apenas)
+		# Colisão com o plataforma (Queda apenas)
 		if self.jogador.velo.y > 0:
 			impacto = pg.sprite.spritecollide(self.jogador, self.plataforma, False)
 			if impacto:
-				self.jogador.posi.y = impacto[0].rect.top + 1
-				self.jogador.velo.y = 0
+				if self.jogador.posi.y < impacto[0].rect.bottom:
+					self.jogador.posi.y = impacto[0].rect.top + 1
+					self.jogador.velo.y = 0
 
 		# Se ele for para frente
 		if self.jogador.rect.right >= largura * 3 / 4:
@@ -91,6 +93,10 @@ class Jogo:
 			if evento.type == pg.KEYDOWN:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo()
+					if self.pulador < 2:
+						self.jogador.pulo()
+						self.pulador += 1
+						self.jogador.velo.y = -pulo_jogador
 
 	# Desenho do looping
 	def desenho(self):
@@ -108,12 +114,7 @@ class Jogo:
 		pass
 
 	def draw_texto(self, text, size, color, x, y):
-		fonte = pg.font.Font(self.nome_fonte, size)
-		superficie_texto = font.render(text, True, color)
-		texto_rect = text_surface.get_rect()
-		texto_rect.center = (x, y)
-		self.screen.blit(superficie_texto, texto_rect)
-
+		pass
 
 g = Jogo()
 g.mostrar_tela_comeco()

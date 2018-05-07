@@ -22,8 +22,7 @@ class Jogador(pg.sprite.Sprite):
 		self.jogo = jogo
 		self.image = pg.image.load("img/FatYoshi.png")
 		self.rect = self.image.get_rect()
-		self.rect.center = (0, 0)
-		self.posi = vec(100, 0)
+		self.posi = vec(largura * 1 / 2, altura - 50)
 		self.velo = vec(10, 0)
 		self.acele = vec(0, 0)
 
@@ -42,12 +41,6 @@ class Jogador(pg.sprite.Sprite):
 		self.velo += self.acele
 		# Sorvetão (Indica a pórxima posição do personagem)
 		self.posi += self.velo + 0.5 * self.acele
-		# limite da tela
-		if self.posi.x > largura:
-			self.posi.x = 0
-		if self.posi.x < 0 :
-			self.posi.x = largura
- 
 		# Define a posição do centro
 		self.rect.midbottom = self.posi
 
@@ -58,7 +51,7 @@ class Jogador(pg.sprite.Sprite):
 		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
 		self.rect.y -= 1
 		if colisao:
-			self.velo.y = -pulo_jogador
+			self.jogo.pulador = 0
 
 
 class Plataforma(pg.sprite.Sprite):
