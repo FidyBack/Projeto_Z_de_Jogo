@@ -4,6 +4,7 @@ Jogo feito por Abel Cavalcante, Rodrigo de Jesus e André Cury
 Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
 	Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
 	Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
+	Fontes feitas por Brian Kent (Ænigma) 
 
 Jogo feito em 2018
 
@@ -21,8 +22,7 @@ class Jogador(pg.sprite.Sprite):
 		self.jogo = jogo
 		self.image = pg.image.load("img/FatYoshi.png")
 		self.rect = self.image.get_rect()
-		self.rect.center = (largura / 2, altura / 2)
-		self.posi = vec(largura / 2, altura / 2)
+		self.posi = vec(largura * 1 / 2, altura - 50)
 		self.velo = vec(10, 0)
 		self.acele = vec(0, 0)
 
@@ -41,24 +41,22 @@ class Jogador(pg.sprite.Sprite):
 		self.velo += self.acele
 		# Sorvetão (Indica a pórxima posição do personagem)
 		self.posi += self.velo + 0.5 * self.acele
-		# limite da tela
-		if self.posi.x > largura:
-			self.posi.x = 0
-		if self.posi.x < 0 :
-			self.posi.x = largura
- 
 		# Define a posição do centro
 		self.rect.midbottom = self.posi
 
 	# Pulo do personagem
 	def pulo(self):
 		# Pular apenas com plataforma
-		self.rect.x += 1
+		self.rect.y += 1
 		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
-		self.rect.x -= 1
+		self.rect.y -= 1
 		if colisao:
+<<<<<<< HEAD
 			self.velo.y = -pulo_jogador
 			
+=======
+			self.jogo.pulador = 0
+>>>>>>> 1a07f37bd3e7bf92b6861346dc8617796bb7fbd2
 
 
 class Plataforma(pg.sprite.Sprite):

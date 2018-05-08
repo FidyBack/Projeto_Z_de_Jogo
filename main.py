@@ -4,6 +4,7 @@ Jogo feito por Abel Cavalcante, Rodrigo de Jesus e André Cury
 Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
 	Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
 	Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
+	Fontes feitas por Brian Kent (Ænigma) 
 
 Jogo feito em 2018
 
@@ -25,21 +26,26 @@ class Jogo:
 		self.tela = pg.display.set_mode((largura, altura))
 		self.relogio = pg.time.Clock()
 		self.rodando = True
+<<<<<<< HEAD
 		self.nome_da_fonte = pg.font.match_font(nome_da_fonte)
+=======
+		self.nome_fonte = pg.font.match_font(nome_fonte)
+		self.pulador = 0
+>>>>>>> 1a07f37bd3e7bf92b6861346dc8617796bb7fbd2
 
 	# Novo Jogo
 	def novo(self):
 		# Sprites
 		self.todos_sprites = pg.sprite.Group()
-		# Jogador adicionado
-		self.jogador = Jogador(self)
-		self.todos_sprites.add(self.jogador)
 		# Plataformas adicionadas
 		self.plataforma = pg.sprite.Group()
 		for plat in lista_plataformas:
 			p = Plataforma(*plat)
 			self.todos_sprites.add(p)
 			self.plataforma.add(p)
+		# Jogador adicionado
+		self.jogador = Jogador(self)
+		self.todos_sprites.add(self.jogador)
 		# Rodar
 		self.rodar()
 
@@ -55,17 +61,19 @@ class Jogo:
 	#  Atualiza o looping
 	def update(self):
 		self.todos_sprites.update()
-		# Colisão com o plataforma (QUeda apenas)
+		# Colisão com o plataforma (Queda apenas)
 		if self.jogador.velo.y > 0:
 			impacto = pg.sprite.spritecollide(self.jogador, self.plataforma, False)
 			if impacto:
-				self.jogador.posi.y = impacto[0].rect.top + 1
-				self.jogador.velo.y = 0
+				if self.jogador.posi.y < impacto[0].rect.bottom:
+					self.jogador.posi.y = impacto[0].rect.top + 1
+					self.jogador.velo.y = 0
 
-		# Se ele ele for para frente
+		# Se ele for para frente
 		if self.jogador.rect.right >= largura * 3 / 4:
 			self.jogador.posi.x -= (self.jogador.velo.x+(self.jogador.acele.x)/2)
 			for plat in self.plataforma:
+<<<<<<< HEAD
 				plat.rect.x -= (self.jogador.velo.x+(self.jogador.acele.x)/2)
 
 
@@ -74,6 +82,19 @@ class Jogo:
 			self.jogador.posi.x -= (self.jogador.velo.x+(self.jogador.acele.x)/2)
 			for plat in self.plataforma:
 				plat.rect.x -= (self.jogador.velo.x+(self.jogador.acele.x)/2)
+=======
+				plat.rect.x -= abs(self.jogador.velo.x)
+
+		# Se ele for para trás
+		if self.jogador.rect.left <= largura * 1 / 4:
+			self.jogador.posi.x += abs(self.jogador.velo.x)
+			for plat in self.plataforma:
+				plat.rect.x += abs(self.jogador.velo.x)
+
+		# Game Over
+		if self.jogador.rect.bottom > altura:
+			self.jogando = False
+>>>>>>> 1a07f37bd3e7bf92b6861346dc8617796bb7fbd2
 
 	# Eventos do looping
 	def eventos(self):
@@ -87,13 +108,16 @@ class Jogo:
 			if evento.type == pg.KEYDOWN:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo()
+					if self.pulador < 2:
+						self.jogador.pulo()
+						self.pulador += 1
+						self.jogador.velo.y = -pulo_jogador
 
 	# Desenho do looping
 	def desenho(self):
-		self.tela.fill(preto)
-		# self.tela.blit(fundo,(0,0))
 		self.todos_sprites.draw(self.tela)
 		pg.display.flip()
+<<<<<<< HEAD
 
 	def aperte_uma_tecla(self):
 		espera=True
@@ -159,11 +183,26 @@ class Jogo:
 		texto_rect = texto_surface.get_rect()
 		texto_rect.midtop = (x,y)
 		self.tela.blit(texto_surface, texto_rect)
+=======
+		self.tela.fill(preto)
+		# self.tela.blit(background, (0, 0))
+
+	# Mostra a tela de começo
+	def mostrar_tela_comeco(self):
+		pass
+
+	# Mostra a tela de perda :(
+	def mostrar_game_over(self):
+		pass
+
+	def draw_texto(self, text, size, color, x, y):
+		pass
+>>>>>>> 1a07f37bd3e7bf92b6861346dc8617796bb7fbd2
 
 g = Jogo()
 g.mostrar_tela_comeco()
 while g.rodando:
 	g.novo()
-	g.mostrar_tela_adeus()
+	g.mostrar_game_over()
 
 pg.quit()
