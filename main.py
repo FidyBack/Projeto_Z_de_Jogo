@@ -61,9 +61,15 @@ class Jogo:
 		if self.jogador.velo.y > 0:
 			impacto = pg.sprite.spritecollide(self.jogador, self.plataforma, False)
 			if impacto:
-				if self.jogador.posi.y < impacto[0].rect.bottom:
-					self.jogador.posi.y = impacto[0].rect.top + 1
+				# Pegar apenas a plataforma de baixo, sem conflito com a de cima
+				menor_plataforma = impacto[0]
+				for batida in impacto:
+					if batida.rect.bottom > menor_plataforma.rect.bottom:
+						menor_plataforma = batida
+				if self.jogador.posi.y < menor_plataforma.rect.centery:
+					self.jogador.posi.y = menor_plataforma.rect.top + 1
 					self.jogador.velo.y = 0
+					self.jogador.pular = False
 
 		# Se ele for para frente
 		if self.jogador.rect.right >= largura * 3 / 4:
@@ -77,8 +83,14 @@ class Jogo:
 			for plat in self.plataforma:
 				plat.rect.x += abs(self.jogador.velo.x)
 
+		# Se ele for para baixo (sim, isso existe)
+		if self.jogador.rect.bottom >= altura and  self.jogador.rect.bottom < altura + 500:
+			self.jogador.posi.y -= abs(self.jogador.velo.y)
+			for plat in self.plataforma:
+				plat.rect.y -= abs(self.jogador.velo.y)
+
 		# Game Over
-		if self.jogador.rect.bottom > altura:
+		if self.jogador.rect.bottom > altura + 100:
 			self.jogando = False
 
 	# Eventos do looping
@@ -97,6 +109,11 @@ class Jogo:
 						self.jogador.pulo()
 						self.pulador += 1
 						self.jogador.velo.y = -pulo_jogador
+			# Pulo Menor
+			if evento.type == pg.KEYUP:
+				if evento.key == pg.K_SPACE:
+					self.jogador.pulo_parar_meio()
+			
 
 	# Desenho do looping
 	def desenho(self):
@@ -105,7 +122,7 @@ class Jogo:
 		self.tela.fill(preto)
 		# self.tela.blit(background, (0, 0))
 
-	# Mostra a tela de começo
+	# Mostra a tela de começo40
 	def mostrar_tela_comeco(self):
 		pass
 
@@ -113,6 +130,7 @@ class Jogo:
 	def mostrar_game_over(self):
 		pass
 
+	# Mostra a tela de texto
 	def draw_texto(self, text, size, color, x, y):
 		pass
 

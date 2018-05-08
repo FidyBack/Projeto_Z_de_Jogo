@@ -20,10 +20,11 @@ class Jogador(pg.sprite.Sprite):
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
+		self.pular = False
 		self.image = pg.image.load("img/FatYoshi.png")
 		self.rect = self.image.get_rect()
 		self.posi = vec(largura * 1 / 2, altura - 50)
-		self.velo = vec(10, 0)
+		self.velo = vec(0, 0)
 		self.acele = vec(0, 0)
 
 	# Movimento do personagem
@@ -50,8 +51,14 @@ class Jogador(pg.sprite.Sprite):
 		self.rect.y += 1
 		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
 		self.rect.y -= 1
-		if colisao:
+		if colisao and not self.pular:
+			self.pular = True
 			self.jogo.pulador = 0
+
+	def pulo_parar_meio(self):
+		if self.pular:
+			if self.velo.y < -5:
+				self.velo.y = -5
 
 
 class Plataforma(pg.sprite.Sprite):
@@ -63,3 +70,12 @@ class Plataforma(pg.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
+
+# class Inimigo(pg.sprite.Sprite):
+# 	def __init__(self, game, plat):
+# 		self.groups = game.todos_sprites, game.inimigos
+# 		pg.
+
+# class Powerups(pg.sprite.Sprite):
+# 	def __init__(self):
+		
