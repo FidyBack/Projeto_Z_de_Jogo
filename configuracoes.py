@@ -19,10 +19,10 @@ largura = 1000
 altura = 600
 
 # Propriedades do jogador
-acele_jogador = 4
+acele_jogador = 5
 atrito_jogador = -1
-grav_jogador = 1
-pulo_jogador = 10
+grav_jogador = 0.6
+pulo_jogador = 15
 
 # Plataformas
 lista_plataformas = [(-1000, altura - 40, 7000, 400),
@@ -39,6 +39,15 @@ preto = (0, 0, 0)
 ama_esc = (25, 100, 37)
 vermelho = (255, 0, 0)
 
+#fonte
+nome_da_fonte='Acknowledge TT (BRK)'
+
+discurso='O império Xeirista quer acabar com os seus inimigos. \
+Durante a guerra que se segue, o império está perdendo as suas \
+forças pouco a pouco. Para contornar isso, o lider do império \
+Xerista Herold Smiter quer as Amoebas do Infinito. É seu dever, \
+Soldier, impedir isso e defender a paz no mundo. Vá na sua aventura...'
+ 
 def get_configuracoes():
 	return {
 			'titulo': "Fat Yoshi",

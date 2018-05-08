@@ -25,6 +25,7 @@ class Jogo:
 		self.tela = pg.display.set_mode((largura, altura))
 		self.relogio = pg.time.Clock()
 		self.rodando = True
+		self.nome_da_fonte = pg.font.match_font(nome_da_fonte)
 
 	# Novo Jogo
 	def novo(self):
@@ -63,17 +64,16 @@ class Jogo:
 
 		# Se ele ele for para frente
 		if self.jogador.rect.right >= largura * 3 / 4:
-			self.jogador.posi.x -= abs(self.jogador.velo.x)
+			self.jogador.posi.x -= (self.jogador.velo.x+(self.jogador.acele.x)/2)
 			for plat in self.plataforma:
-				plat.rect.x -= abs(self.jogador.velo.x)-1
-		print(self.jogador.velo.x)
+				plat.rect.x -= (self.jogador.velo.x+(self.jogador.acele.x)/2)
 
 
 		# Se ele for para trás
 		if self.jogador.rect.right <= largura * 1 / 4:
-			self.jogador.posi.x -= self.jogador.velo.x
+			self.jogador.posi.x -= (self.jogador.velo.x+(self.jogador.acele.x)/2)
 			for plat in self.plataforma:
-				plat.rect.x -= self.jogador.velo.x
+				plat.rect.x -= (self.jogador.velo.x+(self.jogador.acele.x)/2)
 
 	# Eventos do looping
 	def eventos(self):
@@ -98,24 +98,67 @@ class Jogo:
 	def aperte_uma_tecla(self):
 		espera=True
 		while espera:
-			self.clock.tick(FPS)
+			self.relogio.tick(fps)
 			for event in pg.event.get():
 				if event.type==pg.QUIT:
 					espera = False
+					self.rodando=False
 				if event.type == pg.KEYUP:
 					espera=False
 
 
 	# Mostra a tela de começo
 	def mostrar_tela_comeco(self):
-		pass
-		
+		# game splash/start screen
+		self.tela.fill(preto)
+		a = 27
+		b = 27
+
+		for palavra in discurso.split():
+			if len(palavra) * 27 + a > 973:
+
+				b += 27
+				a = 27
+			for letra in palavra:
+				self.desenhar_texto(letra, 48, branco, a, b)
+				pg.display.flip()
+				pg.time.delay(0)
+				if letra == '.' or letra==',':
+				#colocar som de teclado aqui
+						pg.time.delay(0)
+				a+=27
+
+			a += 27
+		self.introducao()
+		self.aperte_uma_tecla()
+	def introducao(self):
+		self.tela.fill(preto)
+		pg.time.delay(100)
+		image=pg.image.load('game_start.png')
+		image_rect=image.get_rect()
+		image_rect.midtop=(largura/2,altura/4)
+		self.tela.blit(image,(image_rect))
+		self.desenhar_texto("press any key to start",20,branco,largura/2,altura*7/8)
+		pg.display.flip()
+
 
 	# Mostra a tela de adeus :(
 	def mostrar_tela_adeus(self):
-		pass
+		self.tela.fill(preto)
+		pg.time.delay(100)
+		image=pg.image.load('game_over.png')
+		image_rect=image.get_rect()
+		image_rect.midtop=(largura/2,altura/4)
+		self.tela.blit(image,(image_rect))
+		self.desenhar_texto("press any key to continue",20,branco,largura/2,altura*7/8)
+		pg.display.flip()
+
 	def desenhar_texto(self,texto,tamanho,cor,x,y):
-		pass
+		fonte = pg.font.Font(self.nome_da_fonte,tamanho)
+		texto_surface = fonte.render(texto,True, cor)
+		texto_rect = texto_surface.get_rect()
+		texto_rect.midtop = (x,y)
+		self.tela.blit(texto_surface, texto_rect)
 
 g = Jogo()
 g.mostrar_tela_comeco()

@@ -58,6 +58,7 @@ class Jogador(pg.sprite.Sprite):
 		self.rect.x -= 1
 		if colisao:
 			self.velo.y = -pulo_jogador
+			
 
 
 class Plataforma(pg.sprite.Sprite):
