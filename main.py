@@ -139,8 +139,6 @@ class Jogo:
 			# Fecha tudo (encerra o loop 'jogando' e 'rodando')
 			for evento in pg.event.get():
 				if evento.type == pg.QUIT:
-					if self.jogando:
-						self.jogando = False
 					self.rodando = False
 					return
 			
