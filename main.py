@@ -1,5 +1,5 @@
 '''
-Jogo feito por Abel Cavalcante, Rodrigo de Jesus e André Cury
+Jogo feito por Abel Cavalcante, Rodrigo de Jesus e Alexandre Cury
 
 Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
 	Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
@@ -28,6 +28,7 @@ class Jogo:
 		self.rodando = True
 		self.nome_da_fonte = pg.font.match_font(nome_fonte)
 		self.pulador = 0
+		self.jogando=True
 
 	# Novo Jogo
 	def novo(self):
@@ -84,13 +85,13 @@ class Jogo:
 				plat.rect.x += abs(self.jogador.velo.x)
 
 		# Se ele for para baixo (sim, isso existe)
-		if self.jogador.rect.bottom >= altura and  self.jogador.rect.bottom < altura + 500:
+		if self.jogador.rect.bottom >= altura and  self.jogador.rect.bottom < altura + 20:
 			self.jogador.posi.y -= abs(self.jogador.velo.y)
 			for plat in self.plataforma:
 				plat.rect.y -= abs(self.jogador.velo.y)
 
 		# Game Over
-		if self.jogador.rect.bottom > altura + 100:
+		if self.jogador.rect.bottom > altura + 20:
 			self.jogando = False
 
 	# Eventos do looping
@@ -116,13 +117,14 @@ class Jogo:
 
 	# Desenho do looping
 	def desenho(self):
+		self.tela.fill(preto)
 		self.todos_sprites.draw(self.tela)
 		pg.display.flip()
-		self.tela.fill(preto)
+
 		# self.tela.blit(background, (0, 0))
 
-	# Mostra a tela de começo40
-	def mostrar_tela_comeco(self):
+	# Mostra a tela de começo
+	def introducao(self):
 		# game splash/start screen
 		self.tela.fill(preto)
 		a = 27
@@ -134,7 +136,7 @@ class Jogo:
 
 		conta_tick = 0
 		while True:
-			self.relogio.tick(fps/6)
+			self.relogio.tick(fps)
 
 			# Fecha tudo (encerra o loop 'jogando' e 'rodando')
 			for evento in pg.event.get():
@@ -153,17 +155,19 @@ class Jogo:
 						break
 					else:
 						palavra_atual = palavras[idx_palavra]
-						if len(palavra_atual) * 27 + a > 973:
+						if len(palavra_atual) * 27 + a > 1000:
 							b += 27
 							a = 27
 
 				self.desenhar_texto(palavra_atual[idx_letra], 48, branco, a, b)
+				self.musica('msc/tecla.wav',1)
+				pg.time.delay(100)
+				if palavra_atual[idx_letra]=='.' or palavra_atual[idx_letra]==',':
+					pg.time.delay(200) 
 				a += 27
 				idx_letra += 1
 				pg.display.flip()
-
-		self.introducao()
-		self.aperte_uma_tecla()
+		self.mostrar_tela("img/game_start.png","press any key to start")
 
 	def aperte_uma_tecla(self):
 		espera = True
@@ -176,27 +180,44 @@ class Jogo:
 				if event.type == pg.KEYUP:
 					espera = False
 			
-	def introducao(self):
-		self.tela.fill(preto)
-		pg.time.delay(100)
-		image = pg.image.load('img/game_start.png')
-		image_rect = image.get_rect()
-		image_rect.midtop = (largura/2, altura/4)
-		self.tela.blit(image,(image_rect))
-		self.desenhar_texto("press any key to start", 20, branco, largura/2, altura * 7/8)
-		pg.display.flip()
+	def mostrar_tela(self,imagem,texto):
+		i=0
+		b=0
+		brilho=0
+		image=pg.image.load(imagem)
+		image_rect=image.get_rect()
+		image_rect.midtop=(largura/2,altura/4)
+		
+		while i<10:
+			if i==0:
+				if brilho<=0:
+					b=5
+				elif brilho>=255:
+					b=(-5)
+			elif i>0:	
+				if brilho<=0:
+					b=51
+				elif brilho>=255:
+					b=(-51)
+					i+=1
+			self.relogio.tick(fps)
+			for event in pg.event.get():
+				if event.type == pg.QUIT:
+					self.rodando = False
+					if self.jogando:
+						self.jogando=False
+					return
+				if event.type==pg.KEYUP and i==0:
+					i=1
+					self.musica('msc/entrada.wav', 1)
 
-	# Mostra a tela de perda :(
-	def mostrar_game_over(self):
-		self.tela.fill(preto)
-		pg.time.delay(100)
-		image = pg.image.load('img/game_over.png')
-		image_rect = image.get_rect()
-		image_rect.midtop = (largura/2, altura/4)
-		self.tela.blit(image, (image_rect))
-		self.desenhar_texto("Press any key to continue", 20, branco, largura/2, altura * 7/8)
-		pg.display.flip()
-		self.aperte_uma_tecla()
+			self.tela.fill(preto)
+			brilho+=b
+			self.tela.blit(image,(image_rect))
+			self.desenhar_texto(texto,20,(brilho,brilho,brilho),largura/2,altura*7/8)
+			pg.display.flip()
+
+
 
 	# Mostra a tela de texto
 	def desenhar_texto(self,texto,tamanho,cor,x,y):
@@ -206,10 +227,16 @@ class Jogo:
 		texto_rect.midtop = (x,y)
 		self.tela.blit(texto_surface, texto_rect)
 
+	# musica
+	def musica(self,musica,repeticoes):
+		pg.mixer.music.load(musica)
+		pg.mixer.music.play(repeticoes)
 g = Jogo()
-g.mostrar_tela_comeco()
+g.introducao()
+
 while g.rodando:
 	g.novo()
-	g.mostrar_game_over()
+	if not g.jogando and g.rodando:
+		g.mostrar_tela("img/game_over.png", "press any key to continue")
 
 pg.quit()
