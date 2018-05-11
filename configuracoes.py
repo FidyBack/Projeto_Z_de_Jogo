@@ -26,6 +26,11 @@ atrito_jogador = -1
 grav_jogador = 0.5
 pulo_jogador = 12
 
+# Propriedades do inimigo
+acele_inimigo = 6
+atrito_inimigo = -1
+grav_inimigo = 0.5
+
 # Discurso
 discurso = 'Durante a guerra que se segue, o Império Xerista, que anseia pela destruição de seus inimigos \
 está perdendo as suas forças pouco a pouco. Para contornar isso, seu líder, \
@@ -49,6 +54,7 @@ lista_plataformas = [(-1000, altura - 40, 7000, 70),
 					(5000, 350, 90, 30),
 					(5000, 400, 90, 30),
 					]
+lista_inimigos = [(1000, altura - 120)]
 
 # Cores
 branco = (255, 255, 255)

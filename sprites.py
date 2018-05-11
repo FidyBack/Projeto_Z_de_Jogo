@@ -26,6 +26,7 @@ class Jogador(pg.sprite.Sprite):
 		self.posi = vec(largura * 1 / 2, altura - 50)
 		self.velo = vec(0, 0)
 		self.acele = vec(0, 0)
+		self.pulador = 0
 
 	# Movimento do personagem
 	def update(self):
@@ -48,18 +49,28 @@ class Jogador(pg.sprite.Sprite):
 	# Pulo do personagem
 	def pulo(self):
 		# Pular apenas com plataforma
+		self.pular = False
+		# Pular apenas com plataforma
 		self.rect.y += 1
 		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
 		self.rect.y -= 1
-		if colisao and not self.pular:
+		#zera o pulador se tem colisão
+		if colisao:
 			self.pular = True
-			self.jogo.pulador = 0
+			self.pulador = 0
+		#apenas se o número de pulos for maior que 2 ele pula
+		elif self.pulador<2:
+			self.pular = True
+			
+		if self.pular:
+			self.velo.y= -pulo_jogador
+			self.pulador+=1
+
 
 	def pulo_parar_meio(self):
 		if self.pular:
 			if self.velo.y < -5:
 				self.velo.y = -5
-
 
 class Plataforma(pg.sprite.Sprite):
 	def __init__(self, x, y, l, a):
@@ -71,10 +82,29 @@ class Plataforma(pg.sprite.Sprite):
 		self.rect.x = x
 		self.rect.y = y
 
-# class Inimigo(pg.sprite.Sprite):
-# 	def __init__(self, game, plat):
-# 		self.groups = game.todos_sprites, game.inimigos
-# 		pg.
+class Inimigo(pg.sprite.Sprite):
+	def __init__(self, jogo, posix, posiy):
+		self.groups = jogo.todos_sprites, jogo.inimigos
+		pg.sprite.Sprite.__init__(self, self.groups)
+		self.jogo = jogo
+		self.image = pg.image.load("img/Golem.png")
+		self.rect = self.image.get_rect()
+		self.posi = vec(posix, posiy)
+		self.velo = vec(0, 0)
+		self.acele = vec(-10, 0)
+
+	def update(self):
+		self.acele = vec(0, grav_jogador)
+
+		# Adiciona fricção à aceleração (útil no gelo)
+		self.acele.x += self.velo.x * atrito_inimigo
+		# Velocidade somada com a aceleração
+		self.velo += self.acele
+		# Sorvetão (Indica a pórxima posição do personagem)
+		self.posi += self.velo + 0.5 * self.acele
+		# Define a posição do centro
+		self.rect.midbottom = self.posi
+
 
 # class Powerups(pg.sprite.Sprite):
 # 	def __init__(self):
