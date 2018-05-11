@@ -104,8 +104,3 @@ class Inimigo(pg.sprite.Sprite):
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro
 		self.rect.midbottom = self.posi
-
-
-# class Powerups(pg.sprite.Sprite):
-# 	def __init__(self):
-		
