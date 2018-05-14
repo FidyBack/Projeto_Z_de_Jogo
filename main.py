@@ -16,6 +16,7 @@ import pygame as pg
 from configuracoes import *
 from sprites import *
 
+
 class Jogo:
 	# Inicia o básico do sistema
 	def __init__(self):

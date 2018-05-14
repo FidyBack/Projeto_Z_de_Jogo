@@ -21,7 +21,7 @@ class Jogador(pg.sprite.Sprite):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
 		self.pular = False
-		self.image = pg.image.load("img/FatYoshi.png")
+		self.image = pg.image.load("/Users/AlexandreCury/Documents/Caderno Insper/Desing de Software/GitHub/Projeto_Z_de_Jogo/img/0Sc9dnqbRQWu1vcNEAl2TQ_thumb_9fd.jpg")
 		self.rect = self.image.get_rect()
 		self.posi = vec(largura * 1 / 2, altura - 50)
 		self.velo = vec(0, 0)
