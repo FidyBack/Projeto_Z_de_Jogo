@@ -31,7 +31,7 @@ class Jogo:
 	# Novo Jogo
 	def novo(self):
 		# Sprites
-		self.todos_sprites = pg.sprite.Group()
+		self.todos_sprites = pg.sprite.LayeredUpdates()
 
 		# Inimigo + Plataforma
 		self.interacoes = pg.sprite.Group()
@@ -175,7 +175,7 @@ class Jogo:
 					return
 
 				# Apertando uma tecla para pular
-				if event.type == pg.KEYUP and i == 0:
+				if event.type == pg.KEYDOWN and i == 0:
 					i = 1
 					self.musica('msc/entrada.wav', 1)
 
@@ -194,6 +194,7 @@ class Jogo:
 			self.eventos()
 			self.update()
 			self.desenho()
+			print(self.jogador.vida)
 
 	# Eventos do looping
 	def eventos(self):
@@ -221,7 +222,7 @@ class Jogo:
 		# Personagem
 		# ================================================================================================================
 		
-		# Colisão com o plataforma, personagem(Queda apenas)
+		# Colisão com o plataforma, personagem (Queda apenas)
 		if self.jogador.velo.y > 0:
 			impacto = pg.sprite.spritecollide(self.jogador, self.plataforma, False)
 			
@@ -242,8 +243,9 @@ class Jogo:
 		# Inimigo
 		# ================================================================================================================
 		
-		# Colisão com o plataforma, inimigo(Queda apenas)
+		# Colisão com o plataforma, inimigo (Queda apenas)
 		for i in self.inimigos:
+			# Velocidade inicial do inimigo
 			i.velo.x = 10
 			if i.velo.y > 0:
 				impacto = pg.sprite.spritecollide(i, self.plataforma, False)
@@ -259,6 +261,15 @@ class Jogo:
 					if i.posi.y < menor_plataforma.rect.centery:
 						i.posi.y = menor_plataforma.rect.top + 1
 						i.velo.y = 0
+
+			# Colisão com o inimigo
+			colisao_mob = pg.sprite.spritecollide(self.jogador, self.inimigos, False, pg.sprite.collide_mask)
+			if colisao_mob:
+				self.jogador.vida -= 1
+
+			# Morte por falta de vidas
+			if self.jogador.vida == 0:
+				self.jogando = False
 
 		# ================================================================================================================
 		# Câmera
@@ -286,7 +297,7 @@ class Jogo:
 			i.posi.y -= abs(self.jogador.velo.y)
 
 		# ================================================================================================================
-		# Queda e fim de jogo
+		# Queda e Fim de Jogo
 		# ================================================================================================================
 		
 		# Game Over
@@ -296,7 +307,7 @@ class Jogo:
 	# Desenho do looping
 	def desenho(self):
 		self.tela.fill(preto)
-		# self.tela.blit(background, (0, 0))
+		self.tela.blit(background, (0, 0))
 		self.todos_sprites.draw(self.tela)
 		pg.display.flip()
 
