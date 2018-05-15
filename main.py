@@ -39,6 +39,9 @@ class Jogo:
 		#Inimigo + Personagem
 		self.moviveis = pg.sprite.Group()
 
+		# Tiros como grupo
+		self.tiros = pg.sprite.Group()
+		
 		# Plataformas adicionadas
 		self.plataforma = pg.sprite.Group()
 		for plat in lista_plataformas:
@@ -194,7 +197,6 @@ class Jogo:
 			self.eventos()
 			self.update()
 			self.desenho()
-			print(self.jogador.vida)
 
 	# Eventos do looping
 	def eventos(self):
@@ -210,10 +212,19 @@ class Jogo:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo()
 
+				# Tiro
+				if evento.key == pg.K_j:
+					Tiro_reto(self)
+				if evento.key == pg.K_i:
+					Tiro_parabola(self)
+
+
+
 			# Pulo Menor
 			if evento.type == pg.KEYUP:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo_parar_meio()
+
 
 	#  Atualiza o looping
 	def update(self):
@@ -246,7 +257,10 @@ class Jogo:
 		# Colisão com o plataforma, inimigo (Queda apenas)
 		for i in self.inimigos:
 			# Velocidade inicial do inimigo
-			i.velo.x = 10
+			if i.posi.x > self.jogador.posi.x:
+				i.velo.x = 5
+			else:
+				i.velo.x = -5
 			if i.velo.y > 0:
 				impacto = pg.sprite.spritecollide(i, self.plataforma, False)
 
@@ -267,9 +281,13 @@ class Jogo:
 			if colisao_mob:
 				self.jogador.vida -= 1
 
-			# Morte por falta de vidas
+			# Morte por falta de vidas (Jogador)
 			if self.jogador.vida == 0:
 				self.jogando = False
+
+			# Morte por falta de vidas (Inimigo)
+			if i.vida == 0:
+				kill()
 
 		# ================================================================================================================
 		# Câmera
