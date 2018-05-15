@@ -20,7 +20,7 @@ class Jogador(pg.sprite.Sprite):
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.vida = 5
+		self.vida = 20
 		self.pular = False
 		self.image = pg.image.load("/Users/AlexandreCury/Documents/Caderno Insper/Desing de Software/GitHub/Projeto_Z_de_Jogo/img/0Sc9dnqbRQWu1vcNEAl2TQ_thumb_9fd.jpg")
 		self.rect = self.image.get_rect()
@@ -93,6 +93,7 @@ class Inimigo(pg.sprite.Sprite):
 		self.groups = jogo.todos_sprites, jogo.inimigos
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.jogo = jogo
+		self.vida = 5
 		self.image = pg.image.load("img/Golem.png")
 		self.rect = self.image.get_rect()
 		self.posi = vec(posix, posiy)
@@ -100,6 +101,7 @@ class Inimigo(pg.sprite.Sprite):
 		self.acele = vec(-10, 0)
 
 	def update(self):
+		# Gravidade
 		self.acele = vec(0, grav_jogador)
 
 		# Adiciona fricção à aceleração (útil no gelo)
@@ -113,3 +115,36 @@ class Inimigo(pg.sprite.Sprite):
 
 		# Colisão com máscara
 		self.mask = pg.mask.from_surface(self.image)
+
+class Tiro_reto(pg.sprite.Sprite):
+
+	def __init__(self,jogo):
+		pg.sprite.Sprite.__init__(self)
+		self.jogo = jogo
+		self.posi = self.jogo.jogador.posi[:] + vec(10, -30)
+		self.image = pg.image.load('img/Fireball.png')
+		self.rect = self.image.get_rect()
+		self.velo = vec(10, 0)
+		self.jogo.todos_sprites.add(self)
+		self.jogo.tiros.add(self)
+
+	def update(self):
+		self.posi += self.velo
+		self.rect.center = self.posi
+
+class Tiro_parabola(pg.sprite.Sprite):
+	def __init__(self,jogo):
+		pg.sprite.Sprite.__init__(self)
+		self.jogo = jogo
+		self.posi = self.jogo.jogador.posi[:] + vec(10, -30)
+		self.image = pg.image.load('img/granada.png')
+		self.rect = self.image.get_rect()
+		self.velo = vec(10, -10)
+		self.acele = vec(0, grav_jogador)
+		self.jogo.todos_sprites.add(self)
+		self.jogo.tiros.add(self)
+
+	def update(self):
+		self.velo.y += self.acele.y
+		self.posi += self.velo + self.acele//2
+		self.rect.center = self.posi
