@@ -18,22 +18,31 @@ fps = 60
 largura = 1000
 altura = 600
 nome_fonte = 'Acknowledge TT (BRK)'
-# background = pg.image.load("img/fundo.png")
+background = pg.image.load("img/fundo.jpg")
+
+# # Camadas
+# camada_jogador = 2
+# camada_inimigo = 2
+# camada_platafoma = 1
 
 # Propriedades do jogador
-acele_jogador = 6
-atrito_jogador = -1
 grav_jogador = 0.5
-pulo_jogador = 12
+pulo_jogador = 13
+velo_jogador = 13
+
+# Propriedades do inimigo
+acele_inimigo = 4
+atrito_inimigo = -1
+grav_inimigo = 0.5
 
 # Discurso
-discurso = 'Durante a guerra que se segue, o Império Xerista, que anseia pela destruição de seus inimigos \
+discurso = 'Durante a guerra que se segue, o Império Xerista,  \
 está perdendo as suas forças pouco a pouco. Para contornar isso, seu líder, \
 Herold Smiter, visa as amoebas do infinito. \
 É seu dever, Soldier, impedir isso e defender a paz no mundo. Contamos com você...'
 
 # Plataformas
-lista_plataformas = [(-1000, altura - 40, 7000, 70),
+lista_plataformas = [(0, altura - 40, 7000, 70),
 					(250, 300, 90, 30),
 					(300, 300, 90, 30),
 					(500, 200, 90, 30),
@@ -49,6 +58,14 @@ lista_plataformas = [(-1000, altura - 40, 7000, 70),
 					(5000, 350, 90, 30),
 					(5000, 400, 90, 30),
 					]
+
+# Inimigos
+lista_inimigos = [(5000, altura - 120),
+				(1000, altura - 120),
+				(2000, altura - 120),
+				(3000, altura - 120),
+				(4000, altura - 120),
+				]
 
 # Cores
 branco = (255, 255, 255)
