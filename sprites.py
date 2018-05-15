@@ -20,16 +20,16 @@ class Jogador(pg.sprite.Sprite):
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.vida = 20
+		self.vida = 3
 		self.pular = False
-		self.image = pg.image.load("img/FatYoshi.png")
+		self.image = pg.image.load("img/megaman.png")
 		self.rect = self.image.get_rect()
 		self.posi = vec(largura * 1 / 2, altura - 50)
 		self.velo = vec(0, 0)
 		self.acele = vec(0, grav_jogador)
 		self.pulador = 0
-		self.invencivel=False
-		self.contador_invencivel=0
+		self.invencivel = False
+		self.contador_invencivel = 0
 		self.dir='parado'
 
 	# Movimento do personagem com teclas pressionadas
@@ -44,19 +44,29 @@ class Jogador(pg.sprite.Sprite):
 		elif keys[pg.K_w]:
 			self.dir = 'cima'
 		elif keys[pg.K_s]:
-			self.dir='baixo'
+			self.dir = 'baixo'
 		else:
 			self.velo.x = 0
+			self.dir='parado'
+		self.inverte()
 
-		print(self.dir)
+	def inverte(self):
+		direita=pg.image.load("img/megaman.png")
+		esquerda=pg.transform.flip(direita,True,False)
+		if self.dir=='direita':
+			self.image=direita
+		elif self.dir=='esquerda':
+			self.image=esquerda
+	
 
 		# Velocidade somada com a aceleração
 		self.velo += self.acele
-		# Posição de acordo com a velocidade
-		self.posi += self.velo
+		# Sorvetão (Indica a pórxima posição do personagem)
+		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
 		self.rect.midbottom = self.posi
-
+		# Colisão com máscara
+		self.mask = pg.mask.from_surface(self.image)
 
 	# Pulo do personagem
 	def pulo(self):
@@ -78,11 +88,6 @@ class Jogador(pg.sprite.Sprite):
 		if self.pular:
 			self.velo.y = -pulo_jogador
 			self.pulador += 1
-
-
-		# Colisão com máscaras
-		self.mask = pg.mask.from_surface(self.image)
-
 
 	def pulo_parar_meio(self):
 		if self.pular:
@@ -108,7 +113,7 @@ class Inimigo(pg.sprite.Sprite):
 		
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.vida = 5
+		self.vida = 50
 		self.dano = 3
 		self.image = pg.image.load("img/golem.png")
 		self.rect = self.image.get_rect()
@@ -120,7 +125,6 @@ class Inimigo(pg.sprite.Sprite):
 		self.jogo.interacoes.add(self)
 		self.jogo.moviveis.add(self)
 
-
 	def update(self):
 		# Velocidade somada com a aceleração
 		self.velo += self.acele
@@ -128,12 +132,10 @@ class Inimigo(pg.sprite.Sprite):
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro
 		self.rect.midbottom = self.posi
-
 		# Colisão com máscara
-		#self.mask = pg.mask.from_surface(self.image)
+		self.mask = pg.mask.from_surface(self.image)
 
 class Tiro_reto(pg.sprite.Sprite):
-
 	def __init__(self,jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
@@ -144,10 +146,15 @@ class Tiro_reto(pg.sprite.Sprite):
 		self.dano=2
 		self.jogo.todos_sprites.add(self)
 		self.jogo.tiros.add(self)
-		
+		self.musica('msc/pistola.wav', 1)
+
 	def update(self):
 		self.posi += self.velo
 		self.rect.center = self.posi
+
+	def musica(self,musica,repeticoes):
+		pg.mixer.music.load(musica)
+		pg.mixer.music.play(repeticoes)
 
 class Tiro_parabola(pg.sprite.Sprite):
 	def __init__(self,jogo):
@@ -161,8 +168,13 @@ class Tiro_parabola(pg.sprite.Sprite):
 		self.acele = vec(0, grav_jogador)
 		self.jogo.todos_sprites.add(self)
 		self.jogo.tiros.add(self)
+		self.musica('msc/laser.wav', 1)
 
 	def update(self):
 		self.velo.y += self.acele.y
 		self.posi += self.velo + self.acele//2
 		self.rect.center = self.posi
+
+	def musica(self,musica,repeticoes):
+		pg.mixer.music.load(musica)
+		pg.mixer.music.play(repeticoes)

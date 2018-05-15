@@ -16,6 +16,7 @@ import pygame as pg
 from configuracoes import *
 from sprites import *
 
+
 class Jogo:
 	# Inicia o básico do sistema
 	def __init__(self):
@@ -47,12 +48,10 @@ class Jogo:
 		for plat in lista_plataformas:
 			Plataforma(self,*plat)
 
-
 		# Inimigos adicionados
 		self.inimigos = pg.sprite.Group()
 		for inim in lista_inimigos:
 			Inimigo(self, *inim)
-
 
 		# Jogador adicionado
 		self.jogador = Jogador(self)
@@ -218,12 +217,11 @@ class Jogo:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo_parar_meio()
 
-
 	#  Atualiza o looping
 	def update(self):
 		self.todos_sprites.update()
 		# ================================================================================================================
-		# Personagem
+		# Personagem e inimigo
 		# ================================================================================================================
 		
 		# Colisão com o plataforma, personagem e inimigos(Queda apenas)
@@ -247,12 +245,12 @@ class Jogo:
 			if personagem.vida <= 0:
 				personagem.kill()
 
-			# Colisão com o inimigo
+		# Colisão com o inimigo
 		colisao_mob = pg.sprite.spritecollide(self.jogador, self.inimigos, False, pg.sprite.collide_mask)
 		if colisao_mob:
 			if not self.jogador.invencivel:
 				self.jogador.vida -= colisao_mob[0].dano
-				self.jogador.invencivel=True
+				self.jogador.invencivel = True
 		if self.jogador.invencivel:
 			self.jogador.contador_invencivel += 1
 
@@ -265,7 +263,7 @@ class Jogo:
 			self.jogando = False
 
 		for inimigo in self.inimigos:
-			tiro_para_inimigo= pg.sprite.spritecollide(inimigo,self.tiros,False)
+			tiro_para_inimigo= pg.sprite.spritecollide(inimigo, self.tiros, False)
 			if tiro_para_inimigo:
 				inimigo.vida-=tiro_para_inimigo[0].dano
 				tiro_para_inimigo[0].kill()

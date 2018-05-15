@@ -28,7 +28,12 @@ background = pg.image.load("img/fundo.jpg")
 # Propriedades do jogador
 grav_jogador = 0.5
 pulo_jogador = 13
-velo_jogador = 13
+velo_jogador = 7
+
+# Propriedades do inimigo
+acele_inimigo = 4
+atrito_inimigo = -1
+grav_inimigo = 0.5
 
 # Propriedades do inimigo
 acele_inimigo = 4
@@ -64,6 +69,15 @@ lista_inimigos = [(5000, altura - 120),
 				(1000, altura - 120),
 				(2000, altura - 120),
 				(3000, altura - 120),
+				(4000, altura - 120),
+				(4000, altura - 120),
+				(4000, altura - 120),
+				(4000, altura - 120),
+				(4000, altura - 120),
+				(4000, altura - 120),
+				(4000, altura - 120),
+				(4000, altura - 120),
+				(4000, altura - 120),
 				(4000, altura - 120),
 				]
 
