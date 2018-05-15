@@ -11,15 +11,16 @@ Jogo feito em 2018
 Aproveite!!!
 '''
 
-# Sprites pro joguinho
 import pygame as pg
 from configuracoes import *
 vec = pg.math.Vector2
 
+# Sprite do jogador
 class Jogador(pg.sprite.Sprite):
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
+		self.vida = 5
 		self.pular = False
 		self.image = pg.image.load("/Users/AlexandreCury/Documents/Caderno Insper/Desing de Software/GitHub/Projeto_Z_de_Jogo/img/0Sc9dnqbRQWu1vcNEAl2TQ_thumb_9fd.jpg")
 		self.rect = self.image.get_rect()
@@ -28,7 +29,7 @@ class Jogador(pg.sprite.Sprite):
 		self.acele = vec(0, 0)
 		self.pulador = 0
 
-	# Movimento do personagem
+	# Movimento do personagem com teclas pressionadas
 	def update(self):
 		self.acele = vec(0, grav_jogador)
 		keys = pg.key.get_pressed()
@@ -43,28 +44,33 @@ class Jogador(pg.sprite.Sprite):
 		self.velo += self.acele
 		# Sorvetão (Indica a pórxima posição do personagem)
 		self.posi += self.velo + 0.5 * self.acele
-		# Define a posição do centro
+		# Define a posição do centro do personagem embaixo
 		self.rect.midbottom = self.posi
 
 	# Pulo do personagem
 	def pulo(self):
-		# Pular apenas com plataforma
 		self.pular = False
 		# Pular apenas com plataforma
 		self.rect.y += 1
 		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
 		self.rect.y -= 1
-		#zera o pulador se tem colisão
+
+		# Zera o pulador se tem colisão
 		if colisao:
+		 	self.pular = True
+		 	self.pulador = 0
+
+		# Pula apenas se o número de pulos for menor que 2
+		if self.pulador < 2:
 			self.pular = True
-			self.pulador = 0
-		#apenas se o número de pulos for maior que 2 ele pula
-		elif self.pulador<2:
-			self.pular = True
-			
+
 		if self.pular:
-			self.velo.y= -pulo_jogador
-			self.pulador+=1
+			self.velo.y = -pulo_jogador
+			self.pulador += 1
+
+
+		# Colisão com máscaras
+		self.mask = pg.mask.from_surface(self.image)
 
 
 	def pulo_parar_meio(self):
@@ -104,3 +110,6 @@ class Inimigo(pg.sprite.Sprite):
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro
 		self.rect.midbottom = self.posi
+
+		# Colisão com máscara
+		self.mask = pg.mask.from_surface(self.image)

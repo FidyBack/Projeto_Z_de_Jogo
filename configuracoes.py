@@ -18,7 +18,12 @@ fps = 60
 largura = 1000
 altura = 600
 nome_fonte = 'Acknowledge TT (BRK)'
-# background = pg.image.load("img/fundo.png")
+background = pg.image.load("img/fundo.jpg")
+
+# # Camadas
+# camada_jogador = 2
+# camada_inimigo = 2
+# camada_platafoma = 1
 
 # Propriedades do jogador
 acele_jogador = 6
@@ -27,7 +32,7 @@ grav_jogador = 0.5
 pulo_jogador = 12
 
 # Propriedades do inimigo
-acele_inimigo = 6
+acele_inimigo = 4
 atrito_inimigo = -1
 grav_inimigo = 0.5
 
@@ -54,7 +59,9 @@ lista_plataformas = [(-1000, altura - 40, 7000, 70),
 					(5000, 350, 90, 30),
 					(5000, 400, 90, 30),
 					]
-lista_inimigos = [(1000, altura - 120)]
+
+# Inimigos
+lista_inimigos = [(1500, altura - 120)]
 
 # Cores
 branco = (255, 255, 255)
