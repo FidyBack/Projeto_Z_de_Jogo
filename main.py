@@ -38,10 +38,21 @@ class Jogo:
 		self.interacoes = pg.sprite.Group()
 
 		#Inimigo + Personagem
+		self.personagens = pg.sprite.Group()
+
+		#Inimigo + Personagem + Ataque
 		self.moviveis = pg.sprite.Group()
 
 		# Tiros como grupo
 		self.tiros = pg.sprite.Group()
+
+		# Tiro do personagem
+		self.tiro_personagem = pg.sprite.Group()
+
+		# Tiro de inimigos
+		self.tiro_inimigo = pg.sprite.Group()
+
+
 		
 		# Plataformas adicionadas
 		self.plataforma = pg.sprite.Group()
@@ -50,12 +61,15 @@ class Jogo:
 
 		# Inimigos adicionados
 		self.inimigos = pg.sprite.Group()
+
+
 		for inim in lista_inimigos:
-			Inimigo(self, *inim)
+			Golem(self,*inim)
 
 		# Jogador adicionado
 		self.jogador = Jogador(self)
 		self.todos_sprites.add(self.jogador)
+		self.personagens.add(self.jogador)
 		self.moviveis.add(self.jogador)
 
 		# Rodar
@@ -207,10 +221,21 @@ class Jogo:
 					self.jogador.pulo()
 
 				# Tiro
-				if evento.key == pg.K_j:
-					Tiro_reto(self)
+				if evento.key == pg.K_j :
+					if self.jogador.direita:
+						self.jogador.veltiro=10
+					else:
+						self.jogador.veltiro=-10
+
+
+					Tiro_reto(self,self.jogador.posi+self.jogador.posicao_arma,self.jogador.veltiro)
+
 				if evento.key == pg.K_i:
-					Tiro_parabola(self)
+					if self.jogador.direita:
+						self.jogador.veltiro=10
+					else:
+						self.jogador.veltiro=-10
+					Tiro_parabola(self,self.jogador.posi+self.jogador.posicao_arma,self.jogador.veltiro)
 
 			# Pulo Menor
 			if evento.type == pg.KEYUP:
@@ -225,7 +250,7 @@ class Jogo:
 		# ================================================================================================================
 		
 		# Colisão com o plataforma, personagem e inimigos(Queda apenas)
-		for personagem in self.moviveis:
+		for personagem in self.personagens:
 			if personagem.velo.y > 0:
 				impacto = pg.sprite.spritecollide(personagem, self.plataforma, False)
 				
@@ -277,24 +302,24 @@ class Jogo:
 		# ================================================================================================================
 		
 		# Se ele for para frente
-		if self.jogador.rect.right >= largura * 3 / 4:
+		if self.jogador.rect.right >= largura * 1 / 2:
 			for plat in self.plataforma:
 				plat.rect.x -= self.jogador.velo.x
-			for personagem in self.moviveis:
+			for personagem in self.personagens:
 				personagem.posi.x-=self.jogador.velo.x
 
 		# Se ele for para trás
-		elif self.jogador.rect.left <= largura * 1 / 4:
+		elif self.jogador.rect.left < largura * 1 / 2:
 			for plat in self.plataforma:
 				plat.rect.x -= self.jogador.velo.x
-			for personagem in self.moviveis:
+			for personagem in self.personagens:
 				personagem.posi.x-=self.jogador.velo.x
 
 		# Se ele for para baixo (sim, isso existe)
 		elif self.jogador.rect.bottom >= altura and  self.jogador.rect.bottom < altura + 20:
 			for plat in self.plataforma:
 				plat.rect.y -= self.jogador.velo.y
-			for personagem in self.moviveis:
+			for personagem in self.personagens:
 				personagem.posi.y-=self.jogador.velo.y
 
 		# ================================================================================================================
