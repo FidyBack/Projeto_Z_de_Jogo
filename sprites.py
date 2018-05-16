@@ -15,6 +15,17 @@ import pygame as pg
 from configuracoes import *
 vec = pg.math.Vector2
 
+# Classe dedicada ao spritesheet:
+class Spritesheet():
+	def __init__(self, arquivo):
+		self.spritesheet = pygame.image.load(arquivo).convert()
+
+	# pega uma imagem do spritesheet
+	def pegar_imagem(self, x, y, largura, altura):
+		image = pygame.Surface ((largura, altura))
+		image.blit(self.spritesheet, (0,0), (x, y, largura, altura))
+		return image
+
 # Sprite do jogador
 class Jogador(pg.sprite.Sprite):
 	def __init__(self, jogo):
@@ -46,6 +57,8 @@ class Jogador(pg.sprite.Sprite):
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
 		self.rect.midbottom = self.posi
+		# Colisão com máscaras
+		self.mask = pg.mask.from_surface(self.image)
 
 	# Pulo do personagem
 	def pulo(self):
@@ -68,16 +81,12 @@ class Jogador(pg.sprite.Sprite):
 			self.velo.y = -pulo_jogador
 			self.pulador += 1
 
-
-		# Colisão com máscaras
-		self.mask = pg.mask.from_surface(self.image)
-
-
 	def pulo_parar_meio(self):
 		if self.pular:
 			if self.velo.y < -5:
 				self.velo.y = -5
 
+# Sprite das plataformas
 class Plataforma(pg.sprite.Sprite):
 	def __init__(self, x, y, l, a):
 		pg.sprite.Sprite.__init__(self)
@@ -88,12 +97,13 @@ class Plataforma(pg.sprite.Sprite):
 		self.rect.x = x
 		self.rect.y = y
 
+# Sprite do inimigo
 class Inimigo(pg.sprite.Sprite):
 	def __init__(self, jogo, posix, posiy):
 		self.groups = jogo.todos_sprites, jogo.inimigos
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.jogo = jogo
-		self.vida = 5
+		self.vida = 10
 		self.image = pg.image.load("img/Golem.png")
 		self.rect = self.image.get_rect()
 		self.posi = vec(posix, posiy)
@@ -103,7 +113,6 @@ class Inimigo(pg.sprite.Sprite):
 	def update(self):
 		# Gravidade
 		self.acele = vec(0, grav_jogador)
-
 		# Adiciona fricção à aceleração (útil no gelo)
 		self.acele.x += self.velo.x * atrito_inimigo
 		# Velocidade somada com a aceleração
@@ -112,10 +121,10 @@ class Inimigo(pg.sprite.Sprite):
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro
 		self.rect.midbottom = self.posi
-
 		# Colisão com máscara
 		self.mask = pg.mask.from_surface(self.image)
 
+# Sprite do tiro
 class Tiro_reto(pg.sprite.Sprite):
 
 	def __init__(self,jogo):
@@ -132,6 +141,7 @@ class Tiro_reto(pg.sprite.Sprite):
 		self.posi += self.velo
 		self.rect.center = self.posi
 
+# Sprite da granada
 class Tiro_parabola(pg.sprite.Sprite):
 	def __init__(self,jogo):
 		pg.sprite.Sprite.__init__(self)
@@ -147,4 +157,4 @@ class Tiro_parabola(pg.sprite.Sprite):
 	def update(self):
 		self.velo.y += self.acele.y
 		self.posi += self.velo + self.acele//2
-		self.rect.center = self.posi
+		self.rect.center = self.po

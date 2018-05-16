@@ -6,6 +6,8 @@ Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
 	Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
 	Fontes feitas por Brian Kent (Ænigma) 
 
+GABRIEL WAS HERE
+
 Jogo feito em 2018
 
 Aproveite!!!
@@ -148,7 +150,7 @@ class Jogo:
 		brilho = 0
 		image = pg.image.load(imagem)
 		image_rect = image.get_rect()
-		image_rect.midtop = (largura/2,altura/4)
+		image_rect.midtop = (largura/2, altura/4)
 		
 		# Início do loop da piscada dos menus
 		while i < 7:
@@ -218,13 +220,10 @@ class Jogo:
 				if evento.key == pg.K_i:
 					Tiro_parabola(self)
 
-
-
 			# Pulo Menor
 			if evento.type == pg.KEYUP:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo_parar_meio()
-
 
 	#  Atualiza o looping
 	def update(self):
@@ -257,12 +256,12 @@ class Jogo:
 		# Colisão com o plataforma, inimigo (Queda apenas)
 		for i in self.inimigos:
 			# Velocidade inicial do inimigo
-			if i.posi.x > self.jogador.posi.x:
-				i.velo.x = 5
-			else:
-				i.velo.x = -5
-			if i.velo.y > 0:
-				impacto = pg.sprite.spritecollide(i, self.plataforma, False)
+			# if i.posi.x > self.jogador.posi.x:
+			# 	i.velo.x = 5
+			# else:
+			# 	i.velo.x = -5
+			# if i.velo.y > 0:
+			# 	impacto = pg.sprite.spritecollide(i, self.plataforma, False)
 
 				# Pegar apenas a plataforma de baixo, sem conflito com a de cima
 				if impacto:
