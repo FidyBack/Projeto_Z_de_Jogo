@@ -15,6 +15,8 @@ Aproveite!!!
 import pygame as pg
 from configuracoes import *
 from sprites import *
+import math
+from random import randrange
 
 
 class Jogo:
@@ -64,7 +66,9 @@ class Jogo:
 
 
 		for inim in lista_inimigos:
-			Golem(self,*inim)
+			Chefe(self,*inim)
+
+
 
 		# Jogador adicionado
 		self.jogador = Jogador(self)
@@ -222,20 +226,10 @@ class Jogo:
 
 				# Tiro
 				if evento.key == pg.K_j :
-					if self.jogador.direita:
-						self.jogador.veltiro=10
-					else:
-						self.jogador.veltiro=-10
-
-
-					Tiro_reto(self,self.jogador.posi+self.jogador.posicao_arma,self.jogador.veltiro)
+					Tiro_reto(self,self.jogador.posi+self.jogador.posicao_arma[:],self.jogador.vel_tiro_reto[:],self.jogador.velo[:],self.jogador.direita)
 
 				if evento.key == pg.K_i:
-					if self.jogador.direita:
-						self.jogador.veltiro=10
-					else:
-						self.jogador.veltiro=-10
-					Tiro_parabola(self,self.jogador.posi+self.jogador.posicao_arma,self.jogador.veltiro)
+					Tiro_parabola(self,self.jogador.posi+self.jogador.posicao_arma[:],self.jogador.vel_tiro_parabola[:],self.jogador.velo[:],self.jogador.direita)
 
 			# Pulo Menor
 			if evento.type == pg.KEYUP:
@@ -290,8 +284,10 @@ class Jogo:
 		for inimigo in self.inimigos:
 			tiro_para_inimigo= pg.sprite.spritecollide(inimigo, self.tiros, False)
 			if tiro_para_inimigo:
-				inimigo.vida-=tiro_para_inimigo[0].dano
 				tiro_para_inimigo[0].kill()
+				if not inimigo.invencivel:
+					inimigo.vida-=tiro_para_inimigo[0].dano
+				
 
 		for tiro in self.tiros:
 			if tiro.rect.x>largura or tiro.rect.x<0:
@@ -302,24 +298,24 @@ class Jogo:
 		# ================================================================================================================
 		
 		# Se ele for para frente
-		if self.jogador.rect.right >= largura * 1 / 2:
+		if self.jogador.rect.center[0] > largura * 1 / 2:
 			for plat in self.plataforma:
 				plat.rect.x -= self.jogador.velo.x
-			for personagem in self.personagens:
+			for personagem in self.moviveis:
 				personagem.posi.x-=self.jogador.velo.x
 
 		# Se ele for para trás
-		elif self.jogador.rect.left < largura * 1 / 2:
+		elif self.jogador.rect.center[0] < largura * 1 / 2:
 			for plat in self.plataforma:
 				plat.rect.x -= self.jogador.velo.x
-			for personagem in self.personagens:
+			for personagem in self.moviveis:
 				personagem.posi.x-=self.jogador.velo.x
 
 		# Se ele for para baixo (sim, isso existe)
 		elif self.jogador.rect.bottom >= altura and  self.jogador.rect.bottom < altura + 20:
 			for plat in self.plataforma:
 				plat.rect.y -= self.jogador.velo.y
-			for personagem in self.personagens:
+			for personagem in self.moviveis:
 				personagem.posi.y-=self.jogador.velo.y
 
 		# ================================================================================================================
@@ -332,7 +328,6 @@ class Jogo:
 
 	# Desenho do looping
 	def desenho(self):
-		self.tela.fill(preto)
 		self.tela.blit(background, (0, 0))
 		self.todos_sprites.draw(self.tela)
 		pg.display.flip()

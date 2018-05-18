@@ -48,55 +48,21 @@ Herold Smiter, visa as amoebas do infinito. \
 
 # Plataformas
 lista_plataformas = [(0, altura - 40, 7000, 70),
-					(250, 300, 90, 30),
-					(300, 300, 90, 30),
-					(500, 200, 90, 30),
-					(900, 100, 90, 30),
-					(1200, 100, 90, 30),
-					(100, 450, 90, 30),
-					(2000, 300, 90, 30),
-					(5000, 100, 90, 30),
-					(5000, 150, 90, 30),
-					(5000, 200, 90, 30),
-					(5000, 250, 90, 30),
-					(5000, 300, 90, 30),
-					(5000, 350, 90, 30),
-					(5000, 400, 90, 30),
+
 					]
 
-inimigos = {'golem':[(0,altura-40),
+inimigos = {'golem':[
 				(1000, altura - 120),
-				(2000, altura - 120),
-				(3000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),],
+
+				],
 			'dragao':[],
 			'mineiro':[],
 			'bomber':[],
 			'':[]}
 # Inimigos
-lista_inimigos = [(5000, altura - 120),
-				(1000, altura - 120),
-				(2000, altura - 120),
-				(3000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
-				(4000, altura - 120),
+lista_inimigos = [
+				(500, altura/2)
+	
 				]
 
 # Cores
