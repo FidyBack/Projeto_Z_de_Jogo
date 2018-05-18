@@ -28,53 +28,65 @@ class Jogo:
 		self.tela = pg.display.set_mode((largura, altura))
 		self.relogio = pg.time.Clock()
 		self.nome_da_fonte = pg.font.match_font(nome_fonte)
-		self.rodando = True	
+		self.rodando = True
 		self.jogando = True
 
 	# Novo Jogo
 	def novo(self):
-		# Sprites
-		self.todos_sprites = pg.sprite.Group()
 
+		# ================================================================================================================
+		# Grupos
+		# ================================================================================================================
+
+		# Sprites em geral
+		self.todos_sprites = pg.sprite.Group()
+		# Inimigos
+		self.inimigos = pg.sprite.Group()
+		# Plataformas
+		self.plataforma = pg.sprite.Group()
 		# Inimigo + Plataforma + Ataque
 		self.interacoes = pg.sprite.Group()
-
-		#Inimigo + Personagem
-		self.personagens = pg.sprite.Group()
-
-		#Inimigo + Personagem + Ataque
+		# Inimigo + Personagem + Ataque
 		self.moviveis = pg.sprite.Group()
-
+		# Inimigo + Personagem
+		self.caracters = pg.sprite.Group()
 		# Tiros como grupo
 		self.tiros = pg.sprite.Group()
-
 		# Tiro do personagem
 		self.tiro_personagem = pg.sprite.Group()
-
 		# Tiro de inimigos
 		self.tiro_inimigo = pg.sprite.Group()
 
+		# ================================================================================================================
+		# Adição dos sprites no jogo
+		# ================================================================================================================
 
-		
 		# Plataformas adicionadas
-		self.plataforma = pg.sprite.Group()
-		for plat in lista_plataformas:
-			Plataforma(self,*plat)
+		for plat in lista_plataformas['plataformas']:
+			Plataforma(self, *plat)
 
-		# Inimigos adicionados
-		self.inimigos = pg.sprite.Group()
+		# Chão adicionado
+		for gnd in lista_plataformas['chãos']:
+			Plataforma(self, *gnd)
 
+		# Golem adicionado
+		for pedra in lista_inimigos['pedra']:
+			Pedra(self, *pedra)
 
-		for inim in lista_inimigos:
-			Chefe(self,*inim)
+		for pb in lista_inimigos['pb']:
+			Pb(self, *pb)
 
+		for robo in lista_inimigos['robo']:
+			Robo(self, *robo)
 
+		for mineiro in lista_inimigos['mineiro']:
+			Mineirinho(self, *pb)
+
+		for spike in lista_inimigos['spike']:
+			Spike(self, *spike)
 
 		# Jogador adicionado
 		self.jogador = Jogador(self)
-		self.todos_sprites.add(self.jogador)
-		self.personagens.add(self.jogador)
-		self.moviveis.add(self.jogador)
 
 		# Rodar
 		self.rodar()
@@ -91,7 +103,7 @@ class Jogo:
 		palavra_atual = palavras[0]
 		idx_letra = 0
 		conta_tick = 0
-		rode=False
+		rode = False
 
 		# Looping do discurso
 		while True:
@@ -160,7 +172,7 @@ class Jogo:
 		brilho = 0
 		image = pg.image.load(imagem)
 		image_rect = image.get_rect()
-		image_rect.midtop = (largura/2,altura/4)
+		image_rect.midtop = (largura/2, altura/4)
 		
 		# Início do loop da piscada dos menus
 		while i < 7:
@@ -224,10 +236,12 @@ class Jogo:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo()
 
+
 				# Tiro
 				if evento.key == pg.K_j :
 					Tiro_reto(self,self.jogador.posi+self.jogador.posicao_arma[:],self.jogador.vel_tiro_reto[:],self.jogador.velo[:],self.jogador.direita)
 
+				# Granada
 				if evento.key == pg.K_i:
 					Tiro_parabola(self,self.jogador.posi+self.jogador.posicao_arma[:],self.jogador.vel_tiro_parabola[:],self.jogador.velo[:],self.jogador.direita)
 
@@ -239,15 +253,16 @@ class Jogo:
 	#  Atualiza o looping
 	def update(self):
 		self.todos_sprites.update()
+
 		# ================================================================================================================
 		# Personagem e inimigo
 		# ================================================================================================================
-		
-		# Colisão com o plataforma, personagem e inimigos(Queda apenas)
-		for personagem in self.personagens:
+
+		# Colisão com a plataforma (Queda apenas)
+		for personagem in self.caracters:
 			if personagem.velo.y > 0:
 				impacto = pg.sprite.spritecollide(personagem, self.plataforma, False)
-				
+
 				# Pegar apenas a plataforma de baixo, sem conflito com a de cima
 				if impacto:
 					menor_plataforma = impacto[0]
@@ -270,6 +285,8 @@ class Jogo:
 			if not self.jogador.invencivel:
 				self.jogador.vida -= colisao_mob[0].dano
 				self.jogador.invencivel = True
+
+		# Invencibilidade após a colisão com o inimigo
 		if self.jogador.invencivel:
 			self.jogador.contador_invencivel += 1
 
@@ -281,55 +298,72 @@ class Jogo:
 		if self.jogador.vida <= 0:
 			self.jogando = False
 
+		# ================================================================================================================
+		# Tiro
+		# ================================================================================================================
+
+		# Colisão tiro - inimigo
 		for inimigo in self.inimigos:
-			tiro_para_inimigo= pg.sprite.spritecollide(inimigo, self.tiros, False)
+
+			tiro_para_inimigo = pg.sprite.spritecollide(inimigo, self.tiro_personagem, False, pg.sprite.collide_mask)
 			if tiro_para_inimigo:
+				inimigo.vida -= tiro_para_inimigo[0].dano
 				tiro_para_inimigo[0].kill()
 				if not inimigo.invencivel:
 					inimigo.vida-=tiro_para_inimigo[0].dano
 				
 
-		for tiro in self.tiros:
-			if tiro.rect.x>largura or tiro.rect.x<0:
+		# Morte do tiro por sair da tela
+		for tiro in self.tiro_personagem:
+			if tiro.rect.x > largura or tiro.rect.x < 0 or tiro.rect.y > altura or tiro.rect.y < 0 - 25:
 				tiro.kill()
-			
+	
 		# ================================================================================================================
 		# Câmera
 		# ================================================================================================================
 		
 		# Se ele for para frente
-		if self.jogador.rect.center[0] > largura * 1 / 2:
+		if self.jogador.rect.right > largura * 0.5:
 			for plat in self.plataforma:
 				plat.rect.x -= self.jogador.velo.x
 			for personagem in self.moviveis:
 				personagem.posi.x-=self.jogador.velo.x
 
 		# Se ele for para trás
-		elif self.jogador.rect.center[0] < largura * 1 / 2:
+		elif self.jogador.rect.left < largura * 0.5:
 			for plat in self.plataforma:
 				plat.rect.x -= self.jogador.velo.x
 			for personagem in self.moviveis:
-				personagem.posi.x-=self.jogador.velo.x
+				personagem.posi.x -= self.jogador.velo.x
 
-		# Se ele for para baixo (sim, isso existe)
-		elif self.jogador.rect.bottom >= altura and  self.jogador.rect.bottom < altura + 20:
+
+		# Se ele for para cima
+		if self.jogador.rect.y <= altura * 1 / 4:
 			for plat in self.plataforma:
 				plat.rect.y -= self.jogador.velo.y
 			for personagem in self.moviveis:
 				personagem.posi.y-=self.jogador.velo.y
+
+		# Se ele for para baixo
+		elif self.jogador.rect.y >= altura * 3 / 4:
+			for plat in self.plataforma:
+				plat.rect.y -= (self.jogador.velo.y + self.jogador.acele.y)
+			for personagem in self.moviveis:
+				personagem.posi.y -= (self.jogador.velo.y + self.jogador.acele.y)
 
 		# ================================================================================================================
 		# Queda e Fim de Jogo
 		# ================================================================================================================
 		
 		# Game Over
-		if self.jogador.rect.bottom > altura + 20:
+		if self.jogador.rect.bottom > altura + 50:
 			self.jogando = False
 
 	# Desenho do looping
 	def desenho(self):
-		self.tela.blit(background, (0, 0))
+		self.tela.fill(azul_ceu)
 		self.todos_sprites.draw(self.tela)
+		self.desenhar_texto('Vida = {}'.format(self.jogador.vida), 20, preto, 50, 0)
 		pg.display.flip()
 
 	# Mostra a tela de texto
@@ -345,6 +379,7 @@ class Jogo:
 		pg.mixer.music.load(musica)
 		pg.mixer.music.play(repeticoes)
 
+# Looping
 g = Jogo()
 g.introducao()
 

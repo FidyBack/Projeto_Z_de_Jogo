@@ -17,29 +17,46 @@ vec = pg.math.Vector2
 import math
 from random import randrange
 
+# Classe dedicada ao spritesheet:
+class Spritesheet():
+	def __init__(self, arquivo):
+		self.spritesheet = pygame.image.load(arquivo).convert()
+
+	# pega uma imagem do spritesheet
+	def pegar_imagem(self, x, y, largura, altura):
+		image = pygame.Surface ((largura, altura))
+		image.blit(self.spritesheet, (0,0), (x, y, largura, altura))
+		return image
+
 # Sprite do jogador
 class Jogador(pg.sprite.Sprite):
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
 		self.vida = 20
+		self.veltiro = 0
+		self.pulador = 0
+		self.contador_invencivel = 0
+		self.invencivel = False
 		self.pular = False
-		self.image = pg.image.load("img/megaman.png")
+		self.direita = True
+		self.image = pg.image.load('img/megaman.png')
 		self.rect = self.image.get_rect()
-		self.posi = vec(largura * 1 / 2, altura - 50)
+		self.posi = vec(largura * 1 / 2, altura - 130)
 		self.velo = vec(0, 0)
 		self.acele = vec(0, grav_jogador)
-		self.pulador = 0
-		self.invencivel = False
-		self.contador_invencivel = 0
-		self.direita=True
 		self.vel_tiro_reto=vec(20,0)
 		self.vel_tiro_parabola=vec(10,-10)
 		self.posicao_arma=vec(20,-25)
 
+		# Adição nos grupos
+		self.jogo.todos_sprites.add(self)
+		self.jogo.caracters.add(self)
+		self.jogo.moviveis.add(self)
+
 	# Movimento do personagem com teclas pressionadas
 	def update(self):
-
+		# Esquerda
 		keys = pg.key.get_pressed()
 		if keys[pg.K_a]:
 			self.velo.x = -velo_jogador
@@ -50,9 +67,6 @@ class Jogador(pg.sprite.Sprite):
 			self.velo.x = velo_jogador
 			self.direita=True
 			self.posicao_arma.x=20
-
-
-
 		else:
 			self.velo.x = 0
 
@@ -64,49 +78,52 @@ class Jogador(pg.sprite.Sprite):
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
 		self.rect.midbottom = self.posi
-		# Colisão com máscara
+		# Colisão com máscaras
 		self.mask = pg.mask.from_surface(self.image)
 
 	# Pulo do personagem
 	def pulo(self):
 		self.pular = False
-		# Pular apenas com plataforma
-		self.rect.y += 1
+		# Colisão
 		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
-		self.rect.y -= 1
 
 		# Zera o pulador se tem colisão
 		if colisao:
-		 	self.pular = True
 		 	self.pulador = 0
 
 		# Pula apenas se o número de pulos for menor que 2
-		if self.pulador < 2:
+		if self.pulador < 46545:
 			self.pular = True
 
 		if self.pular:
 			self.velo.y = -pulo_jogador
 			self.pulador += 1
+			if self.posi.y < 0 + 0:
+				self.velo.y = 0
 
+	# Pulo pequeno
 	def pulo_parar_meio(self):
 		if self.pular:
 			if self.velo.y < -5:
 				self.velo.y = -5
 
+# Sprite das plataformas
 class Plataforma(pg.sprite.Sprite):
-	def __init__(self, jogo, x, y, l,a):
+	def __init__(self, jogo, x, y, l, a):
 		pg.sprite.Sprite.__init__(self)
-		# self.image = pg.image.load("img/chao.png")
 		self.jogo=jogo
 		self.image = pg.Surface((l, a))
-		self.image.fill(ama_esc)
+		self.image.fill(verd_esc)
 		self.rect = self.image.get_rect()
-		self.rect.x=x
-		self.rect.y=y
+		self.rect.x = x
+		self.rect.y = y
+
+		# Adição nos grupos
 		self.jogo.todos_sprites.add(self)
 		self.jogo.plataforma.add(self)
 		self.jogo.interacoes.add(self)
 
+# Sprite básico dos inimigos
 class Inim(pg.sprite.Sprite):
 	def __init__(self,jogo,image,dano,vida,posix,posiy,velo,acele):
 		pg.sprite.Sprite.__init__(self)
@@ -121,23 +138,24 @@ class Inim(pg.sprite.Sprite):
 		self.direita=True
 		self.velo = velo
 		self.acele = acele
-		self.jogo.personagens.add(self)
+		self.invencivel=False
+
+		# Adição nos grupos
+		self.jogo.caracters.add(self)
 		self.jogo.todos_sprites.add(self)
 		self.jogo.inimigos.add(self)
 		self.jogo.interacoes.add(self)
 		self.jogo.moviveis.add(self)
-		self.invencivel=False
-
 
 	def update(self):
 		if self.velo.x>0:
 			self.direita=True
 		elif self.velo.x<0:
 			self.direita=False
-		if self.posi.x>-40 and self.posi.x<largura+40:
+		if self.posi.x>-100 and self.posi.x<largura+100:
 			self.velo += self.acele
-			self.posi += self.velo+0.5*self.acele
-		self.rect.midbottom= self.posi
+			self.posi += self.velo + 0.5 * self.acele
+		self.rect.midbottom = self.posi
 		self.mask = pg.mask.from_surface(self.image)
 		self.eventos()
 		inverte(self,self.img)
@@ -145,6 +163,12 @@ class Inim(pg.sprite.Sprite):
 	def eventos(self):
 		pass
 
+# Sprite do inimigo pedra
+class Pedra(Inim):
+	def __init__(self, jogo, posix,posiy):
+		Inim.__init__(self, jogo ,"img/golem.png",3,5, posix,posiy,vec(-5,0),vec(0,grav_jogador))
+
+# Sprite básico dos tiros
 class Tiro(pg.sprite.Sprite):
 	def __init__(self,jogo,image,dano,posicao,velo,acele,velo_personagem,direita,tempo):
 		pg.sprite.Sprite.__init__(self)
@@ -161,14 +185,14 @@ class Tiro(pg.sprite.Sprite):
 		self.tempo=tempo
 		self.velo_personagem=vec(velo_personagem)
 		self.vel_personagem=self.velo_personagem.x
-		self.jogo.todos_sprites.add(self)
-		self.jogo.interacoes.add(self)
-		self.jogo.moviveis.add(self)
-		self.jogo.tiro_personagem.add(self)
 		self.rect.center=self.posi
 		inverte(self,self.img)
 		
-
+		# Adição nos grupos
+		self.jogo.todos_sprites.add(self)
+		self.jogo.interacoes.add(self)
+		self.jogo.moviveis.add(self)
+		self.jogo.tiros.add(self)
 
 	def update(self):
 		if self.direita:
@@ -176,9 +200,6 @@ class Tiro(pg.sprite.Sprite):
 
 		else:
 			self.velo.x=-self.vel
-	
-
-
 		self.eventos()
 		self.tempo-=1
 		if self.tempo==0:
@@ -192,18 +213,20 @@ class Tiro(pg.sprite.Sprite):
 	def eventos(self):
 		pass
 
-
+# tiro reto do personagem
 class Tiro_reto(Tiro):
 
 	def __init__(self,jogo,posicao,velo,velo_personagem,direita):
 	 	Tiro.__init__(self,jogo,'img/Fireball.png',1,posicao,velo,vec(0,0),velo_personagem,direita,fps)
+	 	self.jogo.tiro_personagem.add(self)
 	 	self.jogo.tiros.add(self)
 
 
+# Granada
 class Tiro_parabola(Tiro):
-
 	def __init__(self,jogo,posicao,velo,velo_personagem,direita):
 		Tiro.__init__(self,jogo,'img/granada.png',5,posicao,velo,vec(0,0.5),velo_personagem,direita,fps)
+		self.jogo.tiro_personagem.add(self)
 		self.jogo.tiros.add(self)
 
 class Golem(Inim):
@@ -300,20 +323,23 @@ class Pb(Inim):
 		if self.contador==80:
 			self.kill()
 			
+	def __init__(self, jogo, posicao, velx):
+		Tiro.__init__(self, jogo, posicao, 'img/granada.png', 5, velx, -10, 0, 0.5)
+		self.jogo.tiro_personagem.add(self)
 
-
+# Classe de animação
 class inverte(pg.sprite.Sprite):
 	def __init__(self,personagem,image):
 
-		self.personagem=personagem
+		self.caracters=personagem
 
 		self.dir=pg.image.load(image)
 		self.esq=pg.transform.flip(self.dir,True,False)
 
-		if self.personagem.direita:
-			self.personagem.image=self.dir
+		if self.caracters.direita:
+			self.caracters.image=self.dir
 		else:
-			self.personagem.image=self.esq
+			self.caracters.image=self.esq
 
 
 class Chefe(Inim):
@@ -372,4 +398,3 @@ class Chefe(Inim):
 					
 
 				self.contador+=1
-
