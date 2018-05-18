@@ -32,25 +32,44 @@ class Jogador(pg.sprite.Sprite):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
 		self.vida = 20
-		self.pular = False
-		self.image = pg.image.load("img/FatYoshi.png")
-		self.rect = self.image.get_rect()
-		self.posi = vec(largura * 1 / 2, altura - 50)
-		self.velo = vec(0, 0)
-		self.acele = vec(0, 0)
+		self.veltiro = 0
 		self.pulador = 0
+		self.contador_invencivel = 0
+		self.invencivel = False
+		self.pular = False
+		self.direita = True
+		self.image = pg.image.load('img/megaman.png')
+		self.rect = self.image.get_rect()
+		self.posi = vec(largura * 1 / 2, altura - 130)
+		self.velo = vec(0, 0)
+		self.acele = vec(0, grav_jogador)
+		self.posicao_arma = vec(0, -25)
+
+		# Adição nos grupos
+		self.jogo.todos_sprites.add(self)
+		self.jogo.caracters.add(self)
+		self.jogo.moviveis.add(self)
+
 
 	# Movimento do personagem com teclas pressionadas
 	def update(self):
-		self.acele = vec(0, grav_jogador)
+		# Esquerda
 		keys = pg.key.get_pressed()
 		if keys[pg.K_a]:
-			self.acele.x = -acele_jogador
-		if keys[pg.K_d]:
-			self.acele.x = acele_jogador
+			self.velo.x = -velo_jogador
+			self.dir = self.rect.midleft[:]
+			self.direita = False
+			self.posicao_arma.x = -20
+		# Direita
+		elif keys[pg.K_d]:
+			self.velo.x = velo_jogador
+			self.dir = self.rect.midright[:]
+			self.direita = True
+			self.posicao_arma.x = 20
+		# Parado
+		else:
+			self.velo.x = 0
 
-		# Adiciona fricção à aceleração (útil no gelo)
-		self.acele.x += self.velo.x * atrito_jogador
 		# Velocidade somada com a aceleração
 		self.velo += self.acele
 		# Sorvetão (Indica a pórxima posição do personagem)
@@ -60,27 +79,30 @@ class Jogador(pg.sprite.Sprite):
 		# Colisão com máscaras
 		self.mask = pg.mask.from_surface(self.image)
 
+		inverte(self,"img/megaman.png")
+
+
 	# Pulo do personagem
 	def pulo(self):
 		self.pular = False
-		# Pular apenas com plataforma
-		self.rect.y += 1
+		# Colisão
 		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
-		self.rect.y -= 1
 
 		# Zera o pulador se tem colisão
 		if colisao:
-		 	self.pular = True
 		 	self.pulador = 0
 
 		# Pula apenas se o número de pulos for menor que 2
-		if self.pulador < 2:
+		if self.pulador < 46545:
 			self.pular = True
 
 		if self.pular:
 			self.velo.y = -pulo_jogador
 			self.pulador += 1
+			if self.posi.y < 0 + 0:
+				self.velo.y = 0
 
+	# Pulo pequeno
 	def pulo_parar_meio(self):
 		if self.pular:
 			if self.velo.y < -5:
@@ -88,73 +110,103 @@ class Jogador(pg.sprite.Sprite):
 
 # Sprite das plataformas
 class Plataforma(pg.sprite.Sprite):
-	def __init__(self, x, y, l, a):
+	def __init__(self, jogo, x, y, l, a):
 		pg.sprite.Sprite.__init__(self)
-		# self.image = pg.image.load("img/chao.png")
+		self.jogo=jogo
 		self.image = pg.Surface((l, a))
-		self.image.fill(ama_esc)
+		self.image.fill(verd_esc)
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
 
-# Sprite do inimigo
-class Inimigo(pg.sprite.Sprite):
-	def __init__(self, jogo, posix, posiy):
-		self.groups = jogo.todos_sprites, jogo.inimigos
-		pg.sprite.Sprite.__init__(self, self.groups)
+		# Adição nos grupos
+		self.jogo.todos_sprites.add(self)
+		self.jogo.plataforma.add(self)
+		self.jogo.interacoes.add(self)
+
+# Sprite básico dos inimigos
+class Inim(pg.sprite.Sprite):
+	def __init__(self, jogo, image, dano, vida, posix, posiy, velx):
+		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.vida = 10
-		self.image = pg.image.load("img/Golem.png")
+		self.image = pg.image.load(image)
 		self.rect = self.image.get_rect()
 		self.posi = vec(posix, posiy)
-		self.velo = vec(0, 0)
-		self.acele = vec(-10, 0)
+		self.vida = vida
+		self.dano = dano
+		self.velo = vec(velx, 0)
+		self.acele = vec(0, grav_inimigo)
+
+		# Adição nos grupos
+		self.jogo.caracters.add(self)
+		self.jogo.todos_sprites.add(self)
+		self.jogo.inimigos.add(self)
+		self.jogo.interacoes.add(self)
+		self.jogo.moviveis.add(self)
 
 	def update(self):
-		# Gravidade
-		self.acele = vec(0, grav_jogador)
-		# Adiciona fricção à aceleração (útil no gelo)
-		self.acele.x += self.velo.x * atrito_inimigo
-		# Velocidade somada com a aceleração
-		self.velo += self.acele
-		# Sorvetão (Indica a pórxima posição do personagem)
-		self.posi += self.velo + 0.5 * self.acele
-		# Define a posição do centro
+		self.eventos()
+		if self.posi.x > - 100 and self.posi.x < largura + 100:
+			self.velo += self.acele
+			self.posi += self.velo + 0.5 * self.acele
 		self.rect.midbottom = self.posi
-		# Colisão com máscara
 		self.mask = pg.mask.from_surface(self.image)
 
-# Sprite do tiro
-class Tiro_reto(pg.sprite.Sprite):
+	def eventos(self):
+		pass
 
-	def __init__(self,jogo):
+# Sprite do inimigo pedra
+class Pedra(Inim):
+	def __init__(self, jogo, posix, posiy):
+		Inim.__init__(self, jogo, "img/golem.png", 5, 10, posix, posiy, -6)
+
+# Sprite básico dos tiros
+class Tiro(pg.sprite.Sprite):
+	def __init__(self, jogo, posicao, image, dano, velx, vely, acelex, aceley):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.posi = self.jogo.jogador.posi[:] + vec(10, -30)
-		self.image = pg.image.load('img/Fireball.png')
+		self.posi = posicao[:]
+		self.image = pg.image.load(image)
 		self.rect = self.image.get_rect()
-		self.velo = vec(10, 0)
+		self.velo = vec(velx, vely)
+		self.acele = vec(acelex, aceley)
+		self.dano = dano
+
+		# Adição nos grupos
 		self.jogo.todos_sprites.add(self)
+		self.jogo.interacoes.add(self)
+		self.jogo.moviveis.add(self)
 		self.jogo.tiros.add(self)
 
 	def update(self):
-		self.posi += self.velo
+		self.velo += self.acele
+		self.posi += self.velo + self.acele / 2
 		self.rect.center = self.posi
+		# Colisão com máscaras
+		self.mask = pg.mask.from_surface(self.image)
 
-# Sprite da granada
-class Tiro_parabola(pg.sprite.Sprite):
-	def __init__(self,jogo):
-		pg.sprite.Sprite.__init__(self)
-		self.jogo = jogo
-		self.posi = self.jogo.jogador.posi[:] + vec(10, -30)
-		self.image = pg.image.load('img/granada.png')
-		self.rect = self.image.get_rect()
-		self.velo = vec(10, -10)
-		self.acele = vec(0, grav_jogador)
-		self.jogo.todos_sprites.add(self)
-		self.jogo.tiros.add(self)
+# tiro reto do personagem
+class Tiro_reto(Tiro):
+	def __init__(self, jogo, posicao, velx):
+		Tiro.__init__(self, jogo, posicao, 'img/Fireball.png', 2, velx, 0, 0, 0)
+		self.jogo.tiro_personagem.add(self)
 
-	def update(self):
-		self.velo.y += self.acele.y
-		self.posi += self.velo + self.acele//2
-		self.rect.center = self.po
+# Granada do personagem
+class Tiro_parabola(Tiro):
+	def __init__(self, jogo, posicao, velx):
+		Tiro.__init__(self, jogo, posicao, 'img/granada.png', 5, velx, -10, 0, 0.5)
+		self.jogo.tiro_personagem.add(self)
+
+# Classe de animação
+class inverte(pg.sprite.Sprite):
+	def __init__(self,personagem,image):
+
+		self.caracters=personagem
+
+		self.dir=pg.image.load(image)
+		self.esq=pg.transform.flip(self.dir,True,False)
+
+		if self.caracters.direita:
+			self.caracters.image=self.dir
+		else:
+			self.caracters.image=self.esq
