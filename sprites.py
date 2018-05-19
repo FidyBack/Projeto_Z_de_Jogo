@@ -92,7 +92,7 @@ class Jogador(pg.sprite.Sprite):
 		 	self.pulador = 0
 
 		# Pula apenas se o número de pulos for menor que 2
-		if self.pulador < 46545:
+		if self.pulador < 2:
 			self.pular = True
 
 		if self.pular:
@@ -235,11 +235,12 @@ class Golem(Inim):
 
 class Robo(Inim):
 	def __init__(self,jogo,posix,posiy):
-		Inim.__init__(self,jogo,"img/robo.png",3,5,posix,posiy,vec(-5,0),vec(0,grav_jogador))
+		Inim.__init__(self,jogo,"img/robo.png",3,5,posix,posiy,vec(0,0),vec(0,grav_jogador))
 		self.contador=0
 		self.veltiro=vec(10,0)
-		self.velx=-5
+		self.velx=0
 		self.posicao_arma=vec(50,-100)
+		self.tiro = 0
 	def eventos(self):
 		if self.direita:
 			self.posicao_arma.x=50
@@ -247,8 +248,8 @@ class Robo(Inim):
 			self.posicao_arma.x=-50
 		if self.contador==120:
 		 	self.velo.x=0
-		 	Tiro(self.jogo,'img/granada.png',5,self.posi+self.posicao_arma,self.veltiro,vec(0,0),self.velo,self.direita,fps)
-
+		 	self.tiro=Tiro(self.jogo,'img/granada.png',5,self.posi+self.posicao_arma,self.veltiro,vec(0,0),self.velo,self.direita,fps)
+		 	self.jogo.tiro_inimigo.add(self.tiro)
 
 		elif self.contador==150:
 		 	self.velx=-self.velx
@@ -263,6 +264,7 @@ class Mineirinho(Inim):
 		self.contador=0
 		self.ataque=False
 		self.posicao_arma=vec(10,-10)
+		self.tiro=0
 	def eventos(self):
 		if self.direita:
 			self.posicao_arma.x=10
@@ -291,7 +293,8 @@ class Mineirinho(Inim):
 		if self.contador==60:
 			self.ataque=True
 			self.velo.x=0
-			Tiro(self.jogo,'img/granada.png',5,self.posi+self.posicao_arma,vec(5,0),vec(0,0),self.velo,self.direita,fps)
+			self.tiro=Tiro(self.jogo,'img/granada.png',5,self.posi+self.posicao_arma,vec(5,0),vec(0,0),self.velo,self.direita,fps)
+			self.jogo.tiro_inimigo.add(self.tiro)
 
 		if self.contador==120:
 			self.ataque=False
@@ -303,6 +306,7 @@ class Pb(Inim):
 		self.contador = 0
 		self.contato=False
 		self.explode=True
+		self.tiro=0
 	def eventos(self):
 		if abs(self.posi.x-self.jogo.jogador.posi.x)<30:
 			self.velo.x=0
@@ -319,13 +323,10 @@ class Pb(Inim):
 		if self.contato:
 			self.contador+=1
 		if self.contador==60 and self.explode:
-			Tiro(self.jogo,'img/explosao.png',10,self.rect.midbottom,vec(0,0),vec(0,0),self.velo,self.direita,fps)
+			self.tiro=Tiro(self.jogo,'img/explosao.png',10,self.rect.midbottom,vec(0,0),vec(0,0),self.velo,self.direita,fps)
+			self.jogo.tiro_inimigo.add(self.tiro)
 		if self.contador==80:
 			self.kill()
-			
-	def __init__(self, jogo, posicao, velx):
-		Tiro.__init__(self, jogo, posicao, 'img/granada.png', 5, velx, -10, 0, 0.5)
-		self.jogo.tiro_personagem.add(self)
 
 # Classe de animação
 class inverte(pg.sprite.Sprite):
@@ -341,6 +342,10 @@ class inverte(pg.sprite.Sprite):
 		else:
 			self.caracters.image=self.esq
 
+class Spike(Inim):
+		def __init__(self, jogo, posix,posiy):
+			Inim.__init__(self, jogo ,"img/espinho.png",50,40, posix,posiy,vec(0,0),vec(0,0))
+			self.invencivel=True
 
 class Chefe(Inim):
 		def __init__(self,jogo,posix,posiy):

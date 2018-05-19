@@ -124,11 +124,54 @@ lista_inimigos = {
 								(2000, altura - 120),
 							],
 	
-					'robo' : [],
+					'robo' : [
+								(9900, altura - 1750),
+								(10450, altura - 1750),
+								(11000, altura - 1750),
+								(11550, altura - 1750),
+
+								(10175, altura - 1500),
+								(10725, altura - 1500),
+								(11300, altura - 1500),
+
+								(9900, altura - 1250),
+								(10450, altura - 1250),
+								(11000, altura - 1250),
+								(11550, altura - 1250),
+
+								(10175, altura - 1000),
+								(10725, altura - 1000),
+								(11300, altura - 1000),
+
+								(9900, altura - 750),
+								(10450, altura - 750),
+								(11000, altura - 750),
+								(11550, altura - 750),
+					],
 	
 					'mineiro' : [],
 	
-					'pb' : [],
+					'pb' : [
+							(9600, altura - 620),
+							(9700, altura - 620),
+							(9800, altura - 620),
+							(9900, altura - 620),
+							(10000, altura - 620),
 
-					'spike' : []
+							],
+
+					'spike' : [	(4074, altura - 85),
+								(4274, altura - 185),
+								(4474, altura - 285),
+								(4674, altura - 385),
+								(4874, altura - 485),
+								(5074, altura - 585),
+
+								(4074, altura - 50),
+								(4274, altura - 150),
+								(4474, altura - 250),
+								(4674, altura - 350),
+								(4874, altura - 450),
+								(5074, altura - 550),
+								]
 }

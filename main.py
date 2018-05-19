@@ -148,6 +148,7 @@ class Jogo:
 							a = 27
 
 				self.desenhar_texto(palavra_atual[idx_letra], 48, branco, a, b)
+
 				self.musica('msc/tecla.wav', 1)
 				pg.time.delay(100)
 
@@ -163,6 +164,7 @@ class Jogo:
 
 		# Mostra a tela de início
 		self.mostrar_tela("img/game_start.png","press any key to start")
+
 
 	# Tela inicial e final
 	def mostrar_tela(self, imagem, texto):
@@ -211,6 +213,7 @@ class Jogo:
 			brilho += b
 			self.tela.blit(image,(image_rect))
 			self.desenhar_texto(texto, 20, (brilho,brilho,brilho), largura/2, altura*7/8)
+			self.desenhar_texto('Jump : Space  ,  Shoot : I  ,  grenade : J  ,  Move: A/D',20,branco,largura/2,altura*3/4)
 			pg.display.flip()
 
 	# Inicia o looping
@@ -317,6 +320,14 @@ class Jogo:
 		for tiro in self.tiro_personagem:
 			if tiro.rect.x > largura or tiro.rect.x < 0 or tiro.rect.y > altura or tiro.rect.y < 0 - 25:
 				tiro.kill()
+
+		colisao_tiro = pg.sprite.spritecollide(self.jogador, self.tiro_inimigo, False, pg.sprite.collide_mask)
+		if colisao_tiro:
+			if not self.jogador.invencivel:
+				self.jogador.vida -= colisao_tiro[0].dano
+				self.jogador.invencivel = True
+
+
 	
 		# ================================================================================================================
 		# Câmera
