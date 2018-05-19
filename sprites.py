@@ -166,7 +166,7 @@ class Inim(pg.sprite.Sprite):
 # Sprite do inimigo pedra
 class Pedra(Inim):
 	def __init__(self, jogo, posix,posiy):
-		Inim.__init__(self, jogo ,"img/golem.png",3,5, posix,posiy,vec(-5,0),vec(0,grav_jogador))
+		Inim.__init__(self, jogo ,"img/pedra.png",3,5, posix,posiy,vec(-5,0),vec(0,grav_jogador))
 
 # Sprite básico dos tiros
 class Tiro(pg.sprite.Sprite):
