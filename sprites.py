@@ -38,18 +38,16 @@ class Spritesheet():
 # ================================================================================================================
 
 class Jogador(pg.sprite.Sprite):
-
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
 		self.vida = 20
-		self.pulador = 0
 		self.contador_invencivel = 0
 		self.invencivel = False
-		self.pular = False
 		self.olhar_direita = True
 		self.andando = False
 		self.pulando = False
+		self.atirando = False
 		self.temporizador = 0
 		# Animação
 		self.ultimo_update = 0
@@ -154,8 +152,23 @@ class Jogador(pg.sprite.Sprite):
 	def animacao(self):
 		agora = pg.time.get_ticks()
 
+		if self.pulando and not self.atirando:
+			if agora - self.ultimo_update > 40:
+				self.ultimo_update = agora
+				if self.frame_atual<6:
+					self.frame_atual = (self.frame_atual + 1) % len(self.frames_pulando_l)
+				else:
+					self.frame_atual=6
+				bottom = self.rect.bottom
+				if self.olhar_direita:
+					self.image = self.frames_pulando_r[self.frame_atual]
+				else:
+					self.image = self.frames_pulando_l[self.frame_atual]
+				self.rect = self.image.get_rect()
+				self.rect.bottom = bottom
+
 		# Animação andando
-		if self.andando:
+		elif self.andando and not self.atirando:
 			if agora - self.ultimo_update > 40:
 				self.ultimo_update = agora
 				self.frame_atual = (self.frame_atual + 1) % len(self.frames_andando_l)
@@ -168,7 +181,7 @@ class Jogador(pg.sprite.Sprite):
 				self.rect.bottom = bottom
 
 		# Animação parado
-		if not self.pulando and not self.andando:
+		if not self.pulando and not self.andando and not self.atirando:
 			if self.frame_atual == 4:
 				agora -= 3000
 			if agora - self.ultimo_update > 50:
@@ -182,7 +195,7 @@ class Jogador(pg.sprite.Sprite):
 				self.rect = self.image.get_rect()
 				self.rect.bottom = bottom
 
-		# Animação atirando
+
 
 	# Pulo
 	def pulo(self):
@@ -192,10 +205,14 @@ class Jogador(pg.sprite.Sprite):
 		if colisao:
 			self.velo.y = -pulo_jogador
 			self.andando = False
+			self.pulando=True
+		else:
+			self.pulando=False
+
 
 	# Pulo pequeno
 	def pulo_parar_meio(self):
-		if self.pular:
+		if self.pulando:
 			if self.velo.y < -5:
 				self.velo.y = -5
 

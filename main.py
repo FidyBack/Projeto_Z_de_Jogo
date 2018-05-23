@@ -59,7 +59,6 @@ class Jogo:
 		self.powerup = pg.sprite.Group()
 		self.nao_moviveis= pg.sprite.Group()
 
-
 		# ================================================================================================================
 		# Adição dos sprites no jogo
 		# ================================================================================================================
@@ -107,6 +106,7 @@ class Jogo:
 
 	def eventos(self):
 		self.jogador.contador_tiro += 1
+		
 
 		# Fecha o jogo
 		for evento in pg.event.get():
@@ -118,7 +118,10 @@ class Jogo:
 			# Pulo
 			if evento.type == pg.KEYDOWN:
 				if evento.key == pg.K_SPACE:
+
+
 					self.jogador.pulo()
+
 
 				# Tiro
 				if evento.key == pg.K_j :
@@ -141,6 +144,7 @@ class Jogo:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo_parar_meio()
 
+
 	def update(self):
 
 
@@ -162,7 +166,9 @@ class Jogo:
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							if personagem == self.jogador:
-								self.jogador.pulador = 0
+								self.jogador.pulando=False
+							
+
 							
 						elif personagem.velo.y < 0:
 							personagem.rect.top = plataforma.rect.bottom
