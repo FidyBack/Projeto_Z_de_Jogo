@@ -14,11 +14,14 @@ import pygame as pg
 
 # Variáveis
 titulo = 'Soldier'
-fps = 60
+fps = 90
 largura = 1000
 altura = 600
 nome_fonte = 'Acknowledge TT (BRK)'
-background = pg.image.load("img/fundo.jpg")
+background = pg.image.load("img/fundo.png")
+spritesheet_pedra = "sprites_pedra.png"
+spritesheet_personagem = "sprites_personagem.png"
+spritesheet_plataformas = "sprites_plataformas.png"
 
 # Propriedades do jogador
 grav_jogador = 0.5
@@ -49,68 +52,187 @@ Herold Smiter, visa as amoebas do infinito. \
 
 lista_plataformas = {
 
-					'chãos' : [ # Parte 1
-								(0, altura - 120, 1000, 200),
-								(1300, altura - 120, 500, 200),
-								(2100, altura - 120, 20, 200),
-								(2500, altura - 120, 20, 200),
-								(2900, altura - 120, 20, 200),
-								(3300, altura - 120, 20, 200),
-								(3700, altura - 120, 20, 200),
-								# Escada
-								(4100, altura - 120, 200, 200),
-								(4300, altura - 220, 200, 300),
-								(4500, altura - 320, 200, 400),
-								(4700, altura - 420, 200, 500),
-								(4900, altura - 520, 200, 600),
-								(5100, altura - 620, 200, 700),
+					'chaos' : [
+								# Parte 1
+									(40, altura - 120),
+									(270, altura - 120),
+									(500, altura - 120),
+									(730, altura - 120),
+									(1300, altura - 120),
+									(1530, altura - 120),
+									(2100, altura - 120),
+									(2500, altura - 120),
+									(2900, altura - 120),
+									(3300, altura - 120),
+									# Escada
+									(4100, altura - 120),
+									(4330, altura - 220),
+									(4560, altura - 320),
+									(4790, altura - 420),
+									(5020, altura - 520),
+									(5250, altura - 620),
 								# Parte 2
-								(5300, altura - 620, 2700, 710),
-								(8000, altura - 1750, 1500, 1860),
+									(5480, altura - 620),
+									(8000, altura - 1750),
+									(8230, altura - 1750),
+									(8460, altura - 1750),
 								# Parte 3
-								(9500, altura - 620, 2400, 710),
-								(11900, altura - 1300, 2000, 800)
-							],
+									(8690, altura - 620),
+									(8920, altura - 620),
+									(9150, altura - 620),
+									(9380, altura - 620),
+									(9610, altura - 620),
+									(11900, altura - 1300),
+								],
 
 					'plataformas' : [
-										# Parte 1
-										(1500, altura - 300, 200, 25),
-										(1800, altura - 410, 200, 25),
-										(2600, altura - 530, 200, 25),
-										(3400, altura - 530, 200, 25),
-										
-										# Parte 2
-										(5800, altura - 850, 200, 25),
-										(6100, altura - 1000, 200, 25),
-										(6400, altura - 1150, 200, 25),
-										(6700, altura - 1300, 200, 25),
-										(7000, altura - 1450, 200, 25),
-										(7300, altura - 1600, 200, 25),
-										(7600, altura - 1750, 200, 25),
-										
-										# Parte 3
-										(9850, altura - 1750, 200, 25),
-										(10400, altura - 1750, 200, 25),
-										(10950, altura - 1750, 200, 25),
-										(11500, altura - 1750, 200, 25),
+									# Parte 1
+										(1500, altura - 300),
+										(1546, altura - 300),
+										(1592, altura - 300),
+										(1638, altura - 300),
 
-										(10125, altura - 1500, 200, 25),
-										(10675, altura - 1500, 200, 25),
-										(11250, altura - 1500, 200, 25),
+										(1800, altura - 410),
+										(1846, altura - 410),
+										(1892, altura - 410),
+										(1938, altura - 410),
 
-										(9850, altura - 1250, 200, 25),
-										(10400, altura - 1250, 200, 25),
-										(10950, altura - 1250, 200, 25),
-										(11500, altura - 1250, 200, 25),
+										(2600, altura - 530),
+										(2646, altura - 530),
+										(2692, altura - 530),
+										(2738, altura - 530),
 
-										(10125, altura - 1000, 200, 25),
-										(10675, altura - 1000, 200, 25),
-										(11250, altura - 1000, 200, 25),
+										(3400, altura - 530),
+										(3446, altura - 530),
+										(3492, altura - 530),
+										(3538, altura - 530),
+									
+									# Parte 2
+										(5800, altura - 850),
+										(5846, altura - 850),
+										(5892, altura - 850),
+										(5938, altura - 850),
 
-										(9850, altura - 750, 200, 25),
-										(10400, altura - 750, 200, 25),
-										(10950, altura - 750, 200, 25),
-										(11500, altura - 750, 200, 25),
+										(6100, altura - 1000),
+										(6146, altura - 1000),
+										(6192, altura - 1000),
+										(6238, altura - 1000),
+
+										(6400, altura - 1150),
+										(6446, altura - 1150),
+										(6492, altura - 1150),
+										(6538, altura - 1150),
+
+										(6700, altura - 1300),
+										(6746, altura - 1300),
+										(6792, altura - 1300),
+										(6838, altura - 1300),
+
+										(7000, altura - 1450),
+										(7046, altura - 1450),
+										(7092, altura - 1450),
+										(7138, altura - 1450),
+
+										(7300, altura - 1600),
+										(7346, altura - 1600),
+										(7392, altura - 1600),
+										(7438, altura - 1600),
+
+										(7600, altura - 1750),
+										(7646, altura - 1750),
+										(7692, altura - 1750),
+										(7738, altura - 1750),
+
+									# Parte 3
+										(9850, altura - 1750),
+										(9896, altura - 1750),
+										(9942, altura - 1750),
+										(9988, altura - 1750),
+
+										(10400, altura - 1750),
+										(10446, altura - 1750),
+										(10492, altura - 1750),
+										(10538, altura - 1750),
+
+										(10950, altura - 1750),
+										(10996, altura - 1750),
+										(11042, altura - 1750),
+										(11088, altura - 1750),
+
+										(11500, altura - 1750),
+										(11546, altura - 1750),
+										(11592, altura - 1750),
+										(11638, altura - 1750),
+
+										(10125, altura - 1500),
+										(10171, altura - 1500),
+										(10217, altura - 1500),
+										(10263, altura - 1500),
+
+										(10675, altura - 1500),
+										(10721, altura - 1500),
+										(10767, altura - 1500),
+										(10813, altura - 1500),
+
+										(11250, altura - 1500),
+										(11296, altura - 1500),
+										(11342, altura - 1500),
+										(11388, altura - 1500),
+
+										(9850, altura - 1250),
+										(9896, altura - 1250),
+										(9942, altura - 1250),
+										(9988, altura - 1250),
+
+										(10400, altura - 1250),
+										(10446, altura - 1250),
+										(10492, altura - 1250),
+										(10538, altura - 1250),
+
+										(10950, altura - 1250),
+										(10996, altura - 1250),
+										(11042, altura - 1250),
+										(11088, altura - 1250),
+
+										(11500, altura - 1250),
+										(11546, altura - 1250),
+										(11592, altura - 1250),
+										(11638, altura - 1250),
+
+										(10125, altura - 1000),
+										(10171, altura - 1000),
+										(10217, altura - 1000),
+										(10263, altura - 1000),
+
+										(10675, altura - 1000),
+										(10721, altura - 1000),
+										(10767, altura - 1000),
+										(10813, altura - 1000),
+
+										(11250, altura - 1000),
+										(11296, altura - 1000),
+										(11342, altura - 1000),
+										(11388, altura - 1000),
+
+										(9850, altura - 750),
+										(9896, altura - 750),
+										(9942, altura - 750),
+										(9988, altura - 750),
+
+										(10400, altura - 750),
+										(10446, altura - 750),
+										(10492, altura - 750),
+										(10538, altura - 750),
+
+										(10950, altura - 750),
+										(10996, altura - 750),
+										(11042, altura - 750),
+										(11088, altura - 750),
+
+										(11500, altura - 750),
+										(11546, altura - 750),
+										(11592, altura - 750),
+										(11638, altura - 750),
 
 								]
 }
@@ -119,59 +241,23 @@ lista_plataformas = {
 # Inimigos
 lista_inimigos = {
 					'pedra': [
-								(5000, altura - 630),
-								(1000, altura - 120),
-								(2000, altura - 120),
+								(900, altura - 130),
+
 							],
 	
 					'robo' : [
-								(9900, altura - 1750),
-								(10450, altura - 1750),
-								(11000, altura - 1750),
-								(11550, altura - 1750),
 
-								(10175, altura - 1500),
-								(10725, altura - 1500),
-								(11300, altura - 1500),
-
-								(9900, altura - 1250),
-								(10450, altura - 1250),
-								(11000, altura - 1250),
-								(11550, altura - 1250),
-
-								(10175, altura - 1000),
-								(10725, altura - 1000),
-								(11300, altura - 1000),
-
-								(9900, altura - 750),
-								(10450, altura - 750),
-								(11000, altura - 750),
-								(11550, altura - 750),
 					],
 	
-					'mineiro' : [],
+					'mineiro' : [
+					],
 	
 					'pb' : [
-							(9600, altura - 620),
-							(9700, altura - 620),
-							(9800, altura - 620),
-							(9900, altura - 620),
-							(10000, altura - 620),
+
 
 							],
 
-					'spike' : [	(4074, altura - 85),
-								(4274, altura - 185),
-								(4474, altura - 285),
-								(4674, altura - 385),
-								(4874, altura - 485),
-								(5074, altura - 585),
+					'spike' : [	
 
-								(4074, altura - 50),
-								(4274, altura - 150),
-								(4474, altura - 250),
-								(4674, altura - 350),
-								(4874, altura - 450),
-								(5074, altura - 550),
 								]
 }
