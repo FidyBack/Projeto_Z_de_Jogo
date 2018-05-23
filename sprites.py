@@ -143,6 +143,8 @@ class Jogador(pg.sprite.Sprite):
 		self.velo += self.acele
 		if abs(self.velo.x) < 0.1:
 			self.velo.x = 0
+		if self.velo.y > 13:
+			self.velo.y = 13
 		# Sorvetão (Indica a pórxima posição do personagem)
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
@@ -184,18 +186,12 @@ class Jogador(pg.sprite.Sprite):
 
 	# Pulo
 	def pulo(self):
-
-		# Pula apenas se o número de pulos for menor que 2
-		if self.pulador < 2:
-			self.pular = True
-			self.pulando = True
+		self.rect.y += 1
+		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
+		self.rect.y -= 1
+		if colisao:
+			self.velo.y = -pulo_jogador
 			self.andando = False
-			if self.pular:
-					self.velo.y = -pulo_jogador
-			self.pulador += 1
-			if self.posi.y < 0:
-				self.velo.y = 0
-			self.pular = False
 
 	# Pulo pequeno
 	def pulo_parar_meio(self):

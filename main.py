@@ -120,7 +120,6 @@ class Jogo:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo()
 
-
 				# Tiro
 				if evento.key == pg.K_j :
 					self.jogador.tiro_reto = True
