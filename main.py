@@ -122,7 +122,6 @@ class Jogo:
 
 					self.jogador.pulo()
 
-
 				# Tiro
 				if evento.key == pg.K_j :
 					self.jogador.tiro_reto = True
