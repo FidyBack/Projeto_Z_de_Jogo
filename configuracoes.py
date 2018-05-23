@@ -242,6 +242,9 @@ lista_plataformas = {
 lista_inimigos = {
 					'pedra': [
 								(900, altura - 130),
+								(5250, altura - 620),
+								(5250, altura - 640),
+								(5250, altura - 660),
 
 							],
 	
