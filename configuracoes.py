@@ -14,7 +14,7 @@ import pygame as pg
 
 # Variáveis
 titulo = 'Soldier'
-fps = 180
+fps = 60
 largura = 1000
 altura = 600
 nome_fonte = 'Acknowledge TT (BRK)'
