@@ -615,6 +615,7 @@ class Powerup(pg.sprite.Sprite):
 			self.jogo.todos_sprites.add(self)
 			self.jogo.interacoes.add(self)
 			self.jogo.powerup.add(self)
+			self.jogo.nao_moviveis.add(self)
 
 
 	def update(self):

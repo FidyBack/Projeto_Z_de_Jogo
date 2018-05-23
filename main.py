@@ -57,6 +57,8 @@ class Jogo:
 		self.tiro_personagem = pg.sprite.Group()
 		self.tiro_inimigo = pg.sprite.Group()
 		self.powerup = pg.sprite.Group()
+		self.nao_moviveis= pg.sprite.Group()
+
 
 		# ================================================================================================================
 		# Adição dos sprites no jogo
@@ -155,7 +157,7 @@ class Jogo:
 	
 				for plataforma in impacto:
 				
-					if personagem.rect.left < plataforma.rect.right - 14 and personagem.rect.right > plataforma.rect.left + 14:
+					if personagem.rect.left < plataforma.rect.right - 13 and personagem.rect.right > plataforma.rect.left + 13:
 						if personagem.velo.y > 0:
 							personagem.rect.bottom = plataforma.rect.top
 							personagem.posi = vec(personagem.rect.midbottom)
@@ -169,7 +171,7 @@ class Jogo:
 							personagem.velo.y = 0
 							
 
-					if personagem.rect.top < plataforma.rect.bottom - 14 and personagem.rect.bottom>plataforma.rect.top+14:
+					elif personagem.rect.top < plataforma.rect.bottom - 14 and personagem.rect.bottom>plataforma.rect.top + 14:
 						if personagem.velo.x>0:
 							personagem.rect.right = plataforma.rect.left
 							personagem.posi=vec(personagem.rect.midbottom)
