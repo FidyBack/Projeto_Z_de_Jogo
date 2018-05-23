@@ -30,6 +30,7 @@ class Spritesheet():
 
 # Sprite do jogador
 class Jogador(pg.sprite.Sprite):
+
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
@@ -404,3 +405,28 @@ class Chefe(Inim):
 					
 
 				self.contador+=1
+#alteration
+class Powerup(pg.sprite.Sprite):
+	def __init__(self,jogo,posicao):
+		print('oi')
+		pg.sprite.Sprite.__init__(self)
+		self.jogo=jogo
+		self.posicao=vec(posicao[:])
+		self.image = pg.Surface((32,32))
+		self.image.fill(vermelho)
+		self.rect = self.image.get_rect()
+		self.rect.midbottom=self.posicao
+		self.tempo=300
+		self.vida=5
+
+		# Adição nos grupos
+		if randrange(2)==1:
+			self.jogo.todos_sprites.add(self)
+			self.jogo.interacoes.add(self)
+			self.jogo.powerup.add(self)
+
+
+	def update(self):
+		self.tempo-=1
+		if self.tempo==0:
+			self.kill()

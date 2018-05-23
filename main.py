@@ -44,7 +44,7 @@ class Jogo:
 		self.inimigos = pg.sprite.Group()
 		# Plataformas
 		self.plataforma = pg.sprite.Group()
-		# Inimigo + Plataforma + Ataque
+		# Inimigo + Plataforma + Ataquei
 		self.interacoes = pg.sprite.Group()
 		# Inimigo + Personagem + Ataque
 		self.moviveis = pg.sprite.Group()
@@ -56,6 +56,10 @@ class Jogo:
 		self.tiro_personagem = pg.sprite.Group()
 		# Tiro de inimigos
 		self.tiro_inimigo = pg.sprite.Group()
+#alteration
+		self.powerup = pg.sprite.Group()
+
+
 
 		# ================================================================================================================
 		# Adição dos sprites no jogo
@@ -276,19 +280,44 @@ class Jogo:
 		# Colisão com a plataforma (Queda apenas)
 		for personagem in self.caracters:
 
-				# Pegar apenas a plataforma de baixo, sem conflito com a de cima
-			for plataforma in self.plataforma:
-				if personagem.velo.y>0 and (personagem.rect.right>=plataforma.rect.left or personagem.rect.left<=plataforma.rect.right):
-					if personagem.rect.bottom+personagem.velo.y+personagem.acele.y/2>=plataforma.rect.top and personagem.rect.bottom-personagem.velo.y-personagem.acele.y/2<=plataforma.rect.top:
-						personagem.velo.y=0
-						personagem.rect.bottom=plataforma.rect.top
+			impacto = pg.sprite.spritecollide(personagem, self.plataforma, False)
+			if impacto:
+				for plataforma in impacto:
+				
+					if personagem.rect.left<plataforma.rect.right-abs(personagem.velo.x+personagem.acele.x/2) and personagem.rect.right>plataforma.rect.left+abs(personagem.velo.x+personagem.acele.x/2):
+						if personagem.velo.y > 0:
+							personagem.rect.bottom = plataforma.rect.top
+							personagem.posi=vec(personagem.rect.midbottom)
+							personagem.velo.y=0
+							
+						elif personagem.velo.y < 0:
+							personagem.rect.top = plataforma.rect.bottom
+							personagem.posi=vec(personagem.rect.midbottom)
+							personagem.velo.y=0
+							
+
+					if personagem.rect.top<plataforma.rect.bottom-abs(personagem.velo.y+personagem.acele.y/2) and personagem.rect.bottom>plataforma.rect.top+abs(personagem.velo.y+personagem.acele.y/2):
+						if personagem.velo.x>0:
+							personagem.rect.right = plataforma.rect.left
+							personagem.posi=vec(personagem.rect.midbottom)
+							personagem.velo.x=0
+					
+						elif personagem.velo.x<0:
+							personagem.rect.left = plataforma.rect.right
+							personagem.posi=vec(personagem.rect.midbottom)
+							personagem.velo.x=0
+					
 			
 
 
 
 			# morte por falta de vidas do personagem e dos inimigos
 			if personagem.vida <= 0:
+				#alteration
+				if personagem in self.inimigos:
+					Powerup(self,personagem.posi)
 				personagem.kill()
+
 
 		# Colisão com o inimigo
 		colisao_mob = pg.sprite.spritecollide(self.jogador, self.inimigos, False, pg.sprite.collide_mask)
@@ -334,6 +363,13 @@ class Jogo:
 			if not self.jogador.invencivel:
 				self.jogador.vida -= colisao_tiro[0].dano
 				self.jogador.invencivel = True
+#alteration
+		colisao_powerup = pg.sprite.spritecollide(self.jogador, self.powerup, False)
+		if colisao_powerup:
+			for powerup in colisao_powerup:
+				self.jogador.vida+=powerup.vida
+				powerup.kill
+
 
 
 	
