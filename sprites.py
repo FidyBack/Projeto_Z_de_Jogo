@@ -48,6 +48,11 @@ class Jogador(pg.sprite.Sprite):
 		self.vel_tiro_reto=vec(20,0)
 		self.vel_tiro_parabola=vec(10,-10)
 		self.posicao_arma=vec(20,-25)
+		self.contador_tiro=0
+		self.tiro_reto=False
+		self.tiro_parabola=False
+
+
 
 		# Adição nos grupos
 		self.jogo.todos_sprites.add(self)
@@ -85,11 +90,7 @@ class Jogador(pg.sprite.Sprite):
 	def pulo(self):
 		self.pular = False
 		# Colisão
-		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
 
-		# Zera o pulador se tem colisão
-		if colisao:
-		 	self.pulador = 0
 
 		# Pula apenas se o número de pulos for menor que 2
 		if self.pulador < 2:

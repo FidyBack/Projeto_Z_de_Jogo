@@ -82,8 +82,8 @@ class Jogo:
 		for mineiro in lista_inimigos['mineiro']:
 			Mineirinho(self, *pb)
 
-		for spike in lista_inimigos['spike']:
-			Spike(self, *spike)
+		# for spike in lista_inimigos['spike']:
+		# 	Spike(self, *spike)
 
 		# Jogador adicionado
 		self.jogador = Jogador(self)
@@ -228,6 +228,7 @@ class Jogo:
 	# Eventos do looping
 	def eventos(self):
 		# Fecha tudo (encerra o loop 'jogando' e 'rodando')
+		self.jogador.contador_tiro+=1
 		for evento in pg.event.get():
 			if evento.type == pg.QUIT:
 				if self.jogando:
@@ -239,14 +240,24 @@ class Jogo:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo()
 
-
-				# Tiro
+					# Tiro
 				if evento.key == pg.K_j :
-					Tiro_reto(self,self.jogador.posi+self.jogador.posicao_arma[:],self.jogador.vel_tiro_reto[:],self.jogador.velo[:],self.jogador.direita)
+					self.jogador.tiro_reto=True
 
-				# Granada
+				if self.jogador.tiro_reto and self.jogador.contador_tiro >= 6:
+					Tiro_reto(self,self.jogador.posi+self.jogador.posicao_arma[:],self.jogador.vel_tiro_reto[:],self.jogador.velo[:],self.jogador.direita)
+					self.jogador.contador_tiro=0
+					self.jogador.tiro_reto=False
+
+					# Granada
+
 				if evento.key == pg.K_i:
+					self.jogador.tiro_parabola=True
+					
+				if self.jogador.tiro_parabola and self.jogador.contador_tiro >= 6:
 					Tiro_parabola(self,self.jogador.posi+self.jogador.posicao_arma[:],self.jogador.vel_tiro_parabola[:],self.jogador.velo[:],self.jogador.direita)
+					self.jogador.contador_tiro=0
+					self.jogador.tiro_parabola=False
 
 			# Pulo Menor
 			if evento.type == pg.KEYUP:
@@ -255,29 +266,26 @@ class Jogo:
 
 	#  Atualiza o looping
 	def update(self):
-		self.todos_sprites.update()
 
+
+		self.todos_sprites.update()
 		# ================================================================================================================
 		# Personagem e inimigo
 		# ================================================================================================================
 
 		# Colisão com a plataforma (Queda apenas)
 		for personagem in self.caracters:
-			if personagem.velo.y > 0:
-				impacto = pg.sprite.spritecollide(personagem, self.plataforma, False)
 
 				# Pegar apenas a plataforma de baixo, sem conflito com a de cima
-				if impacto:
-					menor_plataforma = impacto[0]
-					for batida in impacto:
-						if batida.rect.bottom > menor_plataforma.rect.bottom:
-							menor_plataforma = batida
+			for plataforma in self.plataforma:
+				if personagem.velo.y>0 and (personagem.rect.right>=plataforma.rect.left or personagem.rect.left<=plataforma.rect.right):
+					if personagem.rect.bottom+personagem.velo.y+personagem.acele.y/2>=plataforma.rect.top and personagem.rect.bottom-personagem.velo.y-personagem.acele.y/2<=plataforma.rect.top:
+						personagem.velo.y=0
+						personagem.rect.bottom=plataforma.rect.top
+			
 
-					# Colisão com a plataforma
-					if personagem.posi.y < menor_plataforma.rect.centery:
-						personagem.posi.y = menor_plataforma.rect.top + 1
-						personagem.velo.y = 0
-					
+
+
 			# morte por falta de vidas do personagem e dos inimigos
 			if personagem.vida <= 0:
 				personagem.kill()
