@@ -45,14 +45,18 @@ class Jogo:
 		self.todos_sprites = pg.sprite.Group()
 		self.inimigos = pg.sprite.Group()
 		self.plataforma = pg.sprite.Group()
-		self.parede = pg.sprite.Group()
-		self.tiros = pg.sprite.Group()	# Tiros como grupo
+		# Inimigo + Plataforma + Ataquei
+		self.interacoes = pg.sprite.Group()
+		# Inimigo + Personagem + Ataque
+		self.moviveis = pg.sprite.Group()
+		# Inimigo + Personagem
+		self.caracters = pg.sprite.Group()
+		# Tiros como grupo
+		self.tiros = pg.sprite.Group()
+		# Tiro do personagem
 		self.tiro_personagem = pg.sprite.Group()
 		self.tiro_inimigo = pg.sprite.Group()
-		self.pisaveis = pg.sprite.Group()	# Parede + Plataforma
-		self.caracters = pg.sprite.Group()	# Inimigo + Personagem
-		self.interacoes = pg.sprite.Group()	# Inimigo + Plataforma + Parede + Ataque
-		self.moviveis = pg.sprite.Group()	# Inimigo + Personagem + Ataque
+		self.powerup = pg.sprite.Group()
 
 		# ================================================================================================================
 		# Adição dos sprites no jogo
@@ -114,6 +118,7 @@ class Jogo:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo()
 
+
 				# Tiro
 				if evento.key == pg.K_j :
 					self.jogador.tiro_reto = True
@@ -136,42 +141,52 @@ class Jogo:
 					self.jogador.pulo_parar_meio()
 
 	def update(self):
-		self.todos_sprites.update()
 
+
+		self.todos_sprites.update()
 		# ================================================================================================================
 		# Personagem e inimigo
 		# ================================================================================================================
 
 		for personagem in self.caracters:
-			# Colisão com a parede
-			impacto_parede = pg.sprite.spritecollide(personagem, self.parede, False)
-			if impacto_parede:
-				for parede in impacto_parede:
-					if personagem.velo.x > 0:
-						personagem.posi.x = parede.rect.left + 1
-						personagem.velo.x = 0
-					if personagem.velo.x < 0:
-						personagem.posi.x = parede.rect.right + 1
-						personagem.velo.x = 0
+			impacto = pg.sprite.spritecollide(personagem, self.plataforma, False)
+			if impacto:
 
-			# Colisão com a plataforma (Queda apenas)
-			if personagem.velo.y > 0:
-				impacto_plat = pg.sprite.spritecollide(personagem, self.plataforma, False)
+	
+				for plataforma in impacto:
+				
+					if personagem.rect.left < plataforma.rect.right - 14 and personagem.rect.right > plataforma.rect.left + 14:
+						if personagem.velo.y > 0:
+							personagem.rect.bottom = plataforma.rect.top
+							personagem.posi = vec(personagem.rect.midbottom)
+							personagem.velo.y = 0
+							if personagem == self.jogador:
+								self.jogador.pulador = 0
+							
+						elif personagem.velo.y < 0:
+							personagem.rect.top = plataforma.rect.bottom
+							personagem.posi = vec(personagem.rect.midbottom)
+							personagem.velo.y = 0
+							
 
-				# Pegar apenas a plataforma de baixo, sem conflito com a de cima
-				if impacto_plat:
-					menor_plataforma = impacto_plat[0]
-					for batida in impacto_plat:
-						if batida.rect.bottom > menor_plataforma.rect.bottom:
-							menor_plataforma = batida
+					if personagem.rect.top < plataforma.rect.bottom - 14 and personagem.rect.bottom>plataforma.rect.top+14:
+						if personagem.velo.x>0:
+							personagem.rect.right = plataforma.rect.left
+							personagem.posi=vec(personagem.rect.midbottom)
+							personagem.velo.x=0
+					
+						elif personagem.velo.x < 0:
+							personagem.rect.left = plataforma.rect.right
+							personagem.posi = vec(personagem.rect.midbottom)
+							personagem.velo.x = 0
 
-					# Colisão com a plataforma
-					if personagem.posi.y < menor_plataforma.rect.centery:
-						personagem.posi.y = menor_plataforma.rect.top + 1
-						personagem.velo.y = 0
 
 			# morte por falta de vidas do personagem e dos inimigos
 			if personagem.vida <= 0:
+
+				#alteration
+				if personagem in self.inimigos:
+					Powerup(self,personagem.posi)
 				personagem.kill()
 
 		# Colisão com o inimigo
@@ -216,6 +231,13 @@ class Jogo:
 			if not self.jogador.invencivel:
 				self.jogador.vida -= colisao_tiro[0].dano
 				self.jogador.invencivel = True
+#alteration
+		colisao_powerup = pg.sprite.spritecollide(self.jogador, self.powerup, False)
+		if colisao_powerup:
+			for powerup in colisao_powerup:
+				self.jogador.vida+=powerup.vida
+				powerup.kill
+
 
 		# ================================================================================================================
 		# Câmera
@@ -223,28 +245,28 @@ class Jogo:
 		
 		# Se ele for para frente
 		if self.jogador.rect.right > largura * 0.5:
-			for plat in self.pisaveis:
+			for plat in self.plataforma:
 				plat.rect.x -= self.jogador.velo.x
 			for personagem in self.moviveis:
 				personagem.posi.x-=self.jogador.velo.x
 
 		# Se ele for para trás
 		elif self.jogador.rect.left < largura * 0.5:
-			for plat in self.pisaveis:
+			for plat in self.plataforma:
 				plat.rect.x -= self.jogador.velo.x
 			for personagem in self.moviveis:
 				personagem.posi.x -= self.jogador.velo.x
 
 		# Se ele for para cima
 		if self.jogador.rect.y <= altura * 1 / 4:
-			for plat in self.pisaveis:
+			for plat in self.plataforma:
 				plat.rect.y -= self.jogador.velo.y
 			for personagem in self.moviveis:
 				personagem.posi.y-=self.jogador.velo.y
 
 		# Se ele for para baixo
 		elif self.jogador.rect.y >= altura * 3 / 4:
-			for plat in self.pisaveis:
+			for plat in self.plataforma:
 				plat.rect.y -= (self.jogador.velo.y + self.jogador.acele.y)
 			for personagem in self.moviveis:
 				personagem.posi.y -= (self.jogador.velo.y + self.jogador.acele.y)

@@ -38,6 +38,7 @@ class Spritesheet():
 # ================================================================================================================
 
 class Jogador(pg.sprite.Sprite):
+
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
@@ -61,7 +62,6 @@ class Jogador(pg.sprite.Sprite):
 		self.velo = vec(0, 0)
 		self.acele = vec(0, grav_jogador)
 		# Tiro
-		self.veltiro = 0
 		self.contador_tiro = 0
 		self.tiro_reto = False
 		self.tiro_parabola = False
@@ -158,7 +158,7 @@ class Jogador(pg.sprite.Sprite):
 				self.ultimo_update = agora
 				self.frame_atual = (self.frame_atual + 1) % len(self.frames_andando_l)
 				bottom = self.rect.bottom
-				if self.velo.x > 0:
+				if self.olhar_direita:
 					self.image = self.frames_andando_r[self.frame_atual]
 				else:
 					self.image = self.frames_andando_l[self.frame_atual]
@@ -173,7 +173,7 @@ class Jogador(pg.sprite.Sprite):
 				self.ultimo_update = agora
 				self.frame_atual = (self.frame_atual + 1) % len(self.frames_parados_r)
 				bottom = self.rect.bottom
-				if self.olhar_direita == True:
+				if self.olhar_direita:
 					self.image = self.frames_parados_r[self.frame_atual]
 				else:
 					self.image = self.frames_parados_l[self.frame_atual]
@@ -184,10 +184,6 @@ class Jogador(pg.sprite.Sprite):
 
 	# Pulo
 	def pulo(self):
-		print(self.pulador, self.pular)
-		
-		# Colisão
-		colisao = pg.sprite.spritecollide(self, self.jogo.plataforma, False)
 
 		# Pula apenas se o número de pulos for menor que 2
 		if self.pulador < 2:
@@ -200,10 +196,6 @@ class Jogador(pg.sprite.Sprite):
 			if self.posi.y < 0:
 				self.velo.y = 0
 			self.pular = False
-
-		if colisao:
-			self.pulador = 0
-			self.pulando = False
 
 	# Pulo pequeno
 	def pulo_parar_meio(self):
@@ -225,7 +217,6 @@ class Plataforma(pg.sprite.Sprite):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.plataforma.add(self)
 		self.jogo.interacoes.add(self)
-		self.jogo.pisaveis.add(self)
 
 class Chao(Plataforma):
 	def __init__(self, jogo, x, y):
@@ -241,7 +232,6 @@ class Chao(Plataforma):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.plataforma.add(self)
 		self.jogo.interacoes.add(self)
-		self.jogo.pisaveis.add(self)
 
 # ================================================================================================================
 # Tiro
@@ -606,5 +596,29 @@ class Chefe(Inim):
 				if self.n_ataque==3:
 					self.n_ataque=0
 					self.contador=0
+				self.contador+=1
+#alteration
+class Powerup(pg.sprite.Sprite):
+	def __init__(self,jogo,posicao):
+		pg.sprite.Sprite.__init__(self)
+		self.jogo=jogo
+		self.posicao=vec(posicao[:])
+		self.image = pg.Surface((32,32))
+		self.image.fill(vermelho)
+		self.rect = self.image.get_rect()
+		self.rect.midbottom=self.posicao
+		self.tempo=300
+		self.vida=5
 
-			self.contador+=1
+		# Adição nos grupos
+		if randrange(2)==1:
+			self.jogo.todos_sprites.add(self)
+			self.jogo.interacoes.add(self)
+			self.jogo.powerup.add(self)
+
+
+	def update(self):
+		self.tempo-=1
+		if self.tempo==0:
+			self.kill()
+
