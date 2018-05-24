@@ -49,6 +49,7 @@ class Jogador(pg.sprite.Sprite):
 		self.pulando = False
 		self.atirando = False
 		self.temporizador = 0
+		self.limite_vida=20
 		# Animação
 		self.ultimo_update = 0
 		self.frame_atual = 0
@@ -56,7 +57,7 @@ class Jogador(pg.sprite.Sprite):
 		self.image = self.frames_parados_r[0]
 		self.rect = self.image.get_rect()
 		# Posição
-		self.posi = vec(largura * 1 / 2, altura - 130)
+		self.posi = vec(largura * 1 / 2, altura/2)
 		self.velo = vec(0, 0)
 		self.acele = vec(0, grav_jogador)
 		# Tiro
@@ -109,7 +110,7 @@ class Jogador(pg.sprite.Sprite):
 									self.jogo.spritesheet_personagem.get_image(287, 163, 23, 41, 2, 2),
 									self.jogo.spritesheet_personagem.get_image(257, 264, 27, 42, 2, 2),
 									self.jogo.spritesheet_personagem.get_image(284, 389, 24, 38, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(195, 245, 30, 32, 2, 2)]
+									]
 
 		self.frames_pulando_l = []
 		for frame_pulando in self.frames_pulando_r:
@@ -141,8 +142,8 @@ class Jogador(pg.sprite.Sprite):
 		self.velo += self.acele
 		if abs(self.velo.x) < 0.1:
 			self.velo.x = 0
-		if self.velo.y > 13:
-			self.velo.y = 13
+		if self.velo.y > 7:
+			self.velo.y = 7
 		# Sorvetão (Indica a pórxima posição do personagem)
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
@@ -155,10 +156,10 @@ class Jogador(pg.sprite.Sprite):
 		if self.pulando and not self.atirando:
 			if agora - self.ultimo_update > 40:
 				self.ultimo_update = agora
-				if self.frame_atual<6:
+				if self.frame_atual<4:
 					self.frame_atual = (self.frame_atual + 1) % len(self.frames_pulando_l)
 				else:
-					self.frame_atual=6
+					self.frame_atual=4
 				bottom = self.rect.bottom
 				if self.olhar_direita:
 					self.image = self.frames_pulando_r[self.frame_atual]
@@ -206,6 +207,7 @@ class Jogador(pg.sprite.Sprite):
 			self.velo.y = -pulo_jogador
 			self.andando = False
 			self.pulando=True
+			self.frame_atual=0
 		else:
 			self.pulando=False
 
@@ -230,6 +232,7 @@ class Plataforma(pg.sprite.Sprite):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.plataforma.add(self)
 		self.jogo.interacoes.add(self)
+		self.jogo.nao_moviveis.add(self)
 
 class Chao(Plataforma):
 	def __init__(self, jogo, x, y):
@@ -245,6 +248,7 @@ class Chao(Plataforma):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.plataforma.add(self)
 		self.jogo.interacoes.add(self)
+		self.jogo.nao_moviveis.add(self)
 
 # ================================================================================================================
 # Tiro
@@ -632,6 +636,7 @@ class Powerup(pg.sprite.Sprite):
 
 
 	def update(self):
+		
 		self.tempo-=1
 		if self.tempo==0:
 			self.kill()

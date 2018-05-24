@@ -15,8 +15,8 @@ import pygame as pg
 # Variáveis
 titulo = 'Soldier'
 fps = 60
-largura = 1000
-altura = 600
+largura = 576
+altura = 576
 nome_fonte = 'Acknowledge TT (BRK)'
 background = pg.image.load("img/fundo.png")
 spritesheet_pedra = "sprites_pedra.png"
@@ -24,9 +24,17 @@ spritesheet_personagem = "sprites_personagem.png"
 spritesheet_plataformas = "sprites_plataformas.png"
 
 # Propriedades do jogador
+<<<<<<< HEAD
 grav_jogador = 1
 pulo_jogador = 20
 velo_jogador = 8
+=======
+grav_jogador = 0.4
+
+pulo_jogador = 7
+velo_jogador = 7
+
+>>>>>>> 1d675aa951871814984a622df5988fb529e3aea7
 
 # Propriedades do inimigo
 grav_inimigo = 0.5
