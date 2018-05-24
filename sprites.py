@@ -51,6 +51,7 @@ class Jogador(pg.sprite.Sprite):
 		self.andando = False
 		self.pulando = False
 		self.temporizador = 0
+		self.limite_vida=20
 		# Animação
 		self.ultimo_update = 0
 		self.frame_atual = 0
@@ -213,6 +214,7 @@ class Plataforma(pg.sprite.Sprite):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.plataforma.add(self)
 		self.jogo.interacoes.add(self)
+		self.jogo.nao_moviveis.add(self)
 
 class Chao(Plataforma):
 	def __init__(self, jogo, x, y):
@@ -228,6 +230,7 @@ class Chao(Plataforma):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.plataforma.add(self)
 		self.jogo.interacoes.add(self)
+		self.jogo.nao_moviveis.add(self)
 
 # ================================================================================================================
 # Tiro
@@ -615,6 +618,7 @@ class Powerup(pg.sprite.Sprite):
 
 
 	def update(self):
+		
 		self.tempo-=1
 		if self.tempo==0:
 			self.kill()

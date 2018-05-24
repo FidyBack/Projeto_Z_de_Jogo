@@ -123,23 +123,27 @@ class Jogo:
 				# Tiro
 				if evento.key == pg.K_j :
 					self.jogador.tiro_reto = True
-				if self.jogador.tiro_reto and self.jogador.contador_tiro >= 6:
-					Tiro_reto(self, self.jogador.posi + self.jogador.posicao_arma[:], self.jogador.vel_tiro_reto[:], self.jogador.velo[:], self.jogador.olhar_direita)
-					self.jogador.contador_tiro = 0
-					self.jogador.tiro_reto = False
+
 
 				# Granada
 				if evento.key == pg.K_i:
 					self.jogador.tiro_parabola = True
-				if self.jogador.tiro_parabola and self.jogador.contador_tiro >= 6:
-					Tiro_parabola(self, self.jogador.posi + self.jogador.posicao_arma[:], self.jogador.vel_tiro_parabola[:], self.jogador.velo[:], self.jogador.olhar_direita)
-					self.jogador.contador_tiro = 0
-					self.jogador.tiro_parabola = False
+
 
 			# Pulo Menor
 			if evento.type == pg.KEYUP:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo_parar_meio()
+
+		if self.jogador.tiro_reto and self.jogador.contador_tiro >= 6:
+			Tiro_reto(self, self.jogador.posi + self.jogador.posicao_arma[:], self.jogador.vel_tiro_reto[:], self.jogador.velo[:], self.jogador.olhar_direita)
+			self.jogador.contador_tiro = 0
+			self.jogador.tiro_reto = False
+
+		if self.jogador.tiro_parabola and self.jogador.contador_tiro >= 6:
+			Tiro_parabola(self, self.jogador.posi + self.jogador.posicao_arma[:], self.jogador.vel_tiro_parabola[:], self.jogador.velo[:], self.jogador.olhar_direita)
+			self.jogador.contador_tiro = 0
+			self.jogador.tiro_parabola = False
 
 	def update(self):
 
@@ -237,7 +241,15 @@ class Jogo:
 		if colisao_powerup:
 			for powerup in colisao_powerup:
 				self.jogador.vida+=powerup.vida
-				powerup.kill
+				powerup.kill()
+				if self.jogador.vida>self.jogador.limite_vida:
+					self.jogador.vida=self.jogador.limite_vida
+
+		for powerup in self.powerup:
+			colisao_powerup_plataforma=pg.sprite.spritecollide(powerup, self.plataforma, False)
+			if colisao_powerup_plataforma:
+				powerup.velo.y=0
+				powerup.rect.bottom=colisao_powerup_plataforma[0].rect.top
 
 
 		# ================================================================================================================
@@ -245,32 +257,32 @@ class Jogo:
 		# ================================================================================================================
 		
 		# Se ele for para frente
-		if self.jogador.rect.right > largura * 0.5:
-			for plat in self.plataforma:
-				plat.rect.x -= self.jogador.velo.x
+		if self.jogador.rect.centerx > largura * 0.5:
+			for nao_movivel in self.nao_moviveis:
+				nao_movivel.rect.x -= self.jogador.velo.x
 			for personagem in self.moviveis:
 				personagem.posi.x-=self.jogador.velo.x
 
 		# Se ele for para trás
-		elif self.jogador.rect.left < largura * 0.5:
-			for plat in self.plataforma:
-				plat.rect.x -= self.jogador.velo.x
+		elif self.jogador.rect.centerx < largura * 0.5:
+			for nao_movivel in self.nao_moviveis:
+				nao_movivel.rect.x -= self.jogador.velo.x
 			for personagem in self.moviveis:
 				personagem.posi.x -= self.jogador.velo.x
 
 		# Se ele for para cima
-		if self.jogador.rect.y <= altura * 1 / 4:
-			for plat in self.plataforma:
-				plat.rect.y -= self.jogador.velo.y
+		if self.jogador.rect.centery <= altura * 1 / 4:
+			for nao_movivel in self.nao_moviveis:
+				nao_movivel.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
 			for personagem in self.moviveis:
-				personagem.posi.y-=self.jogador.velo.y
+				personagem.posi.y-=(self.jogador.velo.y + self.jogador.acele.y/2)
 
 		# Se ele for para baixo
-		elif self.jogador.rect.y >= altura * 3 / 4:
-			for plat in self.plataforma:
-				plat.rect.y -= (self.jogador.velo.y + self.jogador.acele.y)
+		elif self.jogador.rect.centery >= altura * 3 / 4:
+			for nao_movivel in self.nao_moviveis:
+				nao_movivel.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
 			for personagem in self.moviveis:
-				personagem.posi.y -= (self.jogador.velo.y + self.jogador.acele.y)
+				personagem.posi.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
 
 		# ================================================================================================================
 		# Queda e Fim de Jogo
