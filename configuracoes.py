@@ -2,14 +2,16 @@
 Jogo feito por Abel Cavalcante, Rodrigo de Jesus e Alexandre Cury
 
 Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
-	Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
-	Playlist usada para essa programação: https://www.youtube.com/playlist?list==PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
-	Fontes feitas por Brian Kent (Ænigma) 
+Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
+Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
+Fontes feitas por Brian Kent (Ænigma) 
+
 
 Jogo feito em 2018
 
 Aproveite!!!
 '''
+
 import pygame as pg
 
 # Variáveis
@@ -19,13 +21,12 @@ largura = 576
 altura = 576
 nome_fonte = 'Acknowledge TT (BRK)'
 background = pg.image.load("img/fundo.png")
-spritesheet_pedra = "sprites_pedra.png"
+spritesheet_inimigos = "sprites_inimigos.png"
 spritesheet_personagem = "sprites_personagem.png"
 spritesheet_plataformas = "sprites_plataformas.png"
 
 # Propriedades do jogador
 grav_jogador = 0.4
-
 pulo_jogador = 7
 velo_jogador = 7
 
