@@ -72,21 +72,7 @@ class Jogo:
 				if bloco=='1':
 					Plataforma(self, 48*(x-1),48*(y-1))
 
-		# Pedra adicionado
-		for pedra in lista_inimigos['pedra']:
-			Pedra(self, *pedra)
-		# Bomba adicionada
-		for pb in lista_inimigos['pb']:
-			Pb(self, *pb)
-		# Robo adicionado
-		for robo in lista_inimigos['robo']:
-			Robo(self, *robo)
-		# Mineiro adicionado
-		for mineiro in lista_inimigos['mineiro']:
-			Mineirinho(self, *pb)
-		# Espinhos adicionados
-		for spike in lista_inimigos['spike']:
-			Spike(self, *spike)
+		
 
 		# Jogador adicionado
 		self.jogador = Jogador(self)
@@ -171,6 +157,7 @@ class Jogo:
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							if personagem == self.jogador:
+								print('oi')
 								self.jogador.pulando=False
 							
 

@@ -183,9 +183,8 @@ class Jogador(pg.sprite.Sprite):
 
 		# Animação parado
 		if not self.pulando and not self.andando and not self.atirando:
-			if self.frame_atual == 4:
-				agora -= 3000
-			if agora - self.ultimo_update > 50:
+
+			if agora - self.ultimo_update > 150:
 				self.ultimo_update = agora
 				self.frame_atual = (self.frame_atual + 1) % len(self.frames_parados_r)
 				bottom = self.rect.bottom
