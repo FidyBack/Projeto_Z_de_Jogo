@@ -19,7 +19,7 @@ from sprites import *
 import math
 from random import randrange
 from os import path
-
+from mapa import mapa
 class Jogo:
 	def __init__(self):
 		pg.init()
@@ -59,18 +59,18 @@ class Jogo:
 		self.powerup = pg.sprite.Group()
 		self.nao_moviveis= pg.sprite.Group()
 
-
 		# ================================================================================================================
 		# Adição dos sprites no jogo
 		# ================================================================================================================
 
 		# Plataformas adicionadas
-		for plat in lista_plataformas['plataformas']:
-			Plataforma(self, *plat)
 
-		# Chão adicionado
-		for gnd in lista_plataformas['chaos']:
-			Chao(self, *gnd)
+		for y in  range(len(mapa)):
+			linha=mapa[y]
+			for x in range(len(linha)):
+				bloco=linha[x]
+				if bloco=='1':
+					Plataforma(self, 48*(x-1),48*(y-1))
 
 		# Pedra adicionado
 		for pedra in lista_inimigos['pedra']:
@@ -107,6 +107,7 @@ class Jogo:
 
 	def eventos(self):
 		self.jogador.contador_tiro += 1
+		
 
 		# Fecha o jogo
 		for evento in pg.event.get():
@@ -118,6 +119,8 @@ class Jogo:
 			# Pulo
 			if evento.type == pg.KEYDOWN:
 				if evento.key == pg.K_SPACE:
+
+
 					self.jogador.pulo()
 
 				# Tiro
@@ -134,6 +137,7 @@ class Jogo:
 			if evento.type == pg.KEYUP:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo_parar_meio()
+
 
 		if self.jogador.tiro_reto and self.jogador.contador_tiro >= 6:
 			Tiro_reto(self, self.jogador.posi + self.jogador.posicao_arma[:], self.jogador.vel_tiro_reto[:], self.jogador.velo[:], self.jogador.olhar_direita)
@@ -154,19 +158,22 @@ class Jogo:
 		# ================================================================================================================
 
 		for personagem in self.caracters:
+
 			impacto = pg.sprite.spritecollide(personagem, self.plataforma, False)
 			if impacto:
 
 	
 				for plataforma in impacto:
 				
-					if personagem.rect.left < plataforma.rect.right - 13 and personagem.rect.right > plataforma.rect.left + 13:
+					if personagem.rect.left < plataforma.rect.right - 14 and personagem.rect.right > plataforma.rect.left + 14:
 						if personagem.velo.y > 0:
 							personagem.rect.bottom = plataforma.rect.top
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							if personagem == self.jogador:
-								self.jogador.pulador = 0
+								self.jogador.pulando=False
+							
+
 							
 						elif personagem.velo.y < 0:
 							personagem.rect.top = plataforma.rect.bottom
@@ -174,16 +181,20 @@ class Jogo:
 							personagem.velo.y = 0
 							
 
-					elif personagem.rect.top < plataforma.rect.bottom - 14 and personagem.rect.bottom>plataforma.rect.top + 14:
+					elif personagem.rect.top < plataforma.rect.bottom - 22 and personagem.rect.bottom>plataforma.rect.top + 22:
 						if personagem.velo.x>0:
-							personagem.rect.right = plataforma.rect.left
+							personagem.rect.right = plataforma.rect.left-1
 							personagem.posi=vec(personagem.rect.midbottom)
 							personagem.velo.x=0
+							if personagem==self.jogador:
+								personagem.andando=False
 					
 						elif personagem.velo.x < 0:
-							personagem.rect.left = plataforma.rect.right
+							personagem.rect.left = plataforma.rect.right+1
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.x = 0
+							if personagem==self.jogador:
+								personagem.andando=False
 
 
 			# morte por falta de vidas do personagem e dos inimigos
@@ -348,7 +359,7 @@ class Jogo:
 						palavra_atual = palavras[idx_palavra]
 						
 						# Se é estiver no limite da tela, pula uma linha e volta pro começo dela
-						if len(palavra_atual) * 27 + a > 1000:
+						if len(palavra_atual) * 27 + a > largura:
 							b += 27
 							a = 27
 
