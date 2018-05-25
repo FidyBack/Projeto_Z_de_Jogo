@@ -221,7 +221,7 @@ class Jogo:
 				inimigo.vida -= tiro_para_inimigo[0].dano
 				tiro_para_inimigo[0].kill()
 				if not inimigo.invencivel:
-					inimigo.vida-=tiro_para_inimigo[0].dano
+					inimigo.vida -= tiro_para_inimigo[0].dano
 				
 		# Morte do tiro por sair da tela
 		for tiro in self.tiro_personagem:
@@ -242,11 +242,11 @@ class Jogo:
 				if self.jogador.vida>self.jogador.limite_vida:
 					self.jogador.vida=self.jogador.limite_vida
 
-		# for powerup in self.powerup:
-		# 	colisao_powerup_plataforma=pg.sprite.spritecollide(powerup, self.plataforma, False)
-		# 	if colisao_powerup_plataforma:
-		# 		powerup.velo.y = 0
-		# 		powerup.rect.bottom = colisao_powerup_plataforma[0].rect.top
+		for powerup in self.powerup:
+			colisao_powerup_plataforma=pg.sprite.spritecollide(powerup, self.plataforma, False)
+			if colisao_powerup_plataforma:
+				powerup.velo.y = 0
+				powerup.rect.bottom = colisao_powerup_plataforma[0].rect.top
 
 
 		# ================================================================================================================

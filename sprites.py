@@ -464,7 +464,7 @@ class Pb(Inim):
 		if self.contador == 2 and self.explode:
 			self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 8, 8, 40, self.rect.midbottom, vec(0, 0), vec(0, 0), self.velo, self.direita, fps)
 			self.jogo.tiro_inimigo.add(self.tiro)
-		if self.contador == 15:
+		if self.contador == 2:
 			self.kill()
 
 class Spike(Inim):
