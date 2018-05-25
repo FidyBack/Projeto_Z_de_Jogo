@@ -374,7 +374,7 @@ class Robo(Inim):
 		Inim.__init__(self, jogo, 383, 244, 33, 50, 1, 1, 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
 		self.contador = 0
 		self.veltiro = vec(10, 0)
-		self.velx = 0
+		self.velx = 5
 		self.posicao_arma = vec(50, -110)
 		self.tiro = 0
 
@@ -384,7 +384,7 @@ class Robo(Inim):
 		else:
 			self.posicao_arma.x = -50
 		if self.contador == 120:
-		 	self.velo.x = 0
+		 	self.velo.x = self.velx
 		 	self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 4, 4, 5, self.posi + self.posicao_arma, self.veltiro, vec(0, 0), self.velo, self.direita, fps)
 		 	self.jogo.tiro_inimigo.add(self.tiro)
 
@@ -412,7 +412,7 @@ class Mineirinho(Inim):
 		esta_esquerda=self.posi.x<self.jogo.jogador.posi.x-70
 
 		if (esta_direita and not self.jogo.jogador.olhar_direita) or (esta_esquerda and self.jogo.jogador.olhar_direita) or self.ataque:
-			print('xablau')
+			
 			self.invencivel=False
 			if esta_direita:
 				self.velo.x=-2
@@ -423,7 +423,7 @@ class Mineirinho(Inim):
 			 	
 			self.contador+=1
 		else:
-			print('oi')
+			
 			self.invencivel=True
 			self.contador=0
 			self.velo.x=0
@@ -440,7 +440,7 @@ class Mineirinho(Inim):
 
 class Pb(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo, 116, 452, 56, 55, 1, 1, 0, 2, posix, posiy, vec(0, 0), vec(0, grav_jogador))
+		Inim.__init__(self, jogo, 116, 452, 56, 55, 1, 1, 0, 2, posix, posiy, vec(3, 0), vec(0, grav_jogador))
 		self.contador = 0
 		self.contato = False
 		self.explode = True
@@ -452,9 +452,9 @@ class Pb(Inim):
 					self.contato = True
 		else:
 			if self.posi.x > self.jogo.jogador.posi.x:
-				self.velo.x =- 0
+				self.velo.x =- 3
 			else:
-				self.velo.x = 0
+				self.velo.x = 3
 
 		if self.contato:
 			self.velo.x = 0

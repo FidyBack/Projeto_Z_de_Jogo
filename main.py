@@ -201,7 +201,8 @@ class Jogo:
 		if colisao_mob:
 			if not self.jogador.invencivel:
 				self.jogador.vida -= colisao_mob[0].dano
-				self.jogador.invencivel = True
+				if colisao_mob[0].dano!=0:
+					self.jogador.invencivel = True
 
 		# Invencibilidade após a colisão com o inimigo
 		if self.jogador.invencivel:
@@ -223,7 +224,6 @@ class Jogo:
 		for inimigo in self.inimigos:
 			tiro_para_inimigo = pg.sprite.spritecollide(inimigo, self.tiro_personagem, False)
 			if tiro_para_inimigo:
-				inimigo.vida -= tiro_para_inimigo[0].dano
 				tiro_para_inimigo[0].kill()
 				if not inimigo.invencivel:
 					inimigo.vida-=tiro_para_inimigo[0].dano
