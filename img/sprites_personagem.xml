@@ -1,4 +1,4 @@
-<TextureAtlas imagePath="sprites.png">
+<TextureAtlas imagePath="sprites_personagem.png">
 	<SubTexture name="megaman_01.png" x="312" y="224" width="8" height="48"/>
 	<SubTexture name="megaman_02.png" x="283" y="478" width="22" height="29"/>
 	<SubTexture name="megaman_03.png" x="215" y="0" width="30" height="42"/>
@@ -10,7 +10,7 @@
 	<SubTexture name="megaman_101.png" x="42" y="499" width="32" height="8"/>
 	<SubTexture name="megaman_102.png" x="48" y="422" width="38" height="12"/>
 	<SubTexture name="megaman_103.png" x="42" y="478" width="40" height="19"/>
-	<SubTexture name="megaman_104.png" x="90" y="338" width="36" height="18"/>
+	<SubTexture name="megaman_tiro_jogo_104.png" x="90" y="338" width="36" height="18"/>
 	<SubTexture name="megaman_105.png" x="153" y="490" width="14" height="20"/>
 	<SubTexture name="megaman_106.png" x="128" y="339" width="23" height="16"/>
 	<SubTexture name="megaman_107.png" x="127" y="403" width="27" height="24"/>
@@ -100,7 +100,7 @@
 	<SubTexture name="megaman_94.png" x="223" y="397" width="29" height="34"/>
 	<SubTexture name="megaman_95.png" x="257" y="308" width="26" height="36"/>
 	<SubTexture name="megaman_96.png" x="0" y="267" width="51" height="41"/>
-	<SubTexture name="megaman_97.png" x="80" y="371" width="8" height="6"/>
+	<SubTexture name="megaman_granede_97.png" x="80" y="371" width="8" height="6"/>
 	<SubTexture name="megaman_98.png" x="148" y="164" width="14" height="14"/>
 	<SubTexture name="megaman_99.png" x="161" y="375" width="24" height="24"/>
 	<SubTexture name="megaman_stand_1.png" x="183" y="72" width="30" height="34"/>
