@@ -63,20 +63,27 @@ class Jogo:
 		# Adição dos sprites no jogo
 		# ================================================================================================================
 
-		# Plataformas adicionadas
-
+		# Mapa
 		for y in  range(len(mapa)):
 			linha = mapa[y]
 			for x in range(len(linha)):
 				bloco = linha[x]
 				if bloco.isnumeric():
 					if bloco == '1':
-						Plataforma(self, 48*(x-1),48*(y-1))
+						Plataforma(self, 48 * (x-1), 48 * (y-1))
 				else:
 					if bloco == 'P':
-						Pedra(self, 48*(x-1),48*(y-1))
-
-		# Pedra adicionado
+						Pedra(self, 48 * (x-1), 48 * (y-1))
+					elif bloco == 'B':
+						Pb(self, 48 * (x-1), 48 * (y-1))
+					elif bloco == 'R':
+						Robo(self, 48*(x-1), 48*(y-1))
+					elif bloco == 'M':
+						Mineirinho(self, 48*(x-1), 48*(y-1))
+					elif bloco == 'B':
+						Pb(self, 48*(x-1), 48*(y-1))
+					elif bloco == 'C':
+						chefe(self, 48*(x-1), 48*(y-1))
 		
 		# Jogador adicionado
 		self.jogador = Jogador(self)
@@ -98,7 +105,6 @@ class Jogo:
 	def eventos(self):
 		self.jogador.contador_tiro += 1
 		
-
 		# Fecha o jogo
 		for evento in pg.event.get():
 			if evento.type == pg.QUIT:
@@ -109,19 +115,15 @@ class Jogo:
 			# Pulo
 			if evento.type == pg.KEYDOWN:
 				if evento.key == pg.K_SPACE:
-
-
 					self.jogador.pulo()
 
 				# Tiro
 				if evento.key == pg.K_j :
 					self.jogador.tiro_reto = True
 
-
 				# Granada
 				if evento.key == pg.K_i:
 					self.jogador.tiro_parabola = True
-
 
 			# Pulo Menor
 			if evento.type == pg.KEYUP:
@@ -140,21 +142,15 @@ class Jogo:
 			self.jogador.tiro_parabola = False
 
 	def update(self):
-
-
 		self.todos_sprites.update()
 		# ================================================================================================================
 		# Personagem e inimigo
 		# ================================================================================================================
 
 		for personagem in self.caracters:
-
 			impacto = pg.sprite.spritecollide(personagem, self.plataforma, False)
 			if impacto:
-
-	
 				for plataforma in impacto:
-				
 					if personagem.rect.left < plataforma.rect.right - 14 and personagem.rect.right > plataforma.rect.left + 14:
 						if personagem.velo.y > 0:
 							personagem.rect.bottom = plataforma.rect.top
@@ -163,14 +159,11 @@ class Jogo:
 							if personagem == self.jogador:
 								self.jogador.pulando=False
 							
-
-							
 						elif personagem.velo.y < 0:
 							personagem.rect.top = plataforma.rect.bottom
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							
-
 					elif personagem.rect.top < plataforma.rect.bottom - 22 and personagem.rect.bottom>plataforma.rect.top + 22:
 						if personagem.velo.x>0:
 							personagem.rect.right = plataforma.rect.left-1
@@ -237,7 +230,7 @@ class Jogo:
 			if not self.jogador.invencivel:
 				self.jogador.vida -= colisao_tiro[0].dano
 				self.jogador.invencivel = True
-#alteration
+		#alteration
 		colisao_powerup = pg.sprite.spritecollide(self.jogador, self.powerup, False)
 		if colisao_powerup:
 			for powerup in colisao_powerup:
@@ -246,11 +239,11 @@ class Jogo:
 				if self.jogador.vida>self.jogador.limite_vida:
 					self.jogador.vida=self.jogador.limite_vida
 
-		for powerup in self.powerup:
-			colisao_powerup_plataforma=pg.sprite.spritecollide(powerup, self.plataforma, False)
-			if colisao_powerup_plataforma:
-				powerup.velo.y=0
-				powerup.rect.bottom=colisao_powerup_plataforma[0].rect.top
+		# for powerup in self.powerup:
+		# 	colisao_powerup_plataforma=pg.sprite.spritecollide(powerup, self.plataforma, False)
+		# 	if colisao_powerup_plataforma:
+		# 		powerup.velo.y = 0
+		# 		powerup.rect.bottom = colisao_powerup_plataforma[0].rect.top
 
 
 		# ================================================================================================================
@@ -418,7 +411,7 @@ class Jogo:
 			brilho += b
 			self.tela.blit(image,(image_rect))
 			self.desenhar_texto(texto, 20, (brilho,brilho,brilho), largura/2, altura*7/8)
-			self.desenhar_texto('Jump : Space    Shoot : I    grenade : J    Move: A/D', 20, branco, largura/2, altura*3/4)
+			self.desenhar_texto('Jump : Space  Shoot : j  grenade : i  Move: a/d', 20, branco, largura/2, altura*3/4)
 			pg.display.flip()
 
 	# Tela de Game Over

@@ -1,4 +1,4 @@
-<TextureAtlas imagePath="sprites.png">
+<TextureAtlas imagePath="sprites_inimigos.png">
 	<SubTexture name="bomb_explosion.png" x="265" y="0" width="64" height="61"/>
 	<SubTexture name="bomb_standing.png" x="116" y="452" width="56" height="55"/>
 	<SubTexture name="bomb_walk_1.png" x="265" y="191" width="56" height="57"/>

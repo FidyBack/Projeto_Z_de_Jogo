@@ -27,7 +27,7 @@ spritesheet_plataformas = "sprites_plataformas.png"
 
 # Propriedades do jogador
 grav_jogador = 0.4
-pulo_jogador = 7
+pulo_jogador = 9
 velo_jogador = 7
 
 

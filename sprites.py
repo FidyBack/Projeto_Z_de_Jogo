@@ -2,9 +2,10 @@
 Jogo feito por Abel Cavalcante, Rodrigo de Jesus e Alexandre Cury
 
 Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
-	Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
-	Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
-	Fontes feitas por Brian Kent (Ænigma) 
+Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
+Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
+Fontes feitas por Brian Kent (Ænigma) 
+
 
 Jogo feito em 2018
 
@@ -49,6 +50,7 @@ class Jogador(pg.sprite.Sprite):
 		self.pulando = False
 		self.atirando = False
 		self.temporizador = 0
+		self.limite_vida=20
 		# Animação
 		self.ultimo_update = 0
 		self.frame_atual = 0
@@ -56,7 +58,7 @@ class Jogador(pg.sprite.Sprite):
 		self.image = self.frames_parados_r[0]
 		self.rect = self.image.get_rect()
 		# Posição
-		self.posi = vec(largura * 1 / 2, altura - 130)
+		self.posi = vec(largura * 1 / 2, altura/2)
 		self.velo = vec(0, 0)
 		self.acele = vec(0, grav_jogador)
 		# Tiro
@@ -65,7 +67,7 @@ class Jogador(pg.sprite.Sprite):
 		self.tiro_parabola = False
 		self.vel_tiro_reto = vec(20,0)
 		self.vel_tiro_parabola = vec(10,-10)
-		self.posicao_arma = vec(20,-25)
+		self.posicao_arma = vec(30,-30)
 		# Adição nos grupos
 		self.jogo.todos_sprites.add(self)
 		self.jogo.caracters.add(self)
@@ -109,7 +111,7 @@ class Jogador(pg.sprite.Sprite):
 									self.jogo.spritesheet_personagem.get_image(287, 163, 23, 41, 2, 2),
 									self.jogo.spritesheet_personagem.get_image(257, 264, 27, 42, 2, 2),
 									self.jogo.spritesheet_personagem.get_image(284, 389, 24, 38, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(195, 245, 30, 32, 2, 2)]
+									]
 
 		self.frames_pulando_l = []
 		for frame_pulando in self.frames_pulando_r:
@@ -126,13 +128,13 @@ class Jogador(pg.sprite.Sprite):
 			self.velo.x = -velo_jogador
 			self.andando = True
 			self.olhar_direita = False
-			self.posicao_arma.x = -20
+			self.posicao_arma.x = -30
 		# Direita
 		elif keys[pg.K_d]:
 			self.velo.x = velo_jogador
 			self.andando = True
 			self.olhar_direita = True
-			self.posicao_arma.x = 20
+			self.posicao_arma.x = 30
 		else:
 			self.velo.x = 0
 			self.andando = False
@@ -141,8 +143,8 @@ class Jogador(pg.sprite.Sprite):
 		self.velo += self.acele
 		if abs(self.velo.x) < 0.1:
 			self.velo.x = 0
-		if self.velo.y > 13:
-			self.velo.y = 13
+		if self.velo.y > 7:
+			self.velo.y = 7
 		# Sorvetão (Indica a pórxima posição do personagem)
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
@@ -155,10 +157,10 @@ class Jogador(pg.sprite.Sprite):
 		if self.pulando and not self.atirando:
 			if agora - self.ultimo_update > 40:
 				self.ultimo_update = agora
-				if self.frame_atual<6:
+				if self.frame_atual<4:
 					self.frame_atual = (self.frame_atual + 1) % len(self.frames_pulando_l)
 				else:
-					self.frame_atual=6
+					self.frame_atual=4
 				bottom = self.rect.bottom
 				if self.olhar_direita:
 					self.image = self.frames_pulando_r[self.frame_atual]
@@ -195,8 +197,6 @@ class Jogador(pg.sprite.Sprite):
 				self.rect = self.image.get_rect()
 				self.rect.bottom = bottom
 
-
-
 	# Pulo
 	def pulo(self):
 		self.rect.y += 1
@@ -206,9 +206,9 @@ class Jogador(pg.sprite.Sprite):
 			self.velo.y = -pulo_jogador
 			self.andando = False
 			self.pulando=True
+			self.frame_atual=0
 		else:
 			self.pulando=False
-
 
 	# Pulo pequeno
 	def pulo_parar_meio(self):
@@ -230,6 +230,7 @@ class Plataforma(pg.sprite.Sprite):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.plataforma.add(self)
 		self.jogo.interacoes.add(self)
+		self.jogo.nao_moviveis.add(self)
 
 class Chao(Plataforma):
 	def __init__(self, jogo, x, y):
@@ -245,17 +246,19 @@ class Chao(Plataforma):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.plataforma.add(self)
 		self.jogo.interacoes.add(self)
+		self.jogo.nao_moviveis.add(self)
 
 # ================================================================================================================
 # Tiro
 # ================================================================================================================
 
 class Tiro(pg.sprite.Sprite):
-	def __init__(self, jogo, image, dano, posicao, velo, acele, velo_personagem, direita, tempo):
+	def __init__(self, jogo,x, y, largura, altura, lar_dim, alt_dim, dano, posicao, velo, acele, velo_personagem, direita, tempo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
 		self.posi = vec(posicao[:])
-		self.image = pg.image.load(image)
+		self.image = self.jogo.spritesheet_personagem.get_image(x, y, largura, altura, lar_dim, alt_dim)
+		self.image.set_colorkey(preto)
 		self.rect = self.image.get_rect()
 		self.velo = vec(velo)
 		self.vel = self.velo.x
@@ -292,12 +295,12 @@ class Tiro(pg.sprite.Sprite):
 
 class Tiro_reto(Tiro):
 	def __init__(self, jogo, posicao, velo, velo_personagem, direita):
-	 	Tiro.__init__(self, jogo, 'img/Fireball.png', 1, posicao, velo, vec(0, 0), velo_personagem, direita, fps)
+	 	Tiro.__init__(self, jogo, 90, 338, 36, 18, 2, 2, 1, posicao, velo, vec(0, 0), velo_personagem, direita, fps)
 	 	self.jogo.tiro_personagem.add(self)
 
 class Tiro_parabola(Tiro):
-	def __init__(self,jogo,posicao,velo,velo_personagem,direita):
-		Tiro.__init__(self, jogo, 'img/granada.png', 5, posicao, velo, vec(0, 0.5), velo_personagem, direita,fps)
+	def __init__(self, jogo, posicao, velo, velo_personagem, direita):
+		Tiro.__init__(self, jogo, 80, 371, 8, 6, 3, 3, 5, posicao, velo, vec(0, 0.5), velo_personagem, direita,fps)
 		self.jogo.tiro_personagem.add(self)
 
 # ================================================================================================================
@@ -308,10 +311,10 @@ class Inim(pg.sprite.Sprite):
 	def __init__(self, jogo, x, y, largura, altura, lar_dim, alt_dim, dano, vida, posix, posiy, velo, acele):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.image = self.jogo.spritesheet_pedra.get_image(x, y, largura, altura, lar_dim, alt_dim)
+		self.image = self.jogo.spritesheet_inimigos.get_image(x, y, largura, altura, lar_dim, alt_dim)
 		self.image.set_colorkey(preto)
 		self.rect = self.image.get_rect()
-		self.posi = vec(posix,posiy)
+		self.posi = vec(posix, posiy)
 		self.rect.midbottom = self.posi
 		self.vida = vida
 		self.dano = dano
@@ -343,7 +346,7 @@ class Inim(pg.sprite.Sprite):
 
 class Pedra(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo , 32, 32, 30, 30, 6, 6, 3, 5, posix, posiy, vec(-3,0), vec(0, grav_jogador))
+		Inim.__init__(self, jogo , 392, 117, 30, 30, 4, 4, 3, 5, posix, posiy, vec(-3,0), vec(0, grav_jogador))
 
 	# def carregar_imagem(self):
 	# 	# Andando
@@ -369,7 +372,7 @@ class Pedra(Inim):
 
 class Robo(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo, "img/robo.png", 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
+		Inim.__init__(self, jogo, 383, 244, 33, 50, 2, 2, 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
 		self.contador = 0
 		self.veltiro = vec(10, 0)
 		self.velx = 0
@@ -383,7 +386,7 @@ class Robo(Inim):
 			self.posicao_arma.x = -50
 		if self.contador == 120:
 		 	self.velo.x = 0
-		 	self.tiro = Tiro(self.jogo, 'img/granada.png', 5, self.posi + self.posicao_arma, self.veltiro, vec(0, 0), self.velo, self.direita, fps)
+		 	self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 4, 4, 5, self.posi + self.posicao_arma, self.veltiro, vec(0, 0), self.velo, self.direita, fps)
 		 	self.jogo.tiro_inimigo.add(self.tiro)
 
 		elif self.contador == 150:
@@ -395,8 +398,8 @@ class Robo(Inim):
 		self.contador += 1
 
 class Mineirinho(Inim):
-	def __init__(self,jogo,posix,posiy):
-		Inim.__init__(self,jogo,"img/miner.png",3,2,posix,posiy,vec(-2,0),vec(0,grav_jogador))
+	def __init__(self, jogo, posix, posiy):
+		Inim.__init__(self, jogo,405, 32, 20, 19, 2, 2, 3, 2, posix, posiy, vec(-2, 0), vec(0, grav_jogador))
 		self.contador=0
 		self.ataque=False
 		self.posicao_arma=vec(10,-10)
@@ -409,10 +412,8 @@ class Mineirinho(Inim):
 		esta_direita=self.posi.x>self.jogo.jogador.posi.x+70
 		esta_esquerda=self.posi.x<self.jogo.jogador.posi.x-70
 
-		if (esta_direita and not self.jogo.jogador.direita) or (esta_esquerda and self.jogo.jogador.direita) or self.ataque:
+		if (esta_direita and self.jogo.jogador.olhar_direita) or (esta_esquerda and not self.jogo.jogador.olhar_direita) or self.ataque:
 			self.invencivel=False
-
-
 			if esta_direita:
 				self.velo.x=-2
 			elif esta_esquerda:
@@ -429,44 +430,44 @@ class Mineirinho(Inim):
 		if self.contador==60:
 			self.ataque=True
 			self.velo.x=0
-			self.tiro=Tiro(self.jogo,'img/granada.png',5,self.posi+self.posicao_arma,vec(5,0),vec(0,0),self.velo,self.direita,fps)
+			self.tiro=Tiro(self.jogo, 80, 371, 8, 6, 3, 3, 5, self.posi+self.posicao_arma, vec(5, 0), vec(0, 0), self.velo, self.direita, fps)
 			self.jogo.tiro_inimigo.add(self.tiro)
 
-		if self.contador==120:
-			self.ataque=False
-			self.contador=0
+		if self.contador == 120:
+			self.ataque = False
+			self.contador = 0
 
 class Pb(Inim):
-	def __init__(self,jogo,posix,posiy):
-		Inim.__init__(self,jogo,"img/pubg.png",0,2,posix,posiy,vec(0,0),vec(0,grav_jogador))
+	def __init__(self, jogo, posix, posiy):
+		Inim.__init__(self, jogo, 116, 452, 56, 55, 1, 1, 0, 2, posix, posiy, vec(0, 0), vec(0, grav_jogador))
 		self.contador = 0
-		self.contato=False
-		self.explode=True
-		self.tiro=0
+		self.contato = False
+		self.explode = True
+		self.tiro = 0
 	def eventos(self):
-		if abs(self.posi.x-self.jogo.jogador.posi.x)<30:
-			self.velo.x=0
-			if abs(self.posi.y-self.jogo.jogador.posi.y)<30:
-					self.contato=True
+		if abs(self.posi.x - self.jogo.jogador.posi.x) < 30:
+			self.velo.x = 0
+			if abs(self.posi.y - self.jogo.jogador.posi.y) < 30:
+					self.contato = True
 		else:
-			if self.posi.x>self.jogo.jogador.posi.x:
-				self.velo.x=-5
+			if self.posi.x > self.jogo.jogador.posi.x:
+				self.velo.x =- 0
 			else:
-				self.velo.x=5
+				self.velo.x = 0
 
 		if self.contato:
-			self.velo.x=0
+			self.velo.x = 0
 		if self.contato:
-			self.contador+=1
-		if self.contador==60 and self.explode:
-			self.tiro=Tiro(self.jogo,'img/explosao.png',10,self.rect.midbottom,vec(0,0),vec(0,0),self.velo,self.direita,fps)
+			self.contador += 1
+		if self.contador == 60 and self.explode:
+			self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 8, 8, 40, self.rect.midbottom, vec(0, 0), vec(0, 0), self.velo, self.direita, fps/2)
 			self.jogo.tiro_inimigo.add(self.tiro)
-		if self.contador==80:
+		if self.contador == 80:
 			self.kill()
 
 class Spike(Inim):
 		def __init__(self, jogo, posix, posiy):
-			Inim.__init__(self, jogo, "img/espinho.png", 500, 400, posix, posiy, vec(0,0), vec(0,0))
+			Inim.__init__(self, jogo, 323, 191, 53, 35, 1, 1, 5000, 5000, posix, posiy, vec(0,0), vec(0,0))
 			self.invencivel = True
 
 class Chefe(Inim):
@@ -610,18 +611,18 @@ class Chefe(Inim):
 					self.n_ataque=0
 					self.contador=0
 				self.contador+=1
-#alteration
+
 class Powerup(pg.sprite.Sprite):
 	def __init__(self,jogo,posicao):
 		pg.sprite.Sprite.__init__(self)
-		self.jogo=jogo
-		self.posicao=vec(posicao[:])
+		self.jogo = jogo
+		self.posicao = vec(posicao[:])
 		self.image = pg.Surface((32,32))
 		self.image.fill(vermelho)
 		self.rect = self.image.get_rect()
-		self.rect.midbottom=self.posicao
-		self.tempo=300
-		self.vida=5
+		self.rect.midbottom = self.posicao
+		self.tempo = 300
+		self.vida = 5
 
 		# Adição nos grupos
 		if randrange(2)==1:
@@ -632,6 +633,7 @@ class Powerup(pg.sprite.Sprite):
 
 
 	def update(self):
+		
 		self.tempo-=1
 		if self.tempo==0:
 			self.kill()
