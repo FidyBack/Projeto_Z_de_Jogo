@@ -26,13 +26,13 @@ spritesheet_personagem = "sprites_personagem.png"
 spritesheet_plataformas = "sprites_plataformas.png"
 
 # Propriedades do jogador
-grav_jogador = 0.4
-pulo_jogador = 9
-velo_jogador = 7
+grav_jogador = 0.8
+pulo_jogador = 13
+velo_jogador = 9
 
 
 # Propriedades do inimigo
-grav_inimigo = 0.5
+grav_inimigo = 0.8
 
 # Cores
 branco = (255, 255, 255)

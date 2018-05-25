@@ -82,8 +82,8 @@ class Jogo:
 						Mineirinho(self, 48*(x-1), 48*(y-1))
 					elif bloco == 'B':
 						Pb(self, 48*(x-1), 48*(y-1))
-					elif bloco == 'C':
-						chefe(self, 48*(x-1), 48*(y-1))
+					# elif bloco == 'C':
+					# 	Chefe(self, 48*(x-1), 48*(y-1))
 		
 		# Jogador adicionado
 		self.jogador = Jogador(self)
@@ -150,30 +150,33 @@ class Jogo:
 		for personagem in self.caracters:
 			impacto = pg.sprite.spritecollide(personagem, self.plataforma, False)
 			if impacto:
+
 				for plataforma in impacto:
-					if personagem.rect.left < plataforma.rect.right - 14 and personagem.rect.right > plataforma.rect.left + 14:
-						if personagem.velo.y > 0:
+					intersect=personagem.rect.clip(plataforma.rect)
+					
+					if personagem.rect.left < plataforma.rect.right  and personagem.rect.right > plataforma.rect.left and abs(intersect.width)>=abs(intersect.height)   :
+						if personagem.velo.y > 0 and personagem.rect.bottom==intersect.bottom:
 							personagem.rect.bottom = plataforma.rect.top
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							if personagem == self.jogador:
 								self.jogador.pulando=False
 							
-						elif personagem.velo.y < 0:
+						elif personagem.velo.y < 0 and personagem.rect.top==intersect.top:
 							personagem.rect.top = plataforma.rect.bottom
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							
-					elif personagem.rect.top < plataforma.rect.bottom - 22 and personagem.rect.bottom>plataforma.rect.top + 22:
-						if personagem.velo.x>0:
-							personagem.rect.right = plataforma.rect.left-1
+					if personagem.rect.top < plataforma.rect.bottom  and personagem.rect.bottom>plataforma.rect.top and abs(intersect.height)>abs(intersect.width):
+						if personagem.velo.x>0 and personagem.rect.right==intersect.right:
+							personagem.rect.right = plataforma.rect.left
 							personagem.posi=vec(personagem.rect.midbottom)
 							personagem.velo.x=0
 							if personagem==self.jogador:
 								personagem.andando=False
 					
-						elif personagem.velo.x < 0:
-							personagem.rect.left = plataforma.rect.right+1
+						elif personagem.velo.x < 0 and personagem.rect.left==intersect.left:
+							personagem.rect.left = plataforma.rect.right
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.x = 0
 							if personagem==self.jogador:

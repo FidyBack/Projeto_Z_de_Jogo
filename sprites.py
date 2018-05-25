@@ -171,7 +171,7 @@ class Jogador(pg.sprite.Sprite):
 
 		# Animação andando
 		elif self.andando and not self.atirando:
-			if agora - self.ultimo_update > 40:
+			if agora - self.ultimo_update > 37:
 				self.ultimo_update = agora
 				self.frame_atual = (self.frame_atual + 1) % len(self.frames_andando_l)
 				bottom = self.rect.bottom
@@ -282,8 +282,8 @@ class Tiro(pg.sprite.Sprite):
 		else:
 			self.velo.x = -self.vel
 		self.eventos()
-		self.tempo-=1
-		if self.tempo==0:
+		self.tempo -= 1
+		if self.tempo == 0:
 			self.kill()
 		self.velo += self.acele
 		self.posi += self.velo + self.acele/2 
@@ -372,11 +372,11 @@ class Pedra(Inim):
 
 class Robo(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo, 383, 244, 33, 50, 2, 2, 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
+		Inim.__init__(self, jogo, 383, 244, 33, 50, 1, 1, 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
 		self.contador = 0
 		self.veltiro = vec(10, 0)
 		self.velx = 0
-		self.posicao_arma = vec(50, -100)
+		self.posicao_arma = vec(50, -110)
 		self.tiro = 0
 
 	def eventos(self):
@@ -412,7 +412,8 @@ class Mineirinho(Inim):
 		esta_direita=self.posi.x>self.jogo.jogador.posi.x+70
 		esta_esquerda=self.posi.x<self.jogo.jogador.posi.x-70
 
-		if (esta_direita and self.jogo.jogador.olhar_direita) or (esta_esquerda and not self.jogo.jogador.olhar_direita) or self.ataque:
+		if (esta_direita and not self.jogo.jogador.olhar_direita) or (esta_esquerda and self.jogo.jogador.olhar_direita) or self.ataque:
+			print('xablau')
 			self.invencivel=False
 			if esta_direita:
 				self.velo.x=-2
@@ -423,6 +424,7 @@ class Mineirinho(Inim):
 			 	
 			self.contador+=1
 		else:
+			print('oi')
 			self.invencivel=True
 			self.contador=0
 			self.velo.x=0
@@ -459,10 +461,10 @@ class Pb(Inim):
 			self.velo.x = 0
 		if self.contato:
 			self.contador += 1
-		if self.contador == 60 and self.explode:
-			self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 8, 8, 40, self.rect.midbottom, vec(0, 0), vec(0, 0), self.velo, self.direita, fps/2)
+		if self.contador == 2 and self.explode:
+			self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 8, 8, 40, self.rect.midbottom, vec(0, 0), vec(0, 0), self.velo, self.direita, fps)
 			self.jogo.tiro_inimigo.add(self.tiro)
-		if self.contador == 80:
+		if self.contador == 15:
 			self.kill()
 
 class Spike(Inim):
@@ -625,7 +627,7 @@ class Powerup(pg.sprite.Sprite):
 		self.vida = 5
 
 		# Adição nos grupos
-		if randrange(2)==1:
+		if randrange(5)==1:
 			self.jogo.todos_sprites.add(self)
 			self.jogo.interacoes.add(self)
 			self.jogo.powerup.add(self)
