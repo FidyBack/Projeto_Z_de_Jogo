@@ -67,6 +67,7 @@ class Jogo:
 		for y in  range(len(mapa)):
 			linha = mapa[y]
 			for x in range(len(linha)):
+
 				bloco = linha[x]
 				if bloco.isnumeric():
 					if bloco == '1':
@@ -85,6 +86,7 @@ class Jogo:
 					# elif bloco == 'C':
 					# 	Chefe(self, 48*(x-1), 48*(y-1))
 		
+
 		# Jogador adicionado
 		self.jogador = Jogador(self)
 
@@ -163,13 +165,16 @@ class Jogo:
 								self.jogador.pulando=False
 							
 						elif personagem.velo.y < 0 and personagem.rect.top==intersect.top:
+
 							personagem.rect.top = plataforma.rect.bottom
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							
+
 					if personagem.rect.top < plataforma.rect.bottom  and personagem.rect.bottom>plataforma.rect.top and abs(intersect.height)>abs(intersect.width):
 						if personagem.velo.x>0 and personagem.rect.right==intersect.right:
 							personagem.rect.right = plataforma.rect.left
+
 							personagem.posi=vec(personagem.rect.midbottom)
 							personagem.velo.x=0
 							if personagem==self.jogador:
@@ -268,7 +273,7 @@ class Jogo:
 				personagem.posi.x -= self.jogador.velo.x
 
 		# Se ele for para cima
-		if self.jogador.rect.centery <= altura * 1 / 4:
+		if self.jogador.rect.centery <= altura * 1 / 8:
 			for nao_movivel in self.nao_moviveis:
 				nao_movivel.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
 			for personagem in self.moviveis:

@@ -143,8 +143,8 @@ class Jogador(pg.sprite.Sprite):
 		self.velo += self.acele
 		if abs(self.velo.x) < 0.1:
 			self.velo.x = 0
-		if self.velo.y > 7:
-			self.velo.y = 7
+		if self.velo.y > 15:
+			self.velo.y = 15
 		# Sorvetão (Indica a pórxima posição do personagem)
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
@@ -184,9 +184,8 @@ class Jogador(pg.sprite.Sprite):
 
 		# Animação parado
 		if not self.pulando and not self.andando and not self.atirando:
-			if self.frame_atual == 4:
-				agora -= 3000
-			if agora - self.ultimo_update > 50:
+
+			if agora - self.ultimo_update > 150:
 				self.ultimo_update = agora
 				self.frame_atual = (self.frame_atual + 1) % len(self.frames_parados_r)
 				bottom = self.rect.bottom
