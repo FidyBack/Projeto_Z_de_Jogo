@@ -157,9 +157,8 @@ class Jogo:
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							if personagem == self.jogador:
-								print('oi')
 								self.jogador.pulando=False
-							
+				
 
 							
 						elif personagem.velo.y < 0:
@@ -168,7 +167,7 @@ class Jogo:
 							personagem.velo.y = 0
 							
 
-					elif personagem.rect.top < plataforma.rect.bottom - 22 and personagem.rect.bottom>plataforma.rect.top + 22:
+					elif personagem.rect.top < plataforma.rect.bottom - 14 and personagem.rect.bottom>plataforma.rect.top + 14:
 						if personagem.velo.x>0:
 							personagem.rect.right = plataforma.rect.left-1
 							personagem.posi=vec(personagem.rect.midbottom)
@@ -268,19 +267,19 @@ class Jogo:
 			for personagem in self.moviveis:
 				personagem.posi.x -= self.jogador.velo.x
 
-		# Se ele for para cima
-		if self.jogador.rect.centery <= altura * 1 / 4:
-			for nao_movivel in self.nao_moviveis:
-				nao_movivel.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
-			for personagem in self.moviveis:
-				personagem.posi.y-=(self.jogador.velo.y + self.jogador.acele.y/2)
+		# # Se ele for para cima
+		# if self.jogador.rect.centery <= altura * 1 / 4:
+		# 	for nao_movivel in self.nao_moviveis:
+		# 		nao_movivel.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
+		# 	for personagem in self.moviveis:
+		# 		personagem.posi.y-=(self.jogador.velo.y + self.jogador.acele.y/2)
 
-		# Se ele for para baixo
-		elif self.jogador.rect.centery >= altura * 3 / 4:
-			for nao_movivel in self.nao_moviveis:
-				nao_movivel.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
-			for personagem in self.moviveis:
-				personagem.posi.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
+		# # Se ele for para baixo
+		# elif self.jogador.rect.centery >= altura * 3 / 4:
+		# 	for nao_movivel in self.nao_moviveis:
+		# 		nao_movivel.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
+		# 	for personagem in self.moviveis:
+		# 		personagem.posi.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
 
 		# ================================================================================================================
 		# Queda e Fim de Jogo
