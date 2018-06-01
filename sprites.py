@@ -17,6 +17,7 @@ from configuracoes import *
 vec = pg.math.Vector2
 import math
 from random import randrange
+from PIL import ImageEnhance
 
 
 # ================================================================================================================
@@ -51,6 +52,9 @@ class Jogador(pg.sprite.Sprite):
 		self.atirando = False
 		self.temporizador = 0
 		self.limite_vida=20
+		self.numero_granada=10
+		self.arrastando=False
+		self.machucado=False
 		# Animação
 		self.ultimo_update = 0
 		self.frame_atual = 0
@@ -72,7 +76,7 @@ class Jogador(pg.sprite.Sprite):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.caracters.add(self)
 		self.jogo.moviveis.add(self)
-
+		self.jogo.caintes.add(self)
 	# Imagens da animação
 	def carregar_imagens(self):
 		# Parado
@@ -149,18 +153,25 @@ class Jogador(pg.sprite.Sprite):
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
 		self.rect.midbottom = self.posi
+		# Máscara
+		self.mask = pg.mask.from_surface(self.image)
 
 	# Animação
 	def animacao(self):
 		agora = pg.time.get_ticks()
+		if self.machucado:
+			pass
 
-		if self.pulando and not self.atirando:
+
+		elif self.pulando and not self.atirando:
+
 			if agora - self.ultimo_update > 40:
 				self.ultimo_update = agora
 				if self.frame_atual<4:
 					self.frame_atual = (self.frame_atual + 1) % len(self.frames_pulando_l)
 				else:
 					self.frame_atual=4
+	
 				bottom = self.rect.bottom
 				if self.olhar_direita:
 					self.image = self.frames_pulando_r[self.frame_atual]
@@ -183,9 +194,9 @@ class Jogador(pg.sprite.Sprite):
 				self.rect.bottom = bottom
 
 		# Animação parado
-		if not self.pulando and not self.andando and not self.atirando:
+		elif not self.pulando and not self.andando and not self.atirando:
 
-			if agora - self.ultimo_update > 150:
+			if agora - self.ultimo_update > 0:
 				self.ultimo_update = agora
 				self.frame_atual = (self.frame_atual + 1) % len(self.frames_parados_r)
 				bottom = self.rect.bottom
@@ -195,6 +206,7 @@ class Jogador(pg.sprite.Sprite):
 					self.image = self.frames_parados_l[self.frame_atual]
 				self.rect = self.image.get_rect()
 				self.rect.bottom = bottom
+				
 
 	# Pulo
 	def pulo(self):
@@ -206,8 +218,8 @@ class Jogador(pg.sprite.Sprite):
 			self.andando = False
 			self.pulando=True
 			self.frame_atual=0
-		else:
-			self.pulando=False
+
+
 
 	# Pulo pequeno
 	def pulo_parar_meio(self):
@@ -276,6 +288,7 @@ class Tiro(pg.sprite.Sprite):
 		self.jogo.tiros.add(self)
 
 	def update(self):
+		self.posi=vec(self.rect.center)
 		if self.olhar_direita:
 			self.velo.x = self.vel
 		else:
@@ -288,6 +301,8 @@ class Tiro(pg.sprite.Sprite):
 		self.posi += self.velo + self.acele/2 
 		self.posi.x += self.velo_personagem.x
 		self.rect.center = self.posi
+		# Colisão com máscara
+		self.mask = pg.mask.from_surface(self.image) 
 
 	def eventos(self):
 		pass
@@ -328,8 +343,10 @@ class Inim(pg.sprite.Sprite):
 		self.jogo.inimigos.add(self)
 		self.jogo.interacoes.add(self)
 		self.jogo.moviveis.add(self)
+		self.jogo.caintes.add(self)
 
 	def update(self):
+		self.posi=vec(self.rect.midbottom)
 		if self.velo.x > 0:
 			self.direita = True
 		elif self.velo.x < 0:
@@ -338,6 +355,8 @@ class Inim(pg.sprite.Sprite):
 			self.velo += self.acele
 			self.posi += self.velo + 0.5 * self.acele
 		self.rect.midbottom = self.posi
+		# Colisão com máscara
+		self.mask = pg.mask.from_surface(self.image) 
 		self.eventos()
 
 	def eventos(self):
@@ -395,6 +414,24 @@ class Robo(Inim):
 		 	self.contador = 0
 		
 		self.contador += 1
+class Voador(Inim):
+	def __init__(self,jogo,posix,posiy):
+		Inim.__init__(self, jogo , 392, 117, 30, 30, 1, 1, 3, 5, posix, posiy, vec(0,0), vec(0, 0))
+		self.total_velo=4
+
+	def eventos(self):
+		total=(abs(self.rect.centerx-self.jogo.jogador.rect.centerx)**2+abs(self.rect.centery-self.jogo.jogador.rect.centery)**2)**0.5
+		if total==0:
+			total=1
+		horizontal=(self.jogo.jogador.rect.centerx-self.rect.centerx)/total
+		vertical=(self.jogo.jogador.rect.centery-self.rect.centery)/total
+
+		self.velo=self.total_velo*vec(horizontal,vertical)
+class Apelao(Inim):
+	def __init__(self,jogo,posix,posiy):
+		Inim.__init__(self, jogo , 392, 117, 30, 30, 1, 1, 3, 5, posix, posiy, vec(0,0), vec(0, 0))
+		self.contador=0
+
 
 class Mineirinho(Inim):
 	def __init__(self, jogo, posix, posiy):
@@ -617,25 +654,81 @@ class Powerup(pg.sprite.Sprite):
 	def __init__(self,jogo,posicao):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.posicao = vec(posicao[:])
+		self.posi = vec(posicao[:])
 		self.image = pg.Surface((32,32))
 		self.image.fill(vermelho)
 		self.rect = self.image.get_rect()
-		self.rect.midbottom = self.posicao
+		self.rect.midbottom = self.posi
 		self.tempo = 300
-		self.vida = 5
+		self.aleatorio=randrange(10)
+		self.velo=vec(0,0)
+		self.acele=vec(0,0.5)
 
 		# Adição nos grupos
-		if randrange(5)==1:
+		if self.aleatorio==1 or self.aleatorio==2 :
 			self.jogo.todos_sprites.add(self)
 			self.jogo.interacoes.add(self)
 			self.jogo.powerup.add(self)
 			self.jogo.nao_moviveis.add(self)
+			self.jogo.caintes.add(self)
 
 
 	def update(self):
-		
+		self.posi=self.rect.midbottom
+		self.velo+=self.acele
+		self.posi+=self.velo+self.acele/2
+		self.rect.midbottom=self.posi
 		self.tempo-=1
 		if self.tempo==0:
 			self.kill()
+
+
+	def atributo(self):
+		if self.aleatorio==0 or self.aleatorio==1:
+			self.jogo.jogador.vida+=5
+		elif self.aleatorio==2:
+			self.jogo.jogador.numero_granada+=10
+
+class Bloco_Cai(pg.sprite.Sprite):
+	def __init__(self,jogo,posicao):
+		pg.sprite.Sprite.__init__(self)
+		self.jogo = jogo
+		self.posi = vec(posicao[:])
+		self.rect = self.image.get_rect()
+
+		# Adição nos grupos
+		if self.aleatorio==1 or self.aleatorio==2 :
+			self.jogo.todos_sprites.add(self)
+			self.jogo.interacoes.add(self)
+			self.jogo.powerup.add(self)
+			self.jogo.nao_moviveis.add(self)
+			self.jogo.caintes.add(self)
+
+
+	def update(self):
+		self.posi=self.rect.midbottom
+		self.velo+=self.acele
+		self.posi+=self.velo+self.acele/2
+		self.rect.midbottom=self.posi
+		self.tempo-=1
+		if self.tempo==0:
+			self.kill()
+# class Image_Enhancer:
+# 	def __init__(self,image,parametro,quantidade):
+# 		self.enhance=ImageEnhance
+# 		self.image=Image.open(image)
+# 		self.parametro=parametro
+# 		self.quantidade=quantidade
+# 		if self.parametro=='color':
+# 			self.color()
+# 		elif self.parametro=='brightness':
+# 			self.brightness()
+# 		elif self.parametro=='contrast':
+# 			self.contrast()
+# 	def color(self):
+# 		self.enhance.Color.enhance(self.image,self.quantidade)
+# 	def brightness(self):
+# 		self.enhance.Brightness.enhance(self.image,self.quantidade)
+# 	def contrast(self):
+# 		self.enhance.Contrast.enhance(self.image,self.quantidade)
 
