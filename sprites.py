@@ -17,6 +17,7 @@ from configuracoes import *
 vec = pg.math.Vector2
 import math
 from random import randrange
+from PIL import ImageEnhance
 
 
 # ================================================================================================================
@@ -50,7 +51,10 @@ class Jogador(pg.sprite.Sprite):
 		self.pulando = False
 		self.atirando = False
 		self.temporizador = 0
-		self.limite_vida = 20
+		self.limite_vida=20
+		self.numero_granada=10
+		self.arrastando=False
+		self.machucado=False
 		# Animação
 		self.ultimo_update = 0
 		self.frame_atual = 0
@@ -72,15 +76,17 @@ class Jogador(pg.sprite.Sprite):
 		self.jogo.todos_sprites.add(self)
 		self.jogo.caracters.add(self)
 		self.jogo.moviveis.add(self)
-
+		self.jogo.caintes.add(self)
+		
 	# Imagens da animação
 	def carregar_imagens(self):
 		# Parado
-		self.frames_parados_r = [self.jogo.spritesheet_personagem.get_image(138, 116, 30, 34, 2, 2),
-								self.jogo.spritesheet_personagem.get_image(138, 80, 30, 34, 2, 2),
-								self.jogo.spritesheet_personagem.get_image(106, 241, 30, 34, 2, 2),
-								self.jogo.spritesheet_personagem.get_image(138, 80, 30, 34, 2, 2),
-								self.jogo.spritesheet_personagem.get_image(138, 116, 30, 34, 2, 2),]
+		self.frames_parados_r = [	self.jogo.spritesheet_personagem.get_image(138, 116, 30, 34, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(138, 80, 30, 34, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(106, 241, 30, 34, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(138, 80, 30, 34, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(138, 116, 30, 34, 2, 2),
+									]
 
 		self.frames_parados_l = []
 		for frame_parado in self.frames_parados_r:
@@ -88,16 +94,17 @@ class Jogador(pg.sprite.Sprite):
 			self.frames_parados_l.append(pg.transform.flip(frame_parado, True, False))
 
 		# Andando
-		self.frames_andando_r = [self.jogo.spritesheet_personagem.get_image(305, 0, 20, 34, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(285, 308, 23, 35, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(136, 232, 32, 34, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(93, 267, 34, 33, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(247, 47, 26, 33, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(294, 94, 22, 34, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(283, 441, 25, 35, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(183, 36, 30, 34, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(114, 0, 34, 33, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(226, 279, 29, 33, 2, 2),]
+		self.frames_andando_r = [	self.jogo.spritesheet_personagem.get_image(257, 0, 20, 34, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(232, 0, 23, 35, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(73, 0, 32, 34, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(36, 211, 34, 33, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(201, 258, 26, 33, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(257, 204, 22, 34, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(230, 204, 25, 35, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(107, 0, 30, 34, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(36, 246, 34, 33, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(139, 36, 29, 33, 2, 2),
+									]
 
 		self.frames_andando_l = []
 		for frame_andando in self.frames_andando_r:
@@ -105,12 +112,13 @@ class Jogador(pg.sprite.Sprite):
 			self.frames_andando_l.append(pg.transform.flip(frame_andando, True, False))
 
 		# Pulando
-		self.frames_pulando_r = [self.jogo.spritesheet_personagem.get_image(286, 241, 24, 37, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(312, 181, 15, 41, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(310, 364, 19, 46, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(287, 163, 23, 41, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(257, 264, 27, 42, 2, 2),
-									self.jogo.spritesheet_personagem.get_image(284, 389, 24, 38, 2, 2),
+		self.frames_pulando_r = [	self.jogo.spritesheet_personagem.get_image(231, 72, 24, 37, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(257, 84, 15, 41, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(257, 36, 19, 46, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(256, 241, 23, 41, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(201, 166, 27, 42, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(231, 111, 24, 38, 2, 2),
+									self.jogo.spritesheet_personagem.get_image(37, 176, 30, 32, 2, 2),
 									]
 
 		self.frames_pulando_l = []
@@ -124,7 +132,7 @@ class Jogador(pg.sprite.Sprite):
 
 		# Esquerda
 		keys = pg.key.get_pressed()
-		if keys[pg.K_a]:
+		if keys[pg.K_a] or keys[pg.K_LEFT]:
 			self.velo.x = -velo_jogador
 			self.andando = True
 			self.olhar_direita = False
@@ -149,13 +157,17 @@ class Jogador(pg.sprite.Sprite):
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
 		self.rect.midbottom = self.posi
+		# Máscara
+		self.mask = pg.mask.from_surface(self.image)
 
 	# Animação
 	def animacao(self):
 		agora = pg.time.get_ticks()
+		if self.machucado:
+			pass
 
 		# Pulando
-		if self.pulando and not self.atirando:
+		elif self.pulando and not self.atirando:
 			if agora - self.ultimo_update > 40:
 				self.ultimo_update = agora
 				if self.frame_atual < 4:
@@ -184,7 +196,7 @@ class Jogador(pg.sprite.Sprite):
 				self.rect.bottom = bottom
 
 		# Animação parado
-		if not self.pulando and not self.andando and not self.atirando:
+		elif not self.pulando and not self.andando and not self.atirando:
 			if agora - self.ultimo_update > 150:
 				self.ultimo_update = agora
 				self.frame_atual = (self.frame_atual + 1) % len(self.frames_parados_r)
@@ -195,6 +207,7 @@ class Jogador(pg.sprite.Sprite):
 					self.image = self.frames_parados_l[self.frame_atual]
 				self.rect = self.image.get_rect()
 				self.rect.bottom = bottom
+				
 
 	# Pulo
 	def pulo(self):
@@ -206,8 +219,6 @@ class Jogador(pg.sprite.Sprite):
 			self.andando = False
 			self.pulando=True
 			self.frame_atual=0
-		else:
-			self.pulando=False
 
 	# Pulo pequeno
 	def pulo_parar_meio(self):
@@ -276,6 +287,7 @@ class Tiro(pg.sprite.Sprite):
 		self.jogo.tiros.add(self)
 
 	def update(self):
+		self.posi=vec(self.rect.center)
 		if self.olhar_direita:
 			self.velo.x = self.vel
 		else:
@@ -288,6 +300,8 @@ class Tiro(pg.sprite.Sprite):
 		self.posi += self.velo + self.acele/2 
 		self.posi.x += self.velo_personagem.x
 		self.rect.center = self.posi
+		# Colisão com máscara
+		self.mask = pg.mask.from_surface(self.image) 
 
 	def eventos(self):
 		pass
@@ -328,8 +342,10 @@ class Inim(pg.sprite.Sprite):
 		self.jogo.inimigos.add(self)
 		self.jogo.interacoes.add(self)
 		self.jogo.moviveis.add(self)
+		self.jogo.caintes.add(self)
 
 	def update(self):
+		self.posi=vec(self.rect.midbottom)
 		if self.velo.x > 0:
 			self.direita = True
 		elif self.velo.x < 0:
@@ -338,6 +354,8 @@ class Inim(pg.sprite.Sprite):
 			self.velo += self.acele
 			self.posi += self.velo + 0.5 * self.acele
 		self.rect.midbottom = self.posi
+		# Colisão com máscara
+		self.mask = pg.mask.from_surface(self.image) 
 		self.eventos()
 
 	def eventos(self):
@@ -374,7 +392,7 @@ class Robo(Inim):
 		Inim.__init__(self, jogo, 383, 244, 33, 50, 1, 1, 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
 		self.contador = 0
 		self.veltiro = vec(10, 0)
-		self.velx = 0
+		self.velx = 5
 		self.posicao_arma = vec(50, -110)
 		self.tiro = 0
 
@@ -384,7 +402,7 @@ class Robo(Inim):
 		else:
 			self.posicao_arma.x = -50
 		if self.contador == 120:
-		 	self.velo.x = 0
+		 	self.velo.x = self.velx
 		 	self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 4, 4, 5, self.posi + self.posicao_arma, self.veltiro, vec(0, 0), self.velo, self.direita, fps)
 		 	self.jogo.tiro_inimigo.add(self.tiro)
 
@@ -395,6 +413,24 @@ class Robo(Inim):
 		 	self.contador = 0
 		
 		self.contador += 1
+class Voador(Inim):
+	def __init__(self,jogo,posix,posiy):
+		Inim.__init__(self, jogo , 392, 117, 30, 30, 1, 1, 3, 5, posix, posiy, vec(0,0), vec(0, 0))
+		self.total_velo=4
+
+	def eventos(self):
+		total=(abs(self.rect.centerx-self.jogo.jogador.rect.centerx)**2+abs(self.rect.centery-self.jogo.jogador.rect.centery)**2)**0.5
+		if total==0:
+			total=1
+		horizontal=(self.jogo.jogador.rect.centerx-self.rect.centerx)/total
+		vertical=(self.jogo.jogador.rect.centery-self.rect.centery)/total
+
+		self.velo=self.total_velo*vec(horizontal,vertical)
+class Apelao(Inim):
+	def __init__(self,jogo,posix,posiy):
+		Inim.__init__(self, jogo , 392, 117, 30, 30, 1, 1, 3, 5, posix, posiy, vec(0,0), vec(0, 0))
+		self.contador=0
+
 
 class Mineirinho(Inim):
 	def __init__(self, jogo, posix, posiy):
@@ -412,15 +448,15 @@ class Mineirinho(Inim):
 		esta_esquerda=self.posi.x<self.jogo.jogador.posi.x-70
 
 		if (esta_direita and not self.jogo.jogador.olhar_direita) or (esta_esquerda and self.jogo.jogador.olhar_direita) or self.ataque:
-			self.invencivel=False
+			self.invencivel = False
 			if esta_direita:
-				self.velo.x=-2
+				self.velo.x = -2
 			elif esta_esquerda:
-				self.velo.x=2
+				self.velo.x = 2
 			else:
-				self.velo.x=0
+				self.velo.x = 0
 			 	
-			self.contador+=1
+			self.contador += 1
 		else:
 			self.invencivel=True
 			self.contador=0
@@ -438,7 +474,7 @@ class Mineirinho(Inim):
 
 class Pb(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo, 116, 452, 56, 55, 1, 1, 0, 2, posix, posiy, vec(0, 0), vec(0, grav_jogador))
+		Inim.__init__(self, jogo, 116, 452, 56, 55, 1, 1, 0, 2, posix, posiy, vec(3, 0), vec(0, grav_jogador))
 		self.contador = 0
 		self.contato = False
 		self.explode = True
@@ -450,9 +486,9 @@ class Pb(Inim):
 					self.contato = True
 		else:
 			if self.posi.x > self.jogo.jogador.posi.x:
-				self.velo.x =- 0
+				self.velo.x =- 3
 			else:
-				self.velo.x = 0
+				self.velo.x = 3
 
 		if self.contato:
 			self.velo.x = 0
@@ -615,25 +651,80 @@ class Powerup(pg.sprite.Sprite):
 	def __init__(self,jogo,posicao):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.posicao = vec(posicao[:])
+		self.posi = vec(posicao[:])
 		self.image = pg.Surface((32,32))
 		self.image.fill(vermelho)
 		self.rect = self.image.get_rect()
-		self.rect.midbottom = self.posicao
+		self.rect.midbottom = self.posi
 		self.tempo = 300
-		self.vida = 5
+		self.aleatorio=randrange(10)
+		self.velo=vec(0,0)
+		self.acele=vec(0,0.5)
 
 		# Adição nos grupos
-		if randrange(5)==1:
+		if self.aleatorio==1 or self.aleatorio==2 :
 			self.jogo.todos_sprites.add(self)
 			self.jogo.interacoes.add(self)
 			self.jogo.powerup.add(self)
 			self.jogo.nao_moviveis.add(self)
-
+			self.jogo.caintes.add(self)
 
 	def update(self):
-		
+		self.posi=self.rect.midbottom
+		self.velo+=self.acele
+		self.posi+=self.velo+self.acele/2
+		self.rect.midbottom=self.posi
 		self.tempo-=1
 		if self.tempo==0:
 			self.kill()
+
+	def atributo(self):
+		if self.aleatorio==0 or self.aleatorio==1:
+			self.jogo.jogador.vida+=5
+		elif self.aleatorio==2:
+			self.jogo.jogador.numero_granada+=10
+
+class Bloco_Cai(pg.sprite.Sprite):
+	def __init__(self,jogo,posicao):
+		pg.sprite.Sprite.__init__(self)
+		self.jogo = jogo
+		self.posi = vec(posicao[:])
+		self.rect = self.image.get_rect()
+
+		# Adição nos grupos
+		if self.aleatorio==1 or self.aleatorio==2 :
+			self.jogo.todos_sprites.add(self)
+			self.jogo.interacoes.add(self)
+			self.jogo.powerup.add(self)
+			self.jogo.nao_moviveis.add(self)
+			self.jogo.caintes.add(self)
+
+
+	def update(self):
+		self.posi=self.rect.midbottom
+		self.velo+=self.acele
+		self.posi+=self.velo+self.acele/2
+		self.rect.midbottom=self.posi
+		self.tempo-=1
+		if self.tempo==0:
+			self.kill()
+
+# class Image_Enhancer:
+# 	def __init__(self,image,parametro,quantidade):
+# 		self.enhance=ImageEnhance
+# 		self.image=Image.open(image)
+# 		self.parametro=parametro
+# 		self.quantidade=quantidade
+# 		if self.parametro=='color':
+# 			self.color()
+# 		elif self.parametro=='brightness':
+# 			self.brightness()
+# 		elif self.parametro=='contrast':
+# 			self.contrast()
+# 	def color(self):
+# 		self.enhance.Color.enhance(self.image,self.quantidade)
+# 	def brightness(self):
+# 		self.enhance.Brightness.enhance(self.image,self.quantidade)
+# 	def contrast(self):
+# 		self.enhance.Contrast.enhance(self.image,self.quantidade)
 

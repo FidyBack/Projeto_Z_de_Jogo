@@ -32,7 +32,6 @@ grav_jogador = 0.8
 pulo_jogador = 13
 velo_jogador = 9
 
-
 # Propriedades do inimigo
 grav_inimigo = 0.8
 
@@ -47,4 +46,4 @@ vermelho = (255, 0, 0)
 discurso = 'Durante a guerra que se segue, o Império Xerista,  \
 está perdendo as suas forças pouco a pouco. Para contornar isso, seu líder, \
 Herold Smiter, visa as amoebas do infinito. \
-É seu dever, Soldier, impedir isso e defender a paz no mundo. Contamos com você...'
+É seu dever, Soldier, impedir isso e defender a paz no mundo. Contamos com você ...'

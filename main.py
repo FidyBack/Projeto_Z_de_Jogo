@@ -20,6 +20,7 @@ import math
 from random import randrange
 from os import path
 from mapa import mapa
+from PIL import ImageEnhance
 class Jogo:
 	def __init__(self):
 		pg.init()
@@ -58,6 +59,7 @@ class Jogo:
 		self.tiro_inimigo = pg.sprite.Group()
 		self.powerup = pg.sprite.Group()
 		self.nao_moviveis= pg.sprite.Group()
+		self.caintes=pg.sprite.Group()
 
 		# ================================================================================================================
 		# Adição dos sprites no jogo
@@ -74,7 +76,7 @@ class Jogo:
 						Plataforma(self, 48 * (x-1), 48 * (y-1))
 				else:
 					if bloco == 'P':
-						Pedra(self, 48 * (x-1), 48 * (y-1))
+						Voador(self, 48 * (x-1), 48 * (y-1))
 					elif bloco == 'B':
 						Pb(self, 48 * (x-1), 48 * (y-1))
 					elif bloco == 'R':
@@ -129,16 +131,16 @@ class Jogo:
 				if evento.key == pg.K_SPACE:
 					self.jogador.pulo_parar_meio()
 
-
 		if self.jogador.tiro_reto and self.jogador.contador_tiro >= 6:
 			Tiro_reto(self, self.jogador.posi + self.jogador.posicao_arma[:], self.jogador.vel_tiro_reto[:], self.jogador.velo[:], self.jogador.olhar_direita)
 			self.jogador.contador_tiro = 0
 			self.jogador.tiro_reto = False
 
-		if self.jogador.tiro_parabola and self.jogador.contador_tiro >= 6:
+		if self.jogador.tiro_parabola and self.jogador.contador_tiro >= 6 and self.jogador.numero_granada>0:
 			Tiro_parabola(self, self.jogador.posi + self.jogador.posicao_arma[:], self.jogador.vel_tiro_parabola[:], self.jogador.velo[:], self.jogador.olhar_direita)
 			self.jogador.contador_tiro = 0
 			self.jogador.tiro_parabola = False
+			self.jogador.numero_granada-=1
 
 	def update(self):
 		self.todos_sprites.update()
@@ -146,7 +148,7 @@ class Jogo:
 		# Personagem e inimigo
 		# ================================================================================================================
 
-		for personagem in self.caracters:
+		for personagem in self.caintes:
 			impacto = pg.sprite.spritecollide(personagem, self.plataforma, False)
 			if impacto:
 
@@ -160,6 +162,8 @@ class Jogo:
 							personagem.velo.y = 0
 							if personagem == self.jogador:
 								self.jogador.pulando=False
+
+
 							
 						elif personagem.velo.y < 0 and personagem.rect.top==intersect.top:
 
@@ -186,19 +190,20 @@ class Jogo:
 
 
 			# morte por falta de vidas do personagem e dos inimigos
-			if personagem.vida <= 0:
-
-				#alteration
-				if personagem in self.inimigos:
-					Powerup(self, personagem.posi)
-				personagem.kill()
+			if personagem in self.caracters:
+				if personagem.vida <= 0:
+	
+					if personagem in self.inimigos:
+						Powerup(self,personagem.posi)
+					personagem.kill()
 
 		# Colisão com o inimigo
-		colisao_mob = pg.sprite.spritecollide(self.jogador, self.inimigos, False)
+		colisao_mob = pg.sprite.spritecollide(self.jogador, self.inimigos, False, pg.sprite.collide_mask)
 		if colisao_mob:
 			if not self.jogador.invencivel:
 				self.jogador.vida -= colisao_mob[0].dano
-				self.jogador.invencivel = True
+				if colisao_mob[0].dano!=0:
+					self.jogador.invencivel = True
 
 		# Invencibilidade após a colisão com o inimigo
 		if self.jogador.invencivel:
@@ -218,9 +223,8 @@ class Jogo:
 
 		# Colisão tiro - inimigo
 		for inimigo in self.inimigos:
-			tiro_para_inimigo = pg.sprite.spritecollide(inimigo, self.tiro_personagem, False)
+			tiro_para_inimigo = pg.sprite.spritecollide(inimigo, self.tiro_personagem, False, pg.sprite.collide_mask)
 			if tiro_para_inimigo:
-				inimigo.vida -= tiro_para_inimigo[0].dano
 				tiro_para_inimigo[0].kill()
 				if not inimigo.invencivel:
 					inimigo.vida -= tiro_para_inimigo[0].dano
@@ -235,14 +239,16 @@ class Jogo:
 			if not self.jogador.invencivel:
 				self.jogador.vida -= colisao_tiro[0].dano
 				self.jogador.invencivel = True
-		#alteration
+
 		colisao_powerup = pg.sprite.spritecollide(self.jogador, self.powerup, False)
 		if colisao_powerup:
 			for powerup in colisao_powerup:
-				self.jogador.vida+=powerup.vida
+				powerup.atributo()
 				powerup.kill()
-				if self.jogador.vida>self.jogador.limite_vida:
-					self.jogador.vida=self.jogador.limite_vida
+		if self.jogador.vida>self.jogador.limite_vida:
+			self.jogador.vida=self.jogador.limite_vida
+		elif self.jogador.vida<0:
+			self.jogador.vida=0
 
 		for powerup in self.powerup:
 			colisao_powerup_plataforma=pg.sprite.spritecollide(powerup, self.plataforma, False)
@@ -250,38 +256,34 @@ class Jogo:
 				powerup.velo.y = 0
 				powerup.rect.bottom = colisao_powerup_plataforma[0].rect.top
 
-
 		# ================================================================================================================
 		# Câmera
 		# ================================================================================================================
 		
 		# Se ele for para frente
 		if self.jogador.rect.centerx > largura * 0.5:
-			for nao_movivel in self.nao_moviveis:
-				nao_movivel.rect.x -= self.jogador.velo.x
-			for personagem in self.moviveis:
-				personagem.posi.x-=self.jogador.velo.x
+			self.jogador.posi.x-=self.jogador.velo.x
+			for personagem in self.todos_sprites:
+				personagem.rect.x-=self.jogador.velo.x
 
 		# Se ele for para trás
 		elif self.jogador.rect.centerx < largura * 0.5:
-			for nao_movivel in self.nao_moviveis:
-				nao_movivel.rect.x -= self.jogador.velo.x
-			for personagem in self.moviveis:
-				personagem.posi.x -= self.jogador.velo.x
+			self.jogador.posi.x-=self.jogador.velo.x
+			for personagem in self.todos_sprites:
+				personagem.rect.x-=self.jogador.velo.x
 
 		# Se ele for para cima
-		if self.jogador.rect.centery <= altura * 1 / 8:
-			for nao_movivel in self.nao_moviveis:
-				nao_movivel.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
-			for personagem in self.moviveis:
-				personagem.posi.y-=(self.jogador.velo.y + self.jogador.acele.y/2)
+		if self.jogador.rect.centery <= altura * 1 / 4:
+			self.jogador.posi.y-= (self.jogador.velo.y + self.jogador.acele.y/2)
+			for personagem in self.todos_sprites:
+				personagem.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
+
 
 		# Se ele for para baixo
 		elif self.jogador.rect.centery >= altura * 3 / 4:
-			for nao_movivel in self.nao_moviveis:
-				nao_movivel.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
-			for personagem in self.moviveis:
-				personagem.posi.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
+			self.jogador.posi.y-= (self.jogador.velo.y + self.jogador.acele.y/2)
+			for personagem in self.todos_sprites:
+				personagem.rect.y -= (self.jogador.velo.y + self.jogador.acele.y/2)
 
 		# ================================================================================================================
 		# Queda e Fim de Jogo
@@ -448,7 +450,7 @@ class Jogo:
 					i += 1
 			self.relogio.tick(fps)
 
-			# Fechando o jogo
+			# Fechando o jogo 
 			for event in pg.event.get():
 				if event.type == pg.QUIT:
 					self.rodando = False
@@ -489,7 +491,7 @@ class Jogo:
 	def desenho(self):
 		self.tela.blit(background, (0, 0))
 		self.todos_sprites.draw(self.tela)
-		self.desenhar_texto('Vida = {}'.format(self.jogador.vida), 20, branco, 50, 0)
+		self.desenhar_texto('Vida = {0}, Granada = {1}'.format(self.jogador.vida,self.jogador.numero_granada), 20, branco, 120, 0)
 		pg.display.flip()
 
 	# Música
@@ -504,6 +506,7 @@ class Jogo:
 		texto_rect = texto_surface.get_rect()
 		texto_rect.midtop = (x, y)
 		self.tela.blit(texto_surface, texto_rect)
+
 
 # ================================================================================================================
 # Looping em sí
