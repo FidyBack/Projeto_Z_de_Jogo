@@ -21,9 +21,11 @@ largura = 576
 altura = 576
 nome_fonte = 'Acknowledge TT (BRK)'
 background = pg.image.load("img/fundo.png")
-spritesheet_inimigos = "sprites_inimigos.png"
-spritesheet_personagem = "sprites_personagem.png"
-spritesheet_plataformas = "sprites_plataformas.png"
+spritesheet_inimigos = "spritesheet_inimigos.png"
+spritesheet_personagem = "spritesheet_personagem.png"
+spritesheet_plataformas = "spritesheet_plataformas.png"
+spritesheet_vida = "spritesheet_vida.png"
+spritesheet_tiros = "spritesheet_tiros.png"
 
 # Propriedades do jogador
 grav_jogador = 0.8

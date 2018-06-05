@@ -1,0 +1,21 @@
+<TextureAtlas imagePath="sprites_tiros.png">
+	<SubTexture name="megamansheet_basic_shoot.png" x="48" y="48" width="8" height="6"/>
+	<SubTexture name="megamansheet_big_shot_1.png" x="82" y="34" width="34" height="32"/>
+	<SubTexture name="megamansheet_big_shot_2.png" x="42" y="90" width="40" height="32"/>
+	<SubTexture name="megamansheet_big_shot_3.png" x="0" y="0" width="46" height="24"/>
+	<SubTexture name="megamansheet_big_shot_4.png" x="0" y="26" width="46" height="29"/>
+	<SubTexture name="megamansheet_big_shot_5.png" x="0" y="90" width="40" height="29"/>
+	<SubTexture name="megamansheet_big_shot_6.png" x="0" y="57" width="42" height="31"/>
+	<SubTexture name="megamansheet_blue_shoot_1.png" x="107" y="120" width="14" height="20"/>
+	<SubTexture name="megamansheet_blue_shoot_2.png" x="82" y="124" width="23" height="16"/>
+	<SubTexture name="megamansheet_blue_shoot_3.png" x="84" y="68" width="27" height="24"/>
+	<SubTexture name="megamansheet_blue_shoot_4.png" x="48" y="0" width="40" height="32"/>
+	<SubTexture name="megamansheet_blue_shoot_5.png" x="90" y="0" width="32" height="32"/>
+	<SubTexture name="megamansheet_green_shoot_1.png" x="110" y="94" width="14" height="14"/>
+	<SubTexture name="megamansheet_green_shoot_2.png" x="84" y="94" width="24" height="24"/>
+	<SubTexture name="megamansheet_green_shoot_3.png" x="48" y="34" width="28" height="12"/>
+	<SubTexture name="megamansheet_green_shoot_4.png" x="44" y="77" width="32" height="8"/>
+	<SubTexture name="megamansheet_green_shoot_5.png" x="42" y="124" width="38" height="12"/>
+	<SubTexture name="megamansheet_green_shoot_6.png" x="0" y="121" width="40" height="19"/>
+	<SubTexture name="megamansheet_green_shoot_7.png" x="44" y="57" width="36" height="18"/>
+</TextureAtlas>

@@ -50,7 +50,7 @@ class Jogador(pg.sprite.Sprite):
 		self.pulando = False
 		self.atirando = False
 		self.temporizador = 0
-		self.limite_vida=20
+		self.limite_vida = 20
 		# Animação
 		self.ultimo_update = 0
 		self.frame_atual = 0
@@ -76,11 +76,11 @@ class Jogador(pg.sprite.Sprite):
 	# Imagens da animação
 	def carregar_imagens(self):
 		# Parado
-		self.frames_parados_r = [self.jogo.spritesheet_personagem.get_image(183, 72, 30, 34, 2, 2),
-								self.jogo.spritesheet_personagem.get_image(191, 411, 30, 34, 2, 2),
-								self.jogo.spritesheet_personagem.get_image(202, 181, 30, 34, 2, 2),
-								self.jogo.spritesheet_personagem.get_image(191, 411, 30, 34, 2, 2),
-								self.jogo.spritesheet_personagem.get_image(183, 72, 30, 34, 2, 2),]
+		self.frames_parados_r = [self.jogo.spritesheet_personagem.get_image(138, 116, 30, 34, 2, 2),
+								self.jogo.spritesheet_personagem.get_image(138, 80, 30, 34, 2, 2),
+								self.jogo.spritesheet_personagem.get_image(106, 241, 30, 34, 2, 2),
+								self.jogo.spritesheet_personagem.get_image(138, 80, 30, 34, 2, 2),
+								self.jogo.spritesheet_personagem.get_image(138, 116, 30, 34, 2, 2),]
 
 		self.frames_parados_l = []
 		for frame_parado in self.frames_parados_r:
@@ -154,13 +154,14 @@ class Jogador(pg.sprite.Sprite):
 	def animacao(self):
 		agora = pg.time.get_ticks()
 
+		# Pulando
 		if self.pulando and not self.atirando:
 			if agora - self.ultimo_update > 40:
 				self.ultimo_update = agora
-				if self.frame_atual<4:
+				if self.frame_atual < 4:
 					self.frame_atual = (self.frame_atual + 1) % len(self.frames_pulando_l)
 				else:
-					self.frame_atual=4
+					self.frame_atual = 4
 				bottom = self.rect.bottom
 				if self.olhar_direita:
 					self.image = self.frames_pulando_r[self.frame_atual]
@@ -184,7 +185,6 @@ class Jogador(pg.sprite.Sprite):
 
 		# Animação parado
 		if not self.pulando and not self.andando and not self.atirando:
-
 			if agora - self.ultimo_update > 150:
 				self.ultimo_update = agora
 				self.frame_atual = (self.frame_atual + 1) % len(self.frames_parados_r)
@@ -252,11 +252,11 @@ class Chao(Plataforma):
 # ================================================================================================================
 
 class Tiro(pg.sprite.Sprite):
-	def __init__(self, jogo,x, y, largura, altura, lar_dim, alt_dim, dano, posicao, velo, acele, velo_personagem, direita, tempo):
+	def __init__(self, jogo, x, y, largura, altura, lar_dim, alt_dim, dano, posicao, velo, acele, velo_personagem, direita, tempo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
 		self.posi = vec(posicao[:])
-		self.image = self.jogo.spritesheet_personagem.get_image(x, y, largura, altura, lar_dim, alt_dim)
+		self.image = self.jogo.spritesheet_tiros.get_image(x, y, largura, altura, lar_dim, alt_dim)
 		self.image.set_colorkey(preto)
 		self.rect = self.image.get_rect()
 		self.velo = vec(velo)
@@ -294,7 +294,7 @@ class Tiro(pg.sprite.Sprite):
 
 class Tiro_reto(Tiro):
 	def __init__(self, jogo, posicao, velo, velo_personagem, direita):
-	 	Tiro.__init__(self, jogo, 90, 338, 36, 18, 2, 2, 1, posicao, velo, vec(0, 0), velo_personagem, direita, fps)
+	 	Tiro.__init__(self, jogo, 44, 57, 36, 18, 2, 2, 1, posicao, velo, vec(0, 0), velo_personagem, direita, fps)
 	 	self.jogo.tiro_personagem.add(self)
 
 class Tiro_parabola(Tiro):
@@ -412,7 +412,6 @@ class Mineirinho(Inim):
 		esta_esquerda=self.posi.x<self.jogo.jogador.posi.x-70
 
 		if (esta_direita and not self.jogo.jogador.olhar_direita) or (esta_esquerda and self.jogo.jogador.olhar_direita) or self.ataque:
-			print('xablau')
 			self.invencivel=False
 			if esta_direita:
 				self.velo.x=-2
@@ -423,7 +422,6 @@ class Mineirinho(Inim):
 			 	
 			self.contador+=1
 		else:
-			print('oi')
 			self.invencivel=True
 			self.contador=0
 			self.velo.x=0

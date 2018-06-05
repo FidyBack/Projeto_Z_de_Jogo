@@ -89,10 +89,7 @@ class Jogo:
 
 		# Jogador adicionado
 		self.jogador = Jogador(self)
-
-		# Boss adicionado
-		# self.boss = Chefe(self, )
-
+		
 		# Rodar
 		self.rodar()
 
@@ -156,8 +153,8 @@ class Jogo:
 				for plataforma in impacto:
 					intersect=personagem.rect.clip(plataforma.rect)
 					
-					if personagem.rect.left < plataforma.rect.right  and personagem.rect.right > plataforma.rect.left and abs(intersect.width)>=abs(intersect.height)   :
-						if personagem.velo.y > 0 and personagem.rect.bottom==intersect.bottom:
+					if personagem.rect.left < plataforma.rect.right  and personagem.rect.right > plataforma.rect.left and abs(intersect.width)>=abs(intersect.height):
+						if personagem.velo.y > 0 and personagem.rect.bottom == intersect.bottom:
 							personagem.rect.bottom = plataforma.rect.top
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
@@ -184,7 +181,7 @@ class Jogo:
 							personagem.rect.left = plataforma.rect.right
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.x = 0
-							if personagem==self.jogador:
+							if personagem == self.jogador:
 								personagem.andando=False
 
 
@@ -193,7 +190,7 @@ class Jogo:
 
 				#alteration
 				if personagem in self.inimigos:
-					Powerup(self,personagem.posi)
+					Powerup(self, personagem.posi)
 				personagem.kill()
 
 		# Colisão com o inimigo
@@ -485,6 +482,8 @@ class Jogo:
 		self.spritesheet_inimigos = Spritesheet(path.join(img_dir, spritesheet_inimigos))
 		self.spritesheet_personagem = Spritesheet(path.join(img_dir, spritesheet_personagem))
 		self.spritesheet_plataformas = Spritesheet(path.join(img_dir, spritesheet_plataformas))
+		self.spritesheet_tiros = Spritesheet(path.join(img_dir, spritesheet_tiros))
+		self.spritesheet_vida = Spritesheet(path.join(img_dir, spritesheet_vida))
 
 	# Desenho do looping
 	def desenho(self):
