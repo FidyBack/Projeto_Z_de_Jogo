@@ -38,6 +38,7 @@ class Jogo:
 		self.nome_da_fonte = pg.font.match_font(nome_fonte)
 		self.rodando = True
 		self.jogando = True
+		self.venceu = False
 		self.load_data()
 
 # ================================================================================================================
@@ -54,6 +55,7 @@ class Jogo:
 		self.todos_sprites = pg.sprite.Group()
 		self.inimigos = pg.sprite.Group()
 		self.plataforma = pg.sprite.Group()
+		self.chefe = pg.sprite.Group()
 		# Inimigo + Plataforma + Ataque
 		self.interacoes = pg.sprite.Group()
 		# Inimigo + Personagem + Ataque
@@ -212,6 +214,9 @@ class Jogo:
 	
 					if personagem in self.inimigos:
 						Powerup(self,personagem.posi)
+						if personagem in self.chefe:
+							self.venceu = True
+
 					personagem.kill()
 
 		# Colisão com o inimigo
@@ -492,6 +497,12 @@ class Jogo:
 			self.desenhar_texto('Tente Novamente', 20, branco, largura/2, altura * 3/4)
 			pg.display.flip()
 
+	def you_win(self):
+			self.tela.fill(preto)
+			self.desenhar_texto("Você Ganhou !!!", 48, branco, largura/2, altura/2)
+			pg.display.flip()
+
+
 # ================================================================================================================
 # Funções Suporte
 # ================================================================================================================
@@ -540,4 +551,6 @@ while g.rodando:
 	if not g.jogando and g.rodando:
 		g.mostrar_tela_final("img/game_over.png", "press any key to continue")
 
+	if not g.jogando and g.rodando and g.venceu:
+		g.you_win
 pg.quit()

@@ -542,7 +542,8 @@ class Chefe(Inim):
 			self.duas_maos=0
 			self.ataque=0
 			self.n_ataque=0
-			
+			self.jogo.chefe.add(self)
+	
 		def eventos(self):
 			if self.modo==0:
 				if self.contador <= 60:
