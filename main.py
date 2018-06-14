@@ -5,7 +5,14 @@ Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
 Canal no youtube: https://www.youtube.com/channel/UCNaPQ5uLX5iIEHUCLmfAgKg
 Playlist usada para essa programação: https://www.youtube.com/playlist?list=PLsk-HSGFjnaG-BwZkuAOcVwWldfCLu1pq
 Fontes feitas por Brian Kent (Ænigma) 
-
+Imagens:
+	https://opengameart.org/content/rock-0
+	https://www.reddit.com/r/PixelArt/comments/5nsr4e/newbieccmario_bobomb_walk_cycle/
+	https://thehunterdrake.deviantart.com/art/Overwatch-Bastion-Sprite-Sheet-619616537
+	http://www.sprites-inc.co.uk/sprite.php?local=Classic/MM3/Enemy/
+	http://www.angelfire.com/mn2/ryuujin/sprites/megamanx.gif
+	https://br.pinterest.com/pin/131237776614571895/?lp=true
+	https://www.pixilart.com/art/pixel-heart-icon-1e12b04d25f94d7
 
 Jogo feito em 2018
 
