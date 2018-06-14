@@ -28,12 +28,12 @@ spritesheet_vida = "spritesheet_vida.png"
 spritesheet_tiros = "spritesheet_tiros.png"
 
 # Propriedades do jogador
-grav_jogador = 0.8
-pulo_jogador = 13
+grav_jogador = 1
+pulo_jogador = 15
 velo_jogador = 9
 
 # Propriedades do inimigo
-grav_inimigo = 0.8
+grav_inimigo = 1
 
 # Cores
 branco = (255, 255, 255)

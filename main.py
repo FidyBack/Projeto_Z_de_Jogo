@@ -80,16 +80,16 @@ class Jogo:
 				else:
 					if bloco == 'P':
 						Pedra(self, 48 * (x-1), 48 * (y-1))
-					# elif bloco == 'B':
-					# 	Pb(self, 48 * (x-1), 48 * (y-1))
-					# elif bloco == 'R':
-					# 	Robo(self, 48*(x-1), 48*(y-1))
-					# elif bloco == 'M':
-					# 	Mineirinho(self, 48*(x-1), 48*(y-1))
-					# elif bloco == 'B':
-					# 	Pb(self, 48*(x-1), 48*(y-1))
-					# elif bloco == 'C':
-					# 	Chefe(self, 48*(x-1), 48*(y-1))
+					elif bloco == 'B':
+						Pb(self, 48 * (x-1), 48 * (y-1))
+					elif bloco == 'R':
+						Robo(self, 48*(x-1), 48*(y-1))
+					elif bloco == 'M':
+						Mineirinho(self, 48*(x-1), 48*(y-1))
+					elif bloco == 'V':
+						Voador(self, 48*(x-1), 48*(y-1))
+					elif bloco == 'C':
+						Chefe(self, 48*(x-1), 48*(y-1))
 		
 
 		# Jogador adicionado
@@ -116,7 +116,7 @@ class Jogo:
 					self.jogando = False
 				self.rodando = False
 
-			# Pulo
+			# Pulod
 			if evento.type == pg.KEYDOWN:
 				if evento.key == pg.K_SPACE or evento.key == pg.K_w or evento.key == pg.K_UP:
 					self.jogador.pulo()
@@ -250,6 +250,10 @@ class Jogo:
 			if not self.jogador.invencivel:
 				self.jogador.vida -= colisao_tiro[0].dano
 				self.jogador.invencivel = True
+
+		# ================================================================================================================
+		# Powerup
+		# ================================================================================================================
 
 		colisao_powerup = pg.sprite.spritecollide(self.jogador, self.powerup, False)
 		if colisao_powerup:

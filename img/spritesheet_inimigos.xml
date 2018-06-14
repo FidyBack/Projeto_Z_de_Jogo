@@ -1,32 +1,13 @@
-<TextureAtlas imagePath="sprites_inimigos.png">
-	<SubTexture name="fdfds.png" x="0" y="192" width="190" height="200"/>
-	<SubTexture name="fff.png" x="0" y="0" width="190" height="190"/>
-	<SubTexture name="fgdfdds.png" x="192" y="212" width="190" height="200"/>
-	<SubTexture name="mm3_enemysheet_01.png" x="0" y="394" width="19" height="12"/>
-	<SubTexture name="mm3_enemysheet_02.png" x="21" y="394" width="19" height="16"/>
-	<SubTexture name="mm3_enemysheet_03.png" x="207" y="446" width="19" height="20"/>
-	<SubTexture name="mm3_enemysheet_04.png" x="175" y="490" width="21" height="20"/>
-	<SubTexture name="mm3_enemysheet_05.png" x="198" y="490" width="20" height="20"/>
-	<SubTexture name="oie_transparentvcdvdc.png" x="192" y="0" width="190" height="210"/>
-	<SubTexture name="overwatch_bastion_sprite_sheet_by_thehunterdrake-da8wj6h_22.png" x="0" y="414" width="46" height="26"/>
-	<SubTexture name="overwatch_bastion_sprite_sheet_by_thehunterdrake-da8wj6h_25.png" x="0" y="442" width="45" height="27"/>
-	<SubTexture name="overwatch_bastion_sprite_sheet_by_thehunterdrake-da8wj6h_26.png" x="0" y="414" width="46" height="26"/>
-	<SubTexture name="overwatch_bastion_sprite_sheet_by_thehunterdrake-da8wj6h_27.png" x="47" y="442" width="45" height="27"/>
-	<SubTexture name="overwatch_bastion_sprite_sheet_by_thehunterdrake-da8wj6h_escada_1.png" x="47" y="442" width="45" height="27"/>
-	<SubTexture name="overwatch_bastion_sprite_sheet_by_thehunterdrake-da8wj6h_escada_2.png" x="0" y="471" width="45" height="28"/>
-	<SubTexture name="overwatch_bastion_sprite_sheet_by_thehunterdrake-da8wj6h_stand_1.png" x="94" y="394" width="32" height="50"/>
-	<SubTexture name="overwatch_bastion_sprite_sheet_by_thehunterdrake-da8wj6h_walk_10.png" x="0" y="471" width="45" height="28"/>
-	<SubTexture name="overwatch_bastion_sprite_sheet_by_thehunterdrake-da8wj6h_walk_11.png" x="0" y="442" width="45" height="27"/>
-	<SubTexture name="rock_round_01.png" x="128" y="414" width="30" height="30"/>
-	<SubTexture name="rock_round_02.png" x="207" y="414" width="30" height="30"/>
-	<SubTexture name="rock_round_03.png" x="143" y="478" width="30" height="30"/>
-	<SubTexture name="rock_round_04.png" x="175" y="426" width="30" height="30"/>
-	<SubTexture name="rock_round_05.png" x="175" y="458" width="30" height="30"/>
-	<SubTexture name="rock_round_06.png" x="79" y="471" width="30" height="30"/>
-	<SubTexture name="rock_round_07.png" x="47" y="471" width="30" height="30"/>
-	<SubTexture name="rock_round_08.png" x="48" y="394" width="30" height="30"/>
-	<SubTexture name="rock_round_09.png" x="111" y="478" width="30" height="30"/>
-	<SubTexture name="rock_round_10.png" x="143" y="446" width="30" height="30"/>
-	<SubTexture name="rock_round_11.png" x="111" y="446" width="30" height="30"/>
-	<SubTexture name="rock_round_11.png" x="160" y="394" width="30" height="30"/>
+<TextureAtlas imagePath="spritesheet_vida.png">
+	<SubTexture name="Head.png" x="0" y="191" width="189" height="137"/>
+	<SubTexture name="bomb.png" x="191" y="286" width="48" height="48"/>
+	<SubTexture name="both.png" x="191" y="191" width="170" height="93"/>
+	<SubTexture name="fly.png" x="193" y="128" width="29" height="43"/>
+	<SubTexture name="hands1.png" x="0" y="0" width="191" height="93"/>
+	<SubTexture name="hands2.png" x="0" y="95" width="191" height="94"/>
+	<SubTexture name="left.png" x="258" y="0" width="60" height="126"/>
+	<SubTexture name="mega.png" x="79" y="336" width="19" height="20"/>
+	<SubTexture name="right.png" x="193" y="0" width="63" height="126"/>
+	<SubTexture name="rock.png" x="47" y="330" width="30" height="30"/>
+	<SubTexture name="tank.png" x="0" y="330" width="45" height="27"/>
 </TextureAtlas>

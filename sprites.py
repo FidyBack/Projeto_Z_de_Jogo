@@ -43,7 +43,7 @@ class Jogador(pg.sprite.Sprite):
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.vida = 20
+		self.vida = 2000
 		self.contador_invencivel = 0
 		self.invencivel = False
 		self.olhar_direita = True
@@ -51,7 +51,7 @@ class Jogador(pg.sprite.Sprite):
 		self.pulando = False
 		self.atirando = False
 		self.temporizador = 0
-		self.limite_vida = 20
+		self.limite_vida = 2000
 		self.numero_granada = 10
 		self.arrastando = False
 		self.machucado = False
@@ -332,7 +332,7 @@ class Tiro(pg.sprite.Sprite):
 		self.jogo.tiros.add(self)
 
 	def update(self):
-		self.posi=vec(self.rect.center)
+		self.posi = vec(self.rect.center)
 		if self.olhar_direita:
 			self.velo.x = self.vel
 		else:
@@ -346,7 +346,10 @@ class Tiro(pg.sprite.Sprite):
 		self.posi.x += self.velo_personagem.x
 		self.rect.center = self.posi
 		# Colisão com máscara
-		self.mask = pg.mask.from_surface(self.image) 
+		self.mask = pg.mask.from_surface(self.image)
+
+		# Inversão
+		Inverte(self,self.image)
 
 	def eventos(self):
 		pass
@@ -366,27 +369,20 @@ class Tiro_parabola(Tiro):
 # ================================================================================================================
 
 class Inim(pg.sprite.Sprite):
-	def __init__(self, jogo, dano, vida, posix, posiy, velo, acele):
+	def __init__(self, jogo, x, y, largura, altura, lar_dim, alt_dim, dano, vida, posix, posiy, velo, acele):
 		pg.sprite.Sprite.__init__(self)
-		# Variáveis e outros
 		self.jogo = jogo
+		self.image = self.jogo.spritesheet_inimigos.get_image(x, y, largura, altura, lar_dim, alt_dim)
+		self.image.set_colorkey(preto)
+		self.rect = self.image.get_rect()
+		self.posi = vec(posix, posiy)
+		self.rect.midbottom = self.posi
 		self.vida = vida
 		self.dano = dano
-		self.direita = True
+		self.olhar_direita = True
 		self.velo = velo
 		self.acele = acele
 		self.invencivel = False
-
-		# Animação
-		self.ultimo_update = 0
-		self.frame_atual = 0
-		self.carregar_imagem()
-		self.image = self.frames_r[0]
-		self.rect = self.image.get_rect()
-		
-		# Posição
-		self.posi = vec(posix, posiy)
-		self.rect.midbottom = self.posi
 
 		# Adição nos grupos
 		self.jogo.caracters.add(self)
@@ -399,83 +395,57 @@ class Inim(pg.sprite.Sprite):
 	def update(self):
 		self.posi=vec(self.rect.midbottom)
 		if self.velo.x > 0:
-			self.direita = True
+			self.olhar_direita = True
 		elif self.velo.x < 0:
-			self.direita = False
+			self.olhar_direita = False
 		if self.posi.x >- 100 and self.posi.x < largura + 100:
 			self.velo += self.acele
 			self.posi += self.velo + 0.5 * self.acele
 		self.rect.midbottom = self.posi
+		
 		# Colisão com máscara
 		self.mask = pg.mask.from_surface(self.image) 
 		self.eventos()
 
-	def eventos(self):
-		pass
+		# Inversão
+		Inverte(self, self.image)
 
-	def carregar_imagem(self):
+	def eventos(self):
 		pass
 
 class Pedra(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo, 3, 5, posix, posiy, vec(-3,0), vec(0, grav_jogador))
-
-	def carregar_imagem(self):
-		self.frames_r = [self.jogo.spritesheet_inimigos.get_image(128, 414, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(207, 414, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(143, 478, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(175, 426, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(175, 458, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(79, 471, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(47, 471, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(48, 394, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(111, 478, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(143, 446, 30, 30, 4, 4),
-								self.jogo.spritesheet_inimigos.get_image(111, 446, 30, 30, 4, 4),]
-
-		for frame in self.frames_r:
-			frame.set_colorkey(preto)
-
-	def eventos(self):
-		agora = pg.time.get_ticks()
-		if agora - self.ultimo_update > 40:
-			self.ultimo_update = agora
-			self.frame_atual = (self.frame_atual + 1) % len(self.frames_r)
-			bottom = self.rect.bottom
-			self.image = self.frames_r[self.frame_atual]
-			self.rect = self.image.get_rect()
-			self.rect.bottom = bottom
+		Inim.__init__(self, jogo , 47, 330, 30, 30, 4, 4, 3, 5, posix, posiy, vec(-3,0), vec(0, grav_jogador))
 
 class Robo(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo, 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
+		Inim.__init__(self, jogo, 0, 330, 45, 27, 2, 2, 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
 		self.contador = 0
 		self.veltiro = vec(10, 0)
 		self.velx = 5
-		self.posicao_arma = vec(50, -110)
+		self.posicao_arma = vec(50, -40)
 		self.tiro = 0
 
 	def eventos(self):
-		if self.direita:
+		if self.olhar_direita:
 			self.posicao_arma.x = 50
 		else:
 			self.posicao_arma.x = -50
 		if self.contador == 120:
 		 	self.velo.x = self.velx
-		 	self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 4, 4, 5, self.posi + self.posicao_arma, self.veltiro, vec(0, 0), self.velo, self.direita, fps)
+		 	self.tiro = Tiro(self.jogo, 82, 124, 23, 16, 2, 2, 5, self.posi + self.posicao_arma, self.veltiro, vec(0, 0), self.velo, self.olhar_direita, fps)
 		 	self.jogo.tiro_inimigo.add(self.tiro)
 
 		elif self.contador == 150:
 		 	self.velx =- self.velx
-		 	self.direita = not self.direita
+		 	self.olhar_direita = not self.olhar_direita
 		 	self.velo.x = self.velx
 		 	self.contador = 0
-		
 		self.contador += 1
 
 class Voador(Inim):
 	def __init__(self,jogo,posix,posiy):
-		Inim.__init__(self, jogo , 392, 117, 30, 30, 1, 1, 3, 5, posix, posiy, vec(0,0), vec(0, 0))
+		Inim.__init__(self, jogo , 193, 128, 29, 43, 2, 2, 3, 5, posix, posiy, vec(0,0), vec(0, 0))
 		self.total_velo=4
 
 	def eventos(self):
@@ -489,18 +459,18 @@ class Voador(Inim):
 
 class Mineirinho(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo,405, 32, 20, 19, 2, 2, 3, 2, posix, posiy, vec(-2, 0), vec(0, grav_jogador))
-		self.contador=0
-		self.ataque=False
-		self.posicao_arma=vec(10,-10)
-		self.tiro=0
+		Inim.__init__(self, jogo, 79, 336, 19, 20, 2, 2, 3, 2, posix, posiy, vec(-2, 0), vec(0, grav_jogador))
+		self.contador = 0
+		self.ataque = False
+		self.posicao_arma = vec(10,-10)
+		self.tiro = 0
 	def eventos(self):
-		if self.direita:
-			self.posicao_arma.x=10
+		if self.olhar_direita:
+			self.posicao_arma.x = 10
 		else:
-			self.posicao_arma.x=-10
-		esta_direita=self.posi.x>self.jogo.jogador.posi.x+70
-		esta_esquerda=self.posi.x<self.jogo.jogador.posi.x-70
+			self.posicao_arma.x = -10
+		esta_direita = self.posi.x > self.jogo.jogador.posi.x + 70
+		esta_esquerda = self.posi.x < self.jogo.jogador.posi.x - 70
 
 		if (esta_direita and not self.jogo.jogador.olhar_direita) or (esta_esquerda and self.jogo.jogador.olhar_direita) or self.ataque:
 			self.invencivel = False
@@ -520,7 +490,7 @@ class Mineirinho(Inim):
 		if self.contador==60:
 			self.ataque=True
 			self.velo.x=0
-			self.tiro=Tiro(self.jogo, 80, 371, 8, 6, 3, 3, 5, self.posi+self.posicao_arma, vec(5, 0), vec(0, 0), self.velo, self.direita, fps)
+			self.tiro=Tiro(self.jogo, 48, 48, 8, 6, 3, 3, 5, self.posi+self.posicao_arma, vec(5, 0), vec(0, 0), self.velo, self.olhar_direita, fps)
 			self.jogo.tiro_inimigo.add(self.tiro)
 
 		if self.contador == 120:
@@ -529,7 +499,7 @@ class Mineirinho(Inim):
 
 class Pb(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo, 116, 452, 56, 55, 1, 1, 0, 2, posix, posiy, vec(3, 0), vec(0, grav_jogador))
+		Inim.__init__(self, jogo, 191, 286, 48, 48, 2, 2, 0, 2, posix, posiy, vec(3, 0), vec(0, grav_jogador))
 		self.contador = 0
 		self.contato = False
 		self.explode = True
@@ -550,19 +520,14 @@ class Pb(Inim):
 		if self.contato:
 			self.contador += 1
 		if self.contador == 2 and self.explode:
-			self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 8, 8, 40, self.rect.midbottom, vec(0, 0), vec(0, 0), self.velo, self.direita, fps)
+			self.tiro = Tiro(self.jogo, 128, 339, 23, 16, 8, 8, 40, self.rect.midbottom, vec(0, 0), vec(0, 0), self.velo, self.olhar_direita, fps)
 			self.jogo.tiro_inimigo.add(self.tiro)
 		if self.contador == 2:
 			self.kill()
 
-class Spike(Inim):
-		def __init__(self, jogo, posix, posiy):
-			Inim.__init__(self, jogo, 323, 191, 53, 35, 1, 1, 5000, 5000, posix, posiy, vec(0,0), vec(0,0))
-			self.invencivel = True
-
 class Chefe(Inim):
-		def __init__(self,jogo,posix,posiy):
-			Inim.__init__(self,jogo,"img/head.png",3,40,posix,posiy,vec(-2,0),vec(0,0))
+		def __init__(self, jogo, posix, posiy):
+			Inim.__init__(self, jogo, 0, 191, 189, 137, 1, 1, 3, 40, posix, posiy, vec(-2,0), vec(0,0))
 			self.contador=0
 			self.contador_ataque=0
 			self.modo=0
@@ -593,9 +558,9 @@ class Chefe(Inim):
 					
 				if self.ataque==0:
 					if self.contador_ataque==30:
-						self.mao_direita=Inim(self.jogo,"img/right.png",0,50,largura-50,3*altura/4,vec(0,0),vec(0,0))
+						self.mao_direita=Inim(self.jogo,193, 0, 63, 126, 1, 1, 0, 50, largura-50,3*altura/4,vec(0,0),vec(0,0))
 					elif self.contador_ataque==90 or self.contador_ataque==150 or self.contador_ataque==210:
-						Tiro(self.jogo,'img/granada.png',4,self.mao_direita.rect.center,vec(-8,0),vec(0,0),self.velo,self.direita,5*fps)
+						Tiro(self.jogo,'img/granada.png',4,self.mao_direita.rect.center,vec(-8,0),vec(0,0),self.velo,self._olhardireita,5*fps)
 					elif self.contador_ataque==270:
 						self.mao_direita.kill()
 					elif self.contador_ataque==300:
@@ -606,7 +571,7 @@ class Chefe(Inim):
 				elif self.ataque==1:
 
 					if self.contador_ataque==30:
-						self.mao_esquerda=Inim(self.jogo,"img/left.png",5,50,50,7*altura/8,vec(0,0),vec(0.5,0))
+						self.mao_esquerda=Inim(self.jogo, 258, 0, 60, 126, 1, 1, 5,50,50,7*altura/8,vec(0,0),vec(0.5,0))
 						
 					elif self.contador_ataque==150:
 						self.mao_esquerda.kill()
@@ -615,7 +580,7 @@ class Chefe(Inim):
 						self.n_ataque+=1
 				else:
 					if self.contador_ataque==30:
-						self.duas_maos=Inim(self.jogo,"img/both.png",5,50,largura/2,altura/2,vec(0,0),vec(0,0.5))
+						self.duas_maos=Inim(self.jogo,191, 191, 170, 93, 1, 1,5,50,largura/2,altura/2,vec(0,0),vec(0,0.5))
 
 					elif self.contador_ataque==150:
 						self.duas_maos.kill()
@@ -649,9 +614,9 @@ class Chefe(Inim):
 					
 				if self.ataque==0:
 					if self.contador_ataque==30:
-						self.mao_direita=Inim(self.jogo,"img/right.png",0,50,largura-50,3*altura/4,vec(0,0),vec(0,0))
+						self.mao_direita=Inim(self.jogo,193, 0, 63, 126, 1, 1, 0, 50, largura-50,3*altura/4,vec(0,0),vec(0,0))
 					elif self.contador_ataque==90 or self.contador_ataque==150 or self.contador_ataque==210:
-						Tiro(self.jogo,'img/granada.png',4,self.mao_direita.rect.center,vec(-8,0),vec(0,0),self.velo,self.direita,5*fps)
+						Tiro(self.jogo,'img/granada.png',4,self.mao_direita.rect.center,vec(-8,0),vec(0,0),self.velo,self.olhar_direita,5*fps)
 					elif self.contador_ataque==270:
 						self.mao_direita.kill()
 					elif self.contador_ataque==300:
@@ -662,15 +627,15 @@ class Chefe(Inim):
 				elif self.ataque==1:
 
 					if self.contador_ataque==30:
-						self.mao_esquerda=Inim(self.jogo,"img/left.png",5,50,50,7*altura/8,vec(0,0),vec(1.2,0))
+						self.mao_esquerda=Inim(self.jogo, 258, 0, 60, 126, 1, 1, 5,50,50,7*altura/8,vec(0,0),vec(1.2,0))
 						
 					elif self.contador_ataque==105:
 						self.mao_esquerda.kill()
-						self.mao_esquerda=Inim(self.jogo,"img/left.png",5,50,50,6*altura/8,vec(0,0),vec(1.2,0))
+						self.mao_esquerda=Inim(self.jogo, 258, 0, 60, 126, 1, 1, 5,50,50,6*altura/8,vec(0,0),vec(1.2,0))
 
 					elif self.contador_ataque==180:
 						self.mao_esquerda.kill()
-						self.mao_esquerda=Inim(self.jogo,"img/left.png",5,50,50,5*altura/8,vec(0,0),vec(1.2,0))
+						self.mao_esquerda=Inim(self.jogo, 258, 0, 60, 126, 1, 1, 5,50,50,5*altura/8,vec(0,0),vec(1.2,0))
 					elif self.contador_ataque==255:
 						self.mao_esquerda.kill()
 						self.ataque=randrange(5)
@@ -680,7 +645,7 @@ class Chefe(Inim):
 				elif self.ataque==2:
 
 					if self.contador_ataque==30 or self.contador_ataque==180 or self.contador_ataque==330:
-						self.duas_maos=Inim(self.jogo,"img/both.png",5,50,largura/2,altura/2,vec(0,0),vec(0,0.5))
+						self.duas_maos=Inim(self.jogo, 191, 191, 170, 93, 1, 1, 5, 50,largura/2,altura/2,vec(0,0),vec(0,0.5))
 
 					elif self.contador_ataque==150 or self.contador_ataque==300:
 						self.duas_maos.kill()
@@ -767,3 +732,16 @@ class Bloco_Cai(pg.sprite.Sprite):
 		self.tempo-=1
 		if self.tempo==0:
 			self.kill()
+
+class Inverte(pg.sprite.Sprite):
+	def __init__(self, personagem, image):
+
+		self.todos_sprites = personagem
+
+		self.direita = self.todos_sprites.image
+		self.esquerda = pg.transform.flip(self.direita, True, False)
+
+		if self.todos_sprites.olhar_direita:
+			self.todos_sprites.image = self.direita
+		else:
+			self.todos_sprites.image = self.esquerda
