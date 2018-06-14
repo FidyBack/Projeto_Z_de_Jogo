@@ -336,6 +336,8 @@ class Tiro(pg.sprite.Sprite):
 		self.jogo.moviveis.add(self)
 		self.jogo.tiros.add(self)
 
+		Inverte(self, self.image)
+
 	def update(self):
 		self.posi = vec(self.rect.center)
 		if self.olhar_direita:
@@ -394,7 +396,10 @@ class Inim(pg.sprite.Sprite):
 		self.jogo.moviveis.add(self)
 		self.jogo.caintes.add(self)
 
+
+
 	def update(self):
+
 		self.posi=vec(self.rect.midbottom)
 		if self.velo.x > 0:
 			self.olhar_direita = False
@@ -426,6 +431,7 @@ class Robo(Inim):
 		self.tiro = 0
 
 	def eventos(self):
+
 		if self.olhar_direita:
 			self.posicao_arma.x = 50
 		else:
@@ -708,7 +714,7 @@ class Powerup(pg.sprite.Sprite):
 		if self.aleatorio==0 or self.aleatorio==1:
 			self.jogo.jogador.vida+=5
 		elif self.aleatorio==2:
-			self.jogo.jogador.numero_granada+=10
+			self.jogo.jogador.numero_granada+=1
 
 class Bloco_Cai(pg.sprite.Sprite):
 	def __init__(self, jogo, posicao):
@@ -734,3 +740,16 @@ class Bloco_Cai(pg.sprite.Sprite):
 		self.tempo -= 1
 		if self.tempo == 0:
 			self.kill()
+
+class Inverte(pg.sprite.Sprite):
+	def __init__(self, personagem, image):
+
+		self.todos_sprites = personagem
+
+		self.direita = self.todos_sprites.image
+		self.esquerda = pg.transform.flip(self.direita, True, False)
+
+		if self.todos_sprites.olhar_direita:
+			self.todos_sprites.image = self.direita
+		else:
+			self.todos_sprites.image = self.esquerda
