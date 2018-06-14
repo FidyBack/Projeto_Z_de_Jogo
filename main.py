@@ -20,7 +20,7 @@ import math
 from random import randrange
 from os import path
 from mapa import mapa
-from PIL import ImageEnhance
+
 class Jogo:
 	def __init__(self):
 		pg.init()
@@ -43,6 +43,7 @@ class Jogo:
 		# Grupos
 		# ================================================================================================================
 
+		self.powerup = pg.sprite.Group()
 		self.todos_sprites = pg.sprite.Group()
 		self.inimigos = pg.sprite.Group()
 		self.plataforma = pg.sprite.Group()
@@ -57,9 +58,8 @@ class Jogo:
 		# Tiro do personagem
 		self.tiro_personagem = pg.sprite.Group()
 		self.tiro_inimigo = pg.sprite.Group()
-		self.powerup = pg.sprite.Group()
 		self.nao_moviveis= pg.sprite.Group()
-		self.caintes=pg.sprite.Group()
+		self.caintes = pg.sprite.Group()
 
 		# ================================================================================================================
 		# Adição dos sprites no jogo
@@ -73,18 +73,21 @@ class Jogo:
 				bloco = linha[x]
 				if bloco.isnumeric():
 					if bloco == '1':
-						Plataforma(self, 48 * (x-1), 48 * (y-1))
+						Chao1(self, 48 * (x-1), 48 * (y-1))
+					elif bloco == '2':
+						Chao2(self, 48 * (x-1), 48 * (y-1))
+
 				else:
 					if bloco == 'P':
-						Voador(self, 48 * (x-1), 48 * (y-1))
-					elif bloco == 'B':
-						Pb(self, 48 * (x-1), 48 * (y-1))
-					elif bloco == 'R':
-						Robo(self, 48*(x-1), 48*(y-1))
-					elif bloco == 'M':
-						Mineirinho(self, 48*(x-1), 48*(y-1))
-					elif bloco == 'B':
-						Pb(self, 48*(x-1), 48*(y-1))
+						Pedra(self, 48 * (x-1), 48 * (y-1))
+					# elif bloco == 'B':
+					# 	Pb(self, 48 * (x-1), 48 * (y-1))
+					# elif bloco == 'R':
+					# 	Robo(self, 48*(x-1), 48*(y-1))
+					# elif bloco == 'M':
+					# 	Mineirinho(self, 48*(x-1), 48*(y-1))
+					# elif bloco == 'B':
+					# 	Pb(self, 48*(x-1), 48*(y-1))
 					# elif bloco == 'C':
 					# 	Chefe(self, 48*(x-1), 48*(y-1))
 		
@@ -115,27 +118,40 @@ class Jogo:
 
 			# Pulo
 			if evento.type == pg.KEYDOWN:
-				if evento.key == pg.K_SPACE:
+				if evento.key == pg.K_SPACE or evento.key == pg.K_w or evento.key == pg.K_UP:
 					self.jogador.pulo()
 
 				# Tiro
-				if evento.key == pg.K_j :
+				if evento.key == pg.K_j:
 					self.jogador.tiro_reto = True
+					self.jogador.atirando = True
 
-				# Granada
+				# Tiro Parabólico
 				if evento.key == pg.K_i:
 					self.jogador.tiro_parabola = True
+					if self.jogador.numero_granada > 0:
+						self.jogador.atirando = True
 
 			# Pulo Menor
 			if evento.type == pg.KEYUP:
-				if evento.key == pg.K_SPACE:
+				if evento.key == pg.K_SPACE or evento.key == pg.K_w or evento.key == pg.K_UP:
 					self.jogador.pulo_parar_meio()
 
+				# Tiro
+				if evento.key == pg.K_j:
+					self.jogador.atirando = False
+
+				# Tiro Parabólico
+				if evento.key == pg.K_i:
+					self.jogador.atirando = False
+
+		# Posição do Tiro Reto
 		if self.jogador.tiro_reto and self.jogador.contador_tiro >= 6:
 			Tiro_reto(self, self.jogador.posi + self.jogador.posicao_arma[:], self.jogador.vel_tiro_reto[:], self.jogador.velo[:], self.jogador.olhar_direita)
 			self.jogador.contador_tiro = 0
 			self.jogador.tiro_reto = False
 
+		# Posição do Tiro Parábola
 		if self.jogador.tiro_parabola and self.jogador.contador_tiro >= 6 and self.jogador.numero_granada>0:
 			Tiro_parabola(self, self.jogador.posi + self.jogador.posicao_arma[:], self.jogador.vel_tiro_parabola[:], self.jogador.velo[:], self.jogador.olhar_direita)
 			self.jogador.contador_tiro = 0
@@ -153,7 +169,7 @@ class Jogo:
 			if impacto:
 
 				for plataforma in impacto:
-					intersect=personagem.rect.clip(plataforma.rect)
+					intersect = personagem.rect.clip(plataforma.rect)
 					
 					if personagem.rect.left < plataforma.rect.right  and personagem.rect.right > plataforma.rect.left and abs(intersect.width)>=abs(intersect.height):
 						if personagem.velo.y > 0 and personagem.rect.bottom == intersect.bottom:
@@ -161,12 +177,9 @@ class Jogo:
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							if personagem == self.jogador:
-								self.jogador.pulando=False
+								self.jogador.pulando = False
 
-
-							
 						elif personagem.velo.y < 0 and personagem.rect.top==intersect.top:
-
 							personagem.rect.top = plataforma.rect.bottom
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
@@ -175,7 +188,6 @@ class Jogo:
 					if personagem.rect.top < plataforma.rect.bottom  and personagem.rect.bottom>plataforma.rect.top and abs(intersect.height)>abs(intersect.width):
 						if personagem.velo.x>0 and personagem.rect.right==intersect.right:
 							personagem.rect.right = plataforma.rect.left
-
 							personagem.posi=vec(personagem.rect.midbottom)
 							personagem.velo.x=0
 							if personagem==self.jogador:
@@ -188,8 +200,7 @@ class Jogo:
 							if personagem == self.jogador:
 								personagem.andando=False
 
-
-			# morte por falta de vidas do personagem e dos inimigos
+			# Morte por falta de vidas do personagem e dos inimigos
 			if personagem in self.caracters:
 				if personagem.vida <= 0:
 	
@@ -295,7 +306,7 @@ class Jogo:
 
 # ================================================================================================================
 # Funções de tela
-# ================================================================================================================	
+# ================================================================================================================
 
 	# Mostra a tela de começo
 	def introducao(self):
@@ -506,7 +517,6 @@ class Jogo:
 		texto_rect = texto_surface.get_rect()
 		texto_rect.midtop = (x, y)
 		self.tela.blit(texto_surface, texto_rect)
-
 
 # ================================================================================================================
 # Looping em sí

@@ -1,4 +1,4 @@
-<TextureAtlas imagePath="sprites.png">
+<TextureAtlas imagePath="sprites_inimigos.png">
 	<SubTexture name="fdfds.png" x="0" y="192" width="190" height="200"/>
 	<SubTexture name="fff.png" x="0" y="0" width="190" height="190"/>
 	<SubTexture name="fgdfdds.png" x="192" y="212" width="190" height="200"/>
@@ -24,9 +24,9 @@
 	<SubTexture name="rock_round_05.png" x="175" y="458" width="30" height="30"/>
 	<SubTexture name="rock_round_06.png" x="79" y="471" width="30" height="30"/>
 	<SubTexture name="rock_round_07.png" x="47" y="471" width="30" height="30"/>
-	<SubTexture name="rock_round_stand_1.png" x="48" y="394" width="30" height="30"/>
-	<SubTexture name="rock_round_stand_2.png" x="111" y="478" width="30" height="30"/>
-	<SubTexture name="rock_round_stand_3.png" x="143" y="446" width="30" height="30"/>
-	<SubTexture name="rock_round_walk_1.png" x="111" y="446" width="30" height="30"/>
-	<SubTexture name="rock_round_walk_2.png" x="160" y="394" width="30" height="30"/>
+	<SubTexture name="rock_round_08.png" x="48" y="394" width="30" height="30"/>
+	<SubTexture name="rock_round_09.png" x="111" y="478" width="30" height="30"/>
+	<SubTexture name="rock_round_10.png" x="143" y="446" width="30" height="30"/>
+	<SubTexture name="rock_round_11.png" x="111" y="446" width="30" height="30"/>
+	<SubTexture name="rock_round_11.png" x="160" y="394" width="30" height="30"/>
 </TextureAtlas>

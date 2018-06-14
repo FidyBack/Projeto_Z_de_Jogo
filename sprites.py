@@ -51,33 +51,37 @@ class Jogador(pg.sprite.Sprite):
 		self.pulando = False
 		self.atirando = False
 		self.temporizador = 0
-		self.limite_vida=20
-		self.numero_granada=10
-		self.arrastando=False
-		self.machucado=False
+		self.limite_vida = 20
+		self.numero_granada = 10
+		self.arrastando = False
+		self.machucado = False
+
 		# Animação
 		self.ultimo_update = 0
 		self.frame_atual = 0
 		self.carregar_imagens()
 		self.image = self.frames_parados_r[0]
 		self.rect = self.image.get_rect()
+
 		# Posição
 		self.posi = vec(largura * 1 / 2, altura/2)
 		self.velo = vec(0, 0)
 		self.acele = vec(0, grav_jogador)
+
 		# Tiro
 		self.contador_tiro = 0
 		self.tiro_reto = False
 		self.tiro_parabola = False
 		self.vel_tiro_reto = vec(20,0)
 		self.vel_tiro_parabola = vec(10,-10)
-		self.posicao_arma = vec(30,-30)
+		self.posicao_arma = vec(45,-38)
+
 		# Adição nos grupos
 		self.jogo.todos_sprites.add(self)
 		self.jogo.caracters.add(self)
 		self.jogo.moviveis.add(self)
 		self.jogo.caintes.add(self)
-		
+
 	# Imagens da animação
 	def carregar_imagens(self):
 		# Parado
@@ -126,6 +130,15 @@ class Jogador(pg.sprite.Sprite):
 			frame_pulando.set_colorkey(preto)
 			self.frames_pulando_l.append(pg.transform.flip(frame_pulando, True, False))
 
+		# Atirando
+		self.frames_atirando_r = [	self.jogo.spritesheet_personagem.get_image(138, 152, 30, 34, 2, 2),
+									]
+
+		self.frames_atirando_l = []
+		for frame_atirando in self.frames_atirando_r:
+			frame_atirando.set_colorkey(preto)
+			self.frames_atirando_l.append(pg.transform.flip(frame_atirando, True, False))
+
 	# Movimento
 	def update(self):
 		self.animacao()
@@ -136,12 +149,15 @@ class Jogador(pg.sprite.Sprite):
 			self.velo.x = -velo_jogador
 			self.andando = True
 			self.olhar_direita = False
+			self.atirando = False
 			self.posicao_arma.x = -30
+
 		# Direita
-		elif keys[pg.K_d]:
+		elif keys[pg.K_d] or keys[pg.K_RIGHT]:
 			self.velo.x = velo_jogador
 			self.andando = True
 			self.olhar_direita = True
+			self.atirando = False
 			self.posicao_arma.x = 30
 		else:
 			self.velo.x = 0
@@ -153,6 +169,7 @@ class Jogador(pg.sprite.Sprite):
 			self.velo.x = 0
 		if self.velo.y > 15:
 			self.velo.y = 15
+
 		# Sorvetão (Indica a pórxima posição do personagem)
 		self.posi += self.velo + 0.5 * self.acele
 		# Define a posição do centro do personagem embaixo
@@ -166,6 +183,19 @@ class Jogador(pg.sprite.Sprite):
 		if self.machucado:
 			pass
 
+		# Atirando
+		elif not self.pulando and not self.andando and self.atirando:
+			if agora - self.ultimo_update > 150:
+				self.ultimo_update = agora
+				self.frame_atual = (self.frame_atual + 1) % len(self.frames_atirando_r)
+				bottom = self.rect.bottom
+				if self.olhar_direita:
+					self.image = self.frames_atirando_r[self.frame_atual]
+				else:
+					self.image = self.frames_atirando_l[self.frame_atual]
+				self.rect = self.image.get_rect()
+				self.rect.bottom = bottom
+
 		# Pulando
 		elif self.pulando and not self.atirando:
 			if agora - self.ultimo_update > 40:
@@ -173,7 +203,7 @@ class Jogador(pg.sprite.Sprite):
 				if self.frame_atual < 4:
 					self.frame_atual = (self.frame_atual + 1) % len(self.frames_pulando_l)
 				else:
-					self.frame_atual = 4
+					self.frame_atual=4
 				bottom = self.rect.bottom
 				if self.olhar_direita:
 					self.image = self.frames_pulando_r[self.frame_atual]
@@ -207,7 +237,6 @@ class Jogador(pg.sprite.Sprite):
 					self.image = self.frames_parados_l[self.frame_atual]
 				self.rect = self.image.get_rect()
 				self.rect.bottom = bottom
-				
 
 	# Pulo
 	def pulo(self):
@@ -230,7 +259,7 @@ class Plataforma(pg.sprite.Sprite):
 	def __init__(self, jogo, x, y):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.image = self.jogo.spritesheet_plataformas.get_image(322, 82, 48, 48, 1, 1)
+		self.image = self.jogo.spritesheet_plataformas.get_image(274, 66, 48, 48, 1, 1)
 		self.image.set_colorkey(preto)
 		self.rect = self.image.get_rect()
 		self.rect.x = x
@@ -242,12 +271,28 @@ class Plataforma(pg.sprite.Sprite):
 		self.jogo.interacoes.add(self)
 		self.jogo.nao_moviveis.add(self)
 
-class Chao(Plataforma):
+class Chao1(Plataforma):
 	def __init__(self, jogo, x, y):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.image = self.jogo.spritesheet_plataformas.get_image(322, 82, 48, 48, 5, 5)
+		self.image = self.jogo.spritesheet_plataformas.get_image(370, 166, 48, 16, 1, 3)
 		self.image.set_colorkey(preto)
+		self.rect = self.image.get_rect()
+		self.rect.x = x
+		self.rect.y = y
+
+		# Adição nos grupos
+		self.jogo.todos_sprites.add(self)
+		self.jogo.plataforma.add(self)
+		self.jogo.interacoes.add(self)
+		self.jogo.nao_moviveis.add(self)
+
+class Chao2(Plataforma):
+	def __init__(self, jogo, x, y):
+		pg.sprite.Sprite.__init__(self)
+		self.jogo = jogo
+		self.image = pg.Surface((48, 48))
+		self.image.fill(cinza)
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
@@ -313,7 +358,7 @@ class Tiro_reto(Tiro):
 
 class Tiro_parabola(Tiro):
 	def __init__(self, jogo, posicao, velo, velo_personagem, direita):
-		Tiro.__init__(self, jogo, 80, 371, 8, 6, 3, 3, 5, posicao, velo, vec(0, 0.5), velo_personagem, direita,fps)
+		Tiro.__init__(self, jogo, 48, 48, 8, 6, 3, 3, 5, posicao, velo, vec(0, 0.5), velo_personagem, direita,fps)
 		self.jogo.tiro_personagem.add(self)
 
 # ================================================================================================================
@@ -321,20 +366,27 @@ class Tiro_parabola(Tiro):
 # ================================================================================================================
 
 class Inim(pg.sprite.Sprite):
-	def __init__(self, jogo, x, y, largura, altura, lar_dim, alt_dim, dano, vida, posix, posiy, velo, acele):
+	def __init__(self, jogo, dano, vida, posix, posiy, velo, acele):
 		pg.sprite.Sprite.__init__(self)
+		# Variáveis e outros
 		self.jogo = jogo
-		self.image = self.jogo.spritesheet_inimigos.get_image(x, y, largura, altura, lar_dim, alt_dim)
-		self.image.set_colorkey(preto)
-		self.rect = self.image.get_rect()
-		self.posi = vec(posix, posiy)
-		self.rect.midbottom = self.posi
 		self.vida = vida
 		self.dano = dano
 		self.direita = True
 		self.velo = velo
 		self.acele = acele
 		self.invencivel = False
+
+		# Animação
+		self.ultimo_update = 0
+		self.frame_atual = 0
+		self.carregar_imagem()
+		self.image = self.frames_r[0]
+		self.rect = self.image.get_rect()
+		
+		# Posição
+		self.posi = vec(posix, posiy)
+		self.rect.midbottom = self.posi
 
 		# Adição nos grupos
 		self.jogo.caracters.add(self)
@@ -361,35 +413,42 @@ class Inim(pg.sprite.Sprite):
 	def eventos(self):
 		pass
 
+	def carregar_imagem(self):
+		pass
+
 class Pedra(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo , 392, 117, 30, 30, 4, 4, 3, 5, posix, posiy, vec(-3,0), vec(0, grav_jogador))
+		Inim.__init__(self, jogo, 3, 5, posix, posiy, vec(-3,0), vec(0, grav_jogador))
 
-	# def carregar_imagem(self):
-	# 	# Andando
-	# 	self.frames_parados_r = [self.jogo.spritesheet_personagem.get_image(183, 72, 30, 34, 2, 2),
-	# 							self.jogo.spritesheet_personagem.get_image(191, 411, 30, 34, 2, 2),
-	# 							self.jogo.spritesheet_personagem.get_image(202, 181, 30, 34, 2, 2),
-	# 							self.jogo.spritesheet_personagem.get_image(191, 411, 30, 34, 2, 2),
-	# 							self.jogo.spritesheet_personagem.get_image(183, 72, 30, 34, 2, 2),]
+	def carregar_imagem(self):
+		self.frames_r = [self.jogo.spritesheet_inimigos.get_image(128, 414, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(207, 414, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(143, 478, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(175, 426, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(175, 458, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(79, 471, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(47, 471, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(48, 394, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(111, 478, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(143, 446, 30, 30, 4, 4),
+								self.jogo.spritesheet_inimigos.get_image(111, 446, 30, 30, 4, 4),]
 
+		for frame in self.frames_r:
+			frame.set_colorkey(preto)
 
-	# def eventos(self):
-	# 	if self.andando:
-	# 		if agora - self.ultimo_update > 40:
-	# 			self.ultimo_update = agora
-	# 			self.frame_atual = (self.frame_atual + 1) % len(self.frames_andando_l)
-	# 			bottom = self.rect.bottom
-	# 			if self.velo.x > 0:
-	# 				self.image = self.frames_andando_r[self.frame_atual]
-	# 			else:
-	# 				self.image = self.frames_andando_l[self.frame_atual]
-	# 			self.rect = self.image.get_rect()
-	# 			self.rect.bottom = bottom
+	def eventos(self):
+		agora = pg.time.get_ticks()
+		if agora - self.ultimo_update > 40:
+			self.ultimo_update = agora
+			self.frame_atual = (self.frame_atual + 1) % len(self.frames_r)
+			bottom = self.rect.bottom
+			self.image = self.frames_r[self.frame_atual]
+			self.rect = self.image.get_rect()
+			self.rect.bottom = bottom
 
 class Robo(Inim):
 	def __init__(self, jogo, posix, posiy):
-		Inim.__init__(self, jogo, 383, 244, 33, 50, 1, 1, 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
+		Inim.__init__(self, jogo, 3, 5, posix, posiy, vec(0, 0), vec(0, grav_jogador))
 		self.contador = 0
 		self.veltiro = vec(10, 0)
 		self.velx = 5
@@ -413,6 +472,7 @@ class Robo(Inim):
 		 	self.contador = 0
 		
 		self.contador += 1
+
 class Voador(Inim):
 	def __init__(self,jogo,posix,posiy):
 		Inim.__init__(self, jogo , 392, 117, 30, 30, 1, 1, 3, 5, posix, posiy, vec(0,0), vec(0, 0))
@@ -426,11 +486,6 @@ class Voador(Inim):
 		vertical=(self.jogo.jogador.rect.centery-self.rect.centery)/total
 
 		self.velo=self.total_velo*vec(horizontal,vertical)
-class Apelao(Inim):
-	def __init__(self,jogo,posix,posiy):
-		Inim.__init__(self, jogo , 392, 117, 30, 30, 1, 1, 3, 5, posix, posiy, vec(0,0), vec(0, 0))
-		self.contador=0
-
 
 class Mineirinho(Inim):
 	def __init__(self, jogo, posix, posiy):
@@ -647,6 +702,10 @@ class Chefe(Inim):
 					self.contador=0
 				self.contador+=1
 
+# ================================================================================================================
+# Outros
+# ================================================================================================================
+
 class Powerup(pg.sprite.Sprite):
 	def __init__(self,jogo,posicao):
 		pg.sprite.Sprite.__init__(self)
@@ -708,23 +767,3 @@ class Bloco_Cai(pg.sprite.Sprite):
 		self.tempo-=1
 		if self.tempo==0:
 			self.kill()
-
-# class Image_Enhancer:
-# 	def __init__(self,image,parametro,quantidade):
-# 		self.enhance=ImageEnhance
-# 		self.image=Image.open(image)
-# 		self.parametro=parametro
-# 		self.quantidade=quantidade
-# 		if self.parametro=='color':
-# 			self.color()
-# 		elif self.parametro=='brightness':
-# 			self.brightness()
-# 		elif self.parametro=='contrast':
-# 			self.contrast()
-# 	def color(self):
-# 		self.enhance.Color.enhance(self.image,self.quantidade)
-# 	def brightness(self):
-# 		self.enhance.Brightness.enhance(self.image,self.quantidade)
-# 	def contrast(self):
-# 		self.enhance.Contrast.enhance(self.image,self.quantidade)
-

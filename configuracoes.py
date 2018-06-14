@@ -41,9 +41,10 @@ preto = (0, 0, 0)
 verd_esc = (25, 100, 37)
 azul_ceu = (0, 255, 255)
 vermelho = (255, 0, 0)
+cinza = (0, 65, 102)
 
 # Discurso
-discurso = 'Durante a guerra que se segue, o Império Xerista,  \
+discurso = 'Durante a guerra que se segue, o Império Xerista, \
 está perdendo as suas forças pouco a pouco. Para contornar isso, seu líder, \
 Herold Smiter, visa as amoebas do infinito. \
 É seu dever, Soldier, impedir isso e defender a paz no mundo. Contamos com você ...'
