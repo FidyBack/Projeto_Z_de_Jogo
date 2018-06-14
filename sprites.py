@@ -17,8 +17,6 @@ from configuracoes import *
 vec = pg.math.Vector2
 import math
 from random import randrange
-from PIL import ImageEnhance
-
 
 # ================================================================================================================
 # Animção
@@ -43,7 +41,7 @@ class Jogador(pg.sprite.Sprite):
 	def __init__(self, jogo):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
-		self.vida = 2000
+		self.vida = 20
 		self.contador_invencivel = 0
 		self.invencivel = False
 		self.olhar_direita = True
@@ -51,7 +49,7 @@ class Jogador(pg.sprite.Sprite):
 		self.pulando = False
 		self.atirando = False
 		self.temporizador = 0
-		self.limite_vida = 2000
+		self.limite_vida = 20
 		self.numero_granada = 10
 		self.arrastando = False
 		self.machucado = False
@@ -246,8 +244,8 @@ class Jogador(pg.sprite.Sprite):
 		if colisao:
 			self.velo.y = -pulo_jogador
 			self.andando = False
-			self.pulando=True
-			self.frame_atual=0
+			self.pulando = True
+			self.frame_atual = 0
 
 	# Pulo pequeno
 	def pulo_parar_meio(self):
@@ -348,9 +346,6 @@ class Tiro(pg.sprite.Sprite):
 		# Colisão com máscara
 		self.mask = pg.mask.from_surface(self.image)
 
-		# Inversão
-		Inverte(self,self.image)
-
 	def eventos(self):
 		pass
 
@@ -373,7 +368,7 @@ class Inim(pg.sprite.Sprite):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
 		self.image = self.jogo.spritesheet_inimigos.get_image(x, y, largura, altura, lar_dim, alt_dim)
-		self.image.set_colorkey(preto)
+		self.image.set_colorkey(branco)
 		self.rect = self.image.get_rect()
 		self.posi = vec(posix, posiy)
 		self.rect.midbottom = self.posi
@@ -395,9 +390,9 @@ class Inim(pg.sprite.Sprite):
 	def update(self):
 		self.posi=vec(self.rect.midbottom)
 		if self.velo.x > 0:
-			self.olhar_direita = True
-		elif self.velo.x < 0:
 			self.olhar_direita = False
+		elif self.velo.x < 0:
+			self.olhar_direita = True
 		if self.posi.x >- 100 and self.posi.x < largura + 100:
 			self.velo += self.acele
 			self.posi += self.velo + 0.5 * self.acele
@@ -406,9 +401,6 @@ class Inim(pg.sprite.Sprite):
 		# Colisão com máscara
 		self.mask = pg.mask.from_surface(self.image) 
 		self.eventos()
-
-		# Inversão
-		Inverte(self, self.image)
 
 	def eventos(self):
 		pass
@@ -676,14 +668,17 @@ class Powerup(pg.sprite.Sprite):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
 		self.posi = vec(posicao[:])
-		self.image = pg.Surface((32,32))
-		self.image.fill(vermelho)
-		self.rect = self.image.get_rect()
-		self.rect.midbottom = self.posi
 		self.tempo = 300
 		self.aleatorio=randrange(10)
 		self.velo=vec(0,0)
 		self.acele=vec(0,0.5)
+		if self.aleatorio == 0 or self.aleatorio == 1:
+			self.image = self.jogo.spritesheet_vida.get_image(0, 0, 48, 41, 1, 1)
+		else:
+			self.image = self.jogo.spritesheet_tiros.get_image(48, 48, 8, 6, 3, 3)
+		self.image.set_colorkey(preto)
+		self.rect = self.image.get_rect()
+		self.rect.midbottom = self.posi
 
 		# Adição nos grupos
 		if self.aleatorio==1 or self.aleatorio==2 :
@@ -709,7 +704,7 @@ class Powerup(pg.sprite.Sprite):
 			self.jogo.jogador.numero_granada+=10
 
 class Bloco_Cai(pg.sprite.Sprite):
-	def __init__(self,jogo,posicao):
+	def __init__(self, jogo, posicao):
 		pg.sprite.Sprite.__init__(self)
 		self.jogo = jogo
 		self.posi = vec(posicao[:])
@@ -725,23 +720,10 @@ class Bloco_Cai(pg.sprite.Sprite):
 
 
 	def update(self):
-		self.posi=self.rect.midbottom
-		self.velo+=self.acele
-		self.posi+=self.velo+self.acele/2
-		self.rect.midbottom=self.posi
-		self.tempo-=1
-		if self.tempo==0:
+		self.posi = self.rect.midbottom
+		self.velo += self.acele
+		self.posi += self.velo + self.acele/2
+		self.rect.midbottom = self.posi
+		self.tempo -= 1
+		if self.tempo == 0:
 			self.kill()
-
-class Inverte(pg.sprite.Sprite):
-	def __init__(self, personagem, image):
-
-		self.todos_sprites = personagem
-
-		self.direita = self.todos_sprites.image
-		self.esquerda = pg.transform.flip(self.direita, True, False)
-
-		if self.todos_sprites.olhar_direita:
-			self.todos_sprites.image = self.direita
-		else:
-			self.todos_sprites.image = self.esquerda

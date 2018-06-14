@@ -184,7 +184,6 @@ class Jogo:
 							personagem.posi = vec(personagem.rect.midbottom)
 							personagem.velo.y = 0
 							
-
 					if personagem.rect.top < plataforma.rect.bottom  and personagem.rect.bottom>plataforma.rect.top and abs(intersect.height)>abs(intersect.width):
 						if personagem.velo.x>0 and personagem.rect.right==intersect.right:
 							personagem.rect.right = plataforma.rect.left
