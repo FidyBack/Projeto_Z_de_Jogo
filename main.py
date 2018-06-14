@@ -439,7 +439,7 @@ class Jogo:
 			brilho += b
 			self.tela.blit(image,(image_rect))
 			self.desenhar_texto(texto, 20, (brilho,brilho,brilho), largura/2, altura*7/8)
-			self.desenhar_texto('Jump : Space  Shoot : j  grenade : i  Move: a/d', 20, branco, largura/2, altura*3/4)
+			self.desenhar_texto('Shoot : j  grenade : i  Move: w/a/s/d', 20, branco, largura/2, altura*3/4)
 			pg.display.flip()
 
 	# Tela de Game Over
