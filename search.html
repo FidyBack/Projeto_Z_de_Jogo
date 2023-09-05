@@ -7,17 +7,17 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <meta name="description" content="None">
-        <link rel="canonical" href="https://fidyback.github.io/Projeto_Z_de_Jogo/">
+        
+        
         <meta name="author" content="Abel Cavalcante">
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/css/dracula-ui.css">
-        <link rel="stylesheet" href="assets/css/mkdocs.css">
+        <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./assets/css/dracula-ui.css">
+        <link rel="stylesheet" href="./assets/css/mkdocs.css">
 
         
-            <link  rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+            <link  rel="icon" type="image/x-icon" href="./assets/img/favicon.ico">
         
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
                 <script>hljs.initHighlightingOnLoad();</script>
@@ -64,14 +64,14 @@
         <ul class="mb-5 drac-list drac-list-none">
             
             <li class="drac-box">
-                <a href="."
-                    class=" active 
+                <a href="./."
+                    class="
                     drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
                     Home
                 </a>
             </li>
             <li class="drac-box">
-                <a href="about/"
+                <a href="./about/"
                     class="
                     drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
                     About
@@ -102,22 +102,6 @@
                     <!-- block preview -->
                     <li class="nav-item">
                             
-        <div class="container">
-            <div class="row row-preview">
-                <div class="col">
-                    <a 
-                        class="btn-preview drac-btn drac-text-white--hover disabled">
-                        <i class="fa fa-arrow-left"></i> Previous
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="about/"
-                        class="btn-preview drac-btn drac-btn-outline drac-text-white drac-text-cyan-green--hover" style="padding-left: 3%;">
-                        Next <i class="fa fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
                     </li>
                     <!--  endblock -->
 
@@ -148,27 +132,25 @@
             <!-- endblock -->
 
             <!-- block content -->
-                <section class="p-md-5 section-content">
-    <article>
-        <p><h1 id="welcome-to-project-z">Welcome to Project Z</h1>
-<p>Link for the original project in the official <a href="https://github.com/FidyBack/Projeto_Z_de_Jogo">Github Page</a>.</p>
-<h2 id="about">About</h2>
-<!-- * `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit. -->
+	<section class="p-md-5 content-search">
+		<article>
+			<p></p>
+			<h1 id="search">Search Results</h1>
+			<hr>
 
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-src/
-    main.py   # The main code of the project.
-    ...       # Other source files.
-</code></pre></p>
-    </article>
-</section>
+			<form id="content_search" action="search.html">
+				<span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+				<input name="q" id="mkdocs-search-query" type="text" class="drac-input drac-input-purple drac-text-white search_input search-query ui-autocomplete-input"
+					placeholder="Search the Docs" autocomplete="off" autofocus title="Type search term here">
+			</form>
+			
+			<div id="mkdocs-search-results" class="search-results" data-no-results-text="No results found">
+				Searching...
+			</div>
+
+		</article>
+	</section>
+
             <!-- endblock -->
 
             <!-- block footer -->
@@ -186,10 +168,10 @@ src/
     </main>
 
         <script>var base_url = '.';</script>
-        <script src="assets/js/jquery-3.3.1.slim.min.js""></script>
-        <script src="assets/js/bootstrap.bundle.min.js""></script>
-        <script src="assets/js/mkdocs.js""></script>
-			<script src="search/main.js" defer></script>
+        <script src="./assets/js/jquery-3.3.1.slim.min.js""></script>
+        <script src="./assets/js/bootstrap.bundle.min.js""></script>
+        <script src="./assets/js/mkdocs.js""></script>
+			<script src="./search/main.js" defer></script>
 
 </body>
 
