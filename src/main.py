@@ -522,7 +522,7 @@ class Jogo:
 	def desenho(self):
 		self.tela.blit(background, (0, 0))
 		self.todos_sprites.draw(self.tela)
-		self.desenhar_texto('Vida = {0}, Granada = {1}'.format(self.jogador.vida,self.jogador.numero_granada), 20, branco, 120, 0)
+		self.desenhar_texto(f'Vida = {self.jogador.vida}, Granada = {self.jogador.numero_granada}', 20, branco, 120, 0)
 		pg.display.flip()
 
 	# Música
