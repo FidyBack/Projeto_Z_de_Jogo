@@ -371,13 +371,12 @@ class Jogo:
 						break
 
 					# Transfere a palavra para a próxima
-					else:
-						palavra_atual = palavras[idx_palavra]
-						
-						# Se é estiver no limite da tela, pula uma linha e volta pro começo dela
-						if len(palavra_atual) * 27 + a > largura:
-							b += 27
-							a = 27
+					palavra_atual = palavras[idx_palavra]
+					
+					# Se é estiver no limite da tela, pula uma linha e volta pro começo dela
+					if len(palavra_atual) * 27 + a > largura:
+						b += 27
+						a = 27
 
 				self.desenhar_texto(palavra_atual[idx_letra], 48, branco, a, b)
 
