@@ -1,4 +1,4 @@
-# installation: a step-by-step guide
+# Installation: a step-by-step guide
 
 ## 1. Install Python
 
