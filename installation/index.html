@@ -2,22 +2,22 @@
 <html lang="en">
 
 <head>
-        <title>Project Z</title>
+        <title>Installation - Project Z</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         
-        
+        <link rel="canonical" href="https://fidyback.github.io/Projeto_Z_de_Jogo/installation/">
         <meta name="author" content="Abel Cavalcante">
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
-        <link rel="stylesheet" href="./assets/css/dracula-ui.css">
-        <link rel="stylesheet" href="./assets/css/mkdocs.css">
+        <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../assets/css/dracula-ui.css">
+        <link rel="stylesheet" href="../assets/css/mkdocs.css">
 
         
-            <link  rel="icon" type="image/x-icon" href="./assets/img/favicon.ico">
+            <link  rel="icon" type="image/x-icon" href="../assets/img/favicon.ico">
         
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
                 <script>hljs.initHighlightingOnLoad();</script>
@@ -64,21 +64,21 @@
         <ul class="mb-5 drac-list drac-list-none">
             
             <li class="drac-box">
-                <a href="./."
+                <a href=".."
                     class="
                     drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
                     Home
                 </a>
             </li>
             <li class="drac-box">
-                <a href="./installation/"
-                    class="
+                <a href="./"
+                    class=" active 
                     drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
                     Installation
                 </a>
             </li>
             <li class="drac-box">
-                <a href="./documentation/"
+                <a href="../documentation/"
                     class="
                     drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
                     Documentation
@@ -109,12 +109,28 @@
                     <!-- block preview -->
                     <li class="nav-item">
                             
+        <div class="container">
+            <div class="row row-preview">
+                <div class="col">
+                    <a href=".."
+                        class="btn-preview drac-btn drac-btn-outline drac-text-white drac-text-cyan-green--hover">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="../documentation/"
+                        class="btn-preview drac-btn drac-btn-outline drac-text-white drac-text-cyan-green--hover" style="padding-left: 3%;">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
                     </li>
                     <!--  endblock -->
 
                     <!-- block search -->
                     <li class="nav-item"><div role="search" class="search-box">
-	<form id="rtd-search-form" class="wy-form" action="./search.html" method="get">
+	<form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
 		<input type="text" name="q" class="drac-input drac-input-search drac-input-white drac-text-white drac-bg-black-secondary"
 		placeholder="Search docs" title="Type search term here" />
 	</form>
@@ -139,25 +155,44 @@
             <!-- endblock -->
 
             <!-- block content -->
-	<section class="p-md-5 content-search">
-		<article>
-			<p></p>
-			<h1 id="search">Search Results</h1>
-			<hr>
-
-			<form id="content_search" action="search.html">
-				<span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
-				<input name="q" id="mkdocs-search-query" type="text" class="drac-input drac-input-purple drac-text-white search_input search-query ui-autocomplete-input"
-					placeholder="Search the Docs" autocomplete="off" autofocus title="Type search term here">
-			</form>
-			
-			<div id="mkdocs-search-results" class="search-results" data-no-results-text="No results found">
-				Searching...
-			</div>
-
-		</article>
-	</section>
-
+                <section class="p-md-5 section-content">
+    <article>
+        <p><h1 id="installation-a-step-by-step-guide">installation: a step-by-step guide</h1>
+<h2 id="1-install-python">1. Install Python</h2>
+<h3 id="11-windows">1.1. Windows</h3>
+<p>Download the latest version of Python from the <a href="https://www.python.org/downloads/windows/">official website</a>. Run the installer and make sure to check the box "Add Python to PATH".</p>
+<h3 id="12-linux">1.2. Linux</h3>
+<p>Python is already installed in most Linux distributions. To check if you have it installed, open a terminal and type:</p>
+<pre><code class="language-bash">python3 --version
+</code></pre>
+<p>If you don't have it installed, you can install it using your package manager. For example, in Ubuntu, you can install it by typing:</p>
+<pre><code class="language-bash">sudo apt-get install python3
+</code></pre>
+<h2 id="2-install-pygame">2. Install Pygame</h2>
+<p>Open a terminal and type:</p>
+<pre><code class="language-bash">pip3 install pygame
+</code></pre>
+<p>or</p>
+<pre><code class="language-bash">pip install pygame
+</code></pre>
+<h2 id="3-clone-the-repository">3. Clone the repository</h2>
+<p>Open a terminal and type:</p>
+<pre><code class="language-bash">git clone https://github.com/FidyBack/Projeto_Z_de_Jogo.git
+</code></pre>
+<h2 id="4-install-the-fonts">4. Install the fonts</h2>
+<p>Go to the directory where you cloned the repository and open the folder "fonts". Select the "acknowtt.ttf" file and install it.</p>
+<h2 id="5-run-the-game">5. Run the game</h2>
+<p>Open a terminal, go to the directory where you cloned the repository and type:</p>
+<pre><code class="language-bash">cd src
+python3 main.py
+</code></pre>
+<p>or</p>
+<pre><code class="language-bash">cd src
+python main.py
+</code></pre>
+<h2 id="6-enjoy-the-game">6. Enjoy the game!</h2></p>
+    </article>
+</section>
             <!-- endblock -->
 
             <!-- block footer -->
@@ -174,11 +209,11 @@
 
     </main>
 
-        <script>var base_url = '.';</script>
-        <script src="./assets/js/jquery-3.3.1.slim.min.js""></script>
-        <script src="./assets/js/bootstrap.bundle.min.js""></script>
-        <script src="./assets/js/mkdocs.js""></script>
-			<script src="./search/main.js" defer></script>
+        <script>var base_url = '..';</script>
+        <script src="../assets/js/jquery-3.3.1.slim.min.js""></script>
+        <script src="../assets/js/bootstrap.bundle.min.js""></script>
+        <script src="../assets/js/mkdocs.js""></script>
+			<script src="../search/main.js" defer></script>
 
 </body>
 

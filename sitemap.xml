@@ -2,12 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://fidyback.github.io/Projeto_Z_de_Jogo/</loc>
-         <lastmod>2023-09-05</lastmod>
+         <lastmod>2023-09-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://fidyback.github.io/Projeto_Z_de_Jogo/about/</loc>
-         <lastmod>2023-09-05</lastmod>
+         <loc>https://fidyback.github.io/Projeto_Z_de_Jogo/documentation/</loc>
+         <lastmod>2023-09-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://fidyback.github.io/Projeto_Z_de_Jogo/installation/</loc>
+         <lastmod>2023-09-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
