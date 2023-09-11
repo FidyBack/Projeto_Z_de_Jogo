@@ -1,4 +1,4 @@
-# Projeto_Z_de_Jogo
+# Projeto Z
 Primeiro jogo criado pelos membros desse grupo 
 :)
 
