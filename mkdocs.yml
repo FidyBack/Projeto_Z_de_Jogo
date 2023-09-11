@@ -1,6 +1,13 @@
-site_name: MkLorum
-site_url: https://example.com/
+site_name: Project Z
+site_url: https://fidyback.github.io/Projeto_Z_de_Jogo
+repo_url: https://github.com/FidyBack/Projeto_Z_de_Jogo
+site_author: Abel Cavalcante
 nav:
   - Home: index.md
-  - About: about.md
-# theme: readthedocs
+  - Installation: installation.md
+  - Documentation: documentation.md
+theme:
+    name: dracula
+markdown_extensions:
+  - attr_list
+  - md_in_html
