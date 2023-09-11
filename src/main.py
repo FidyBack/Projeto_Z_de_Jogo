@@ -371,13 +371,12 @@ class Jogo:
 						break
 
 					# Transfere a palavra para a próxima
-					else:
-						palavra_atual = palavras[idx_palavra]
-						
-						# Se é estiver no limite da tela, pula uma linha e volta pro começo dela
-						if len(palavra_atual) * 27 + a > largura:
-							b += 27
-							a = 27
+					palavra_atual = palavras[idx_palavra]
+					
+					# Se é estiver no limite da tela, pula uma linha e volta pro começo dela
+					if len(palavra_atual) * 27 + a > largura:
+						b += 27
+						a = 27
 
 				self.desenhar_texto(palavra_atual[idx_letra], 48, branco, a, b)
 
@@ -523,7 +522,7 @@ class Jogo:
 	def desenho(self):
 		self.tela.blit(background, (0, 0))
 		self.todos_sprites.draw(self.tela)
-		self.desenhar_texto('Vida = {0}, Granada = {1}'.format(self.jogador.vida,self.jogador.numero_granada), 20, branco, 120, 0)
+		self.desenhar_texto(f'Vida = {self.jogador.vida}, Granada = {self.jogador.numero_granada}', 20, branco, 120, 0)
 		pg.display.flip()
 
 	# Música
