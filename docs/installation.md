@@ -51,15 +51,13 @@ Go to the directory where you cloned the repository and open the folder "fonts".
 Open a terminal, go to the directory where you cloned the repository and type:
 
 ```bash
-cd src
-python3 main.py
+python3 -m src
 ```
 
 or
 
 ```bash
-cd src
-python main.py
+python -m src
 ```
 
 ## 6. Enjoy the game!
