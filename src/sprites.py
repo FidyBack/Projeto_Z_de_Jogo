@@ -20,10 +20,11 @@ Aproveite!!!
 '''
 
 import pygame as pg
-from configuracoes import *
-vec = pg.math.Vector2
+from .configuracoes import *
 import math
 from random import randrange
+
+vec = pg.math.Vector2
 
 # ================================================================================================================
 # Animção

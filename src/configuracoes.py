@@ -1,4 +1,4 @@
-'''
+"""
 Jogo feito por Abel Cavalcante, Rodrigo de Jesus e Alexandre Cury
 
 Jogo baseado na videoaula da ONG 'KidsCanCode', que ensina jovens à programar
@@ -17,17 +17,18 @@ Imagens:
 Jogo feito em 2018
 
 Aproveite!!!
-'''
+"""
 
 import pygame as pg
+from os import path
 
 # Variáveis
-titulo = 'Soldier'
+titulo = "Soldier"
 fps = 60
 largura = 576
 altura = 576
-nome_fonte = 'Acknowledge TT (BRK)'
-background = pg.image.load("img/fundo.png")
+nome_fonte = "Acknowledge TT (BRK)"
+background = pg.image.load(path.join(path.dirname(__file__), "img", "fundo.png"))
 spritesheet_inimigos = "spritesheet_inimigos.png"
 spritesheet_personagem = "spritesheet_personagem.png"
 spritesheet_plataformas = "spritesheet_plataformas.png"
@@ -51,7 +52,7 @@ vermelho = (255, 0, 0)
 cinza = (0, 65, 102)
 
 # Discurso
-discurso = 'Durante a guerra que se segue, o Império Xerista, \
+discurso = "Durante a guerra que se segue, o Império Xerista, \
 está perdendo as suas forças pouco a pouco. Para contornar isso, seu líder, \
 Herold Smiter, visa as amoebas do infinito. \
-É seu dever, Soldier, impedir isso e defender a paz no mundo. Contamos com você ...'
+É seu dever, Soldier, impedir isso e defender a paz no mundo. Contamos com você ..."
