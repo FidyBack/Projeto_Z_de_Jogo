@@ -20,11 +20,14 @@ This is a project made by a group of students from Insper, in the course of the 
 ## Project layout
 
     main/
-        mkdocs.yml      # The configuration file.
+        mkdocs.yml       # The configuration file.
         docs/
-            index.md    # The documentation homepage.
-            ...         # Other markdown pages, images and other files.
+            index.md     # The documentation homepage.
+            ...          # Other markdown pages, images and other files.
+        featurs/
+            main.feature # Feature description to be tested with behave 
+            ...
         src/
-            main.py     # The main code of the project.
-            __main__.py # 
-            ...         # Other source files.
+            main.py      # The main code of the project.
+            __main__.py  # 
+            ...          # Other source files.
