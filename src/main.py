@@ -18,6 +18,12 @@ Jogo feito em 2018
 
 Aproveite!!!
 '''
+#Constantes
+BRILHO_MAX = 255
+BRILHO_MIN = 0
+BRILHO_INCREMENTO = 5
+BRILHO_INCREMENTO_RAPIDO = 51
+
 
 # Importações
 import pygame as pg
@@ -401,7 +407,7 @@ class Jogo:
 		# Atributos do brilho
 		i = 0
 		b = 0
-		brilho = 0
+		brilho = "BRILHO_MIN"
 		image = pg.image.load(imagem)
 		image_rect = image.get_rect()
 		image_rect.midtop = (largura / 2, altura / 4)
@@ -411,17 +417,17 @@ class Jogo:
 
 			# Piscada lenta (Antes de apertar o botão)
 			if i == 0:
-				if brilho <= 0:
-					b = 5
-				elif brilho >= 255:
-					b = (-5)
+				if brilho <= "BRILHO_MIN":
+					b = "BRILHO_INCREMENTO"
+				elif brilho >= "BRILHO_MAX":
+					b = (-"BRILHO_INCREMENTO")
 
 			# Piscada rápida (Após clicar em alguma tecla)
 			elif i > 0:
-				if brilho <= 0:
-					b = 51
-				elif brilho >= 255:
-					b = (-51)
+				if brilho <= "BRILHO_MIN":
+					b = "BRILHO_INCREMENTO_RAPIDO"
+				elif brilho >= "BRILHO_MAX":
+					b = (-"BRILHO_INCREMENTO_RAPIDO")
 					i += 1
 			self.relogio.tick(fps)
 
@@ -451,7 +457,7 @@ class Jogo:
 		# Atributos do brilho
 		i = 0
 		b = 0
-		brilho = 0
+		brilho = "BRILHO_MIN"
 		image = pg.image.load(imagem)
 		image_rect = image.get_rect()
 		image_rect.midtop = (largura / 2, altura / 4)
@@ -461,17 +467,17 @@ class Jogo:
 
 			# Piscada lenta (Antes de apertar o botão)
 			if i == 0:
-				if brilho <= 0:
-					b = 5
-				elif brilho >= 255:
-					b = (-5)
+				if brilho <= "BRILHO_MIN":
+					b = "BRILHO_INCREMENTO"
+				elif brilho >= "BRILHO_MAX":
+					b = (-"BRILHO_INCREMENTO")
 
 			# Piscada rápida (Após clicar em alguma tecla)
 			elif i > 0:
-				if brilho <= 0:
-					b = 51
-				elif brilho >= 255:
-					b = (-51)
+				if brilho <= "BRILHO_MIN":
+					b = "BRILHO_INCREMENTO"
+				elif brilho >= "BRILHO_MAX":
+					b = (-"BRILHO_INCREMENTO")
 					i += 1
 			self.relogio.tick(fps)
 
